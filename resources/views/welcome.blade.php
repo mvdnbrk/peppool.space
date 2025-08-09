@@ -12,7 +12,10 @@
         <script src="https://cdn.usefathom.com/script.js" data-site="{{ config('services.fathom.site_id') }}" defer></script>
         @endif
     </head>
-    <body>
-        <h1 class="p-12 text-4xl font-bold text-green-700">peppool.space</h1>
+    <body class="p-8">
+
+        <x-icon-logo class="w-16 h-16"/>
+
+        <h1 class="mb-6 text-4xl font-bold text-green-700">peppool.space</h1>
     </body>
 </html>
