@@ -11,6 +11,7 @@ class PepeRpcHealthCommand extends Command
     protected $signature = 'pepe:rpc:health {--json : Output results in JSON format}';
 
     protected $description = 'Check Pepecoin RPC connection health and display node information';
+
     public function handle(PepecoinRpcService $rpcService): int
     {
         $this->info('🔍 Testing Pepecoin RPC connection...');
