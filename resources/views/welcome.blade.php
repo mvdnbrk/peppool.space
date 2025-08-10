@@ -14,8 +14,10 @@
     </head>
     <body class="p-8">
 
-        <x-icon-logo class="w-16 h-16"/>
+        <div class="flex items-center mb-12">
+            <x-icon-logo class="w-16 h-16"/>
+            <h1 class="ml-6 text-4xl font-bold text-green-700">peppool.space</h1>
+        </div>
 
-        <h1 class="mb-6 text-4xl font-bold text-green-700">peppool.space</h1>
     </body>
 </html>
