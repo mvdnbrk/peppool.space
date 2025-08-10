@@ -31,14 +31,11 @@
                             </div>
                         @endif
                     </div>
-                    <div class="flex items-center justify-between">
-                        <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-                            Pepecoin Explorer
-                        </span>
-                        @if(isset($network))
-                            <span class="text-xs text-gray-500">{{ $network['subversion'] ?? 'Unknown' }}</span>
-                        @endif
+                    @if(isset($network))
+                    <div class="flex items-center justify-end">
+                        <span class="text-xs text-gray-500">{{ $network['subversion'] ?? 'Unknown' }}</span>
                     </div>
+                    @endif
                 </div>
 
                 <!-- Desktop Layout -->
@@ -46,9 +43,6 @@
                     <div class="flex items-center">
                         <x-icon-logo class="w-12 h-12"/>
                         <h1 class="ml-3 text-2xl font-bold text-green-700">peppool.space</h1>
-                        <span class="ml-3 px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-                            Pepecoin Explorer
-                        </span>
                     </div>
                     @if(isset($network))
                         <div class="flex items-center space-x-4 text-sm text-gray-600">
