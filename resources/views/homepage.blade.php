@@ -156,7 +156,7 @@
                                     <div class="flex items-center space-x-4">
                                         <div class="flex-shrink-0">
                                             <div class="px-3 py-1 bg-blue-100 rounded-md flex items-center justify-center">
-                                                <span class="text-sm font-semibold text-blue-700">#{{ $block['height'] }}</span>
+                                                <span class="text-sm font-semibold text-blue-700">{{ $block['height'] }}</span>
                                             </div>
                                         </div>
                                         <div class="min-w-0 flex-1">
