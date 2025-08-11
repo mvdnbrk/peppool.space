@@ -14,7 +14,7 @@ return [
 
     'rpc' => [
         'host' => env('PEPECOIN_RPC_HOST', '127.0.0.1'),
-        'port' => env('PEPECOIN_RPC_PORT', 19073),
+        'port' => env('PEPECOIN_RPC_PORT', 33873),
         'username' => env('PEPECOIN_RPC_USER', ''),
         'password' => env('PEPECOIN_RPC_PASSWORD', ''),
         'timeout' => env('PEPECOIN_RPC_TIMEOUT', 30),
