@@ -1,64 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<x-layout title="Peppool.space - Real-time Pepecoin Blockchain Explorer">
 
-    <title>PEPpool.space - Pepecoin Explorer</title>
-
-    @vite('resources/css/app.css')
-
-    @if(config('services.fathom.site_id'))
-    <script src="https://cdn.usefathom.com/script.js" data-site="{{ config('services.fathom.site_id') }}" defer></script>
-    @endif
-</head>
-<body class="bg-gray-50 min-h-screen">
-    <!-- Header -->
-    <header class="bg-white shadow-sm border-b">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="py-4 sm:py-6">
-                <!-- Mobile Layout -->
-                <div class="flex flex-col space-y-3 sm:hidden">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <x-icon-logo class="w-8 h-8"/>
-                            <h1 class="ml-2 text-lg font-bold text-green-700">peppool.space</h1>
-                        </div>
-                        @if(isset($network))
-                            <div class="flex items-center">
-                                <div class="w-2 h-2 bg-green-400 rounded-full mr-1"></div>
-                                <span class="text-xs text-gray-600">{{ $network['connections'] ?? 0 }} peers</span>
-                            </div>
-                        @endif
-                    </div>
-                    @if(isset($network))
-                    <div class="flex items-center justify-end">
-                        <span class="text-xs text-gray-500">{{ $network['subversion'] ?? 'Unknown' }}</span>
-                    </div>
-                    @endif
-                </div>
-
-                <!-- Desktop Layout -->
-                <div class="hidden sm:flex justify-between items-center">
-                    <div class="flex items-center">
-                        <x-icon-logo class="w-12 h-12"/>
-                        <h1 class="ml-3 text-2xl font-bold text-green-700">peppool.space</h1>
-                    </div>
-                    @if(isset($network))
-                        <div class="flex items-center space-x-4 text-sm text-gray-600">
-                            <span>{{ $network['subversion'] ?? 'Unknown' }}</span>
-                            <span class="flex items-center">
-                                <div class="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                                {{ $network['connections'] ?? 0 }} peers
-                            </span>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         @if(isset($error))
             <!-- Error State -->
             <div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
@@ -77,7 +18,8 @@
         @else
             <!-- Stats Overview -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div class="bg-neutral-50 rounded-lg shadow p-6">
+                <!-- Block Height Card -->
+                <div class="bg-white rounded-lg shadow p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <div class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center">
@@ -88,7 +30,9 @@
                         </div>
                         <div class="ml-5">
                             <p class="text-sm font-medium text-gray-500">Block Height</p>
-                            <p class="text-2xl font-bold text-gray-900">{{ number_format($blockchain['blocks'] ?? 0) }}</p>
+                            <p class="text-2xl font-bold text-gray-900" id="current-block-height">
+                                {{ number_format($blockchain['blocks'] ?? 0) }}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -104,7 +48,9 @@
                         </div>
                         <div class="ml-5">
                             <p class="text-sm font-medium text-gray-500">Mempool</p>
-                            <p class="text-2xl font-bold text-gray-900">{{ number_format($mempool['size'] ?? 0) }} txs</p>
+                            <p class="text-2xl font-bold text-gray-900">
+                                <span id="mempool-count">{{ number_format($mempool['size'] ?? 0) }}</span> txs
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -130,7 +76,7 @@
                         <div class="flex-shrink-0">
                             <div class="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center">
                                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21-3.582 4-8 4s-8-1.79-8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/>
                                 </svg>
                             </div>
                         </div>
@@ -151,7 +97,7 @@
                     </div>
                     <div class="overflow-hidden">
                         @forelse($latestBlocks as $block)
-                            <div class="px-6 py-4 border-b border-gray-100 last:border-b-0 hover:bg-gray-50">
+                            <a href="{{ route('block.show', $block['height']) }}" class="block px-6 py-4 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center space-x-4">
                                         <div class="flex-shrink-0">
@@ -173,7 +119,7 @@
                                         <p class="text-sm text-gray-500">{{ number_format($block['size'] / 1024, 1) }} KB</p>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         @empty
                             <div class="px-6 py-8 text-center">
                                 <p class="text-gray-500">No blocks available</p>
@@ -189,7 +135,7 @@
                     </div>
                     <div class="overflow-hidden">
                         @forelse($mempoolTransactions as $txid)
-                            <div class="px-6 py-4 border-b border-gray-100 last:border-b-0 hover:bg-gray-50">
+                            <a href="{{ route('transaction.show', $txid) }}" class="block px-6 py-4 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors">
                                 <div class="flex items-center">
                                     <div class="flex-shrink-0">
                                         <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
@@ -205,7 +151,7 @@
                                         <p class="text-sm text-gray-500">Unconfirmed</p>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         @empty
                             <div class="px-6 py-8 text-center">
                                 <p class="text-gray-500">No transactions in mempool</p>
@@ -215,15 +161,5 @@
                 </div>
             </div>
         @endif
-    </main>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t mt-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="text-center text-sm text-gray-500">
-                <p>peppool.space - real-time pepecoin blockchain explorer</p>
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
+</x-layout>
