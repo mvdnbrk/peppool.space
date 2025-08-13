@@ -9,6 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class StorePepePrice implements ShouldQueue
 {
@@ -21,8 +22,6 @@ class StorePepePrice implements ShouldQueue
 
     public function handle(): void
     {
-        $timestamp = $this->getTimestamp();
-
         foreach ($this->currencies as $currency) {
             $price = Cache::get("pepecoin_price_{$currency}");
 
@@ -31,8 +30,8 @@ class StorePepePrice implements ShouldQueue
             }
 
             Price::updateOrCreate([
-                'currency' => $currency,
-                'created_at' => $timestamp,
+                'currency' => Str::upper($currency),
+                'created_at' => $this->getTimestamp(),
             ], [
                 'price' => $price,
             ]);
