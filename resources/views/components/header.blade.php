@@ -27,12 +27,6 @@
                             @endif
                         @endif
                     </div>
-                    @if(isset($network))
-                        <div class="flex items-center">
-                            <div class="w-2 h-2 bg-green-400 rounded-full mr-1"></div>
-                            <span class="text-xs text-gray-600">{{ $network['connections'] ?? 0 }} peers</span>
-                        </div>
-                    @endif
                 </div>
                 @if(isset($network))
                 <div class="flex items-center justify-end">
@@ -64,15 +58,6 @@
                         @endif
                     @endif
                 </div>
-                @if(isset($network))
-                    <div class="flex items-center space-x-4 text-sm text-gray-600">
-                        <span>{{ $network['subversion'] ?? 'Unknown' }}</span>
-                        <span class="flex items-center">
-                            <div class="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                            {{ $network['connections'] ?? 0 }} peers
-                        </span>
-                    </div>
-                @endif
             </div>
         </div>
     </div>

@@ -1,4 +1,4 @@
-<x-layout title="Peppool.space - Real-time Pepecoin Blockchain Explorer">
+<x-layout title="Peppool.space - Real-time Pepecoin Blockchain Explorer" :network="$network">
 
         @if(isset($error))
             <!-- Error State -->
