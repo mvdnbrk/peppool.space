@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class Block extends Model
 {
@@ -30,4 +31,19 @@ class Block extends Model
         'created_at' => 'datetime',
         'auxpow' => 'array',
     ];
+
+    public static function getLatestBlocks(int $limit = 10): Collection
+    {
+        return static::orderBy('height', 'desc')
+            ->select(['height', 'hash', 'created_at', 'tx_count', 'size'])
+            ->take($limit)
+            ->get()
+            ->map(fn ($block): array => [
+                'height' => $block->height,
+                'hash' => $block->hash,
+                'time' => $block->created_at->timestamp,
+                'tx_count' => $block->tx_count,
+                'size' => $block->size,
+            ]);
+    }
 }
