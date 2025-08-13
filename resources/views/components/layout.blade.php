@@ -13,12 +13,12 @@
     @endif
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <x-header :breadcrumb="$breadcrumb" :network="$network" />
+    <x-header :breadcrumb="$breadcrumb" />
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {{ $slot }}
     </main>
 
-    <x-footer />
+    <x-footer :network="$network" />
 </body>
 </html>

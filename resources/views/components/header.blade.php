@@ -1,4 +1,4 @@
-@props(['breadcrumb' => null, 'network' => null])
+@props(['breadcrumb' => null])
 
 <header class="bg-white shadow-sm border-b">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -27,12 +27,17 @@
                             @endif
                         @endif
                     </div>
+                    <div class="flex items-center">
+                        @if(Cache::has('pepe_price'))
+                            <div class="flex flex-col items-end">
+                                <div class="flex items-center space-x-1 bg-green-50 px-2 py-1 rounded-full">
+                                    <span class="text-green-700 font-medium text-xs">PEPE</span>
+                                    <span class="text-gray-700 font-semibold text-xs">${{ number_format(Cache::get('pepe_price'), 8, '.', ',') }}</span>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
                 </div>
-                @if(isset($network))
-                <div class="flex items-center justify-end">
-                    <span class="text-xs text-gray-500">{{ $network['subversion'] ?? 'Unknown' }}</span>
-                </div>
-                @endif
             </div>
 
             <!-- Desktop Layout -->
@@ -56,6 +61,16 @@
                             <span class="text-gray-400">/</span>
                             <span class="text-gray-600">{{ $breadcrumb }}</span>
                         @endif
+                    @endif
+                </div>
+                <div class="flex items-center">
+                    @if(Cache::has('pepe_price'))
+                        <div class="flex flex-col items-end">
+                            <div class="flex items-center space-x-1 sm:space-x-2 bg-green-50 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full">
+                                <span class="text-green-700 font-medium text-sm sm:text-base">PEPE</span>
+                                <span class="text-gray-700 font-semibold text-sm sm:text-base">${{ number_format(Cache::get('pepe_price'), 8, '.', ',') }}</span>
+                            </div>
+                        </div>
                     @endif
                 </div>
             </div>
