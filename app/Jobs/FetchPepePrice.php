@@ -14,10 +14,16 @@ class FetchPepePrice implements ShouldQueue
 
     private string $apiUrl;
 
+    private array $currencies = [
+        'usd',
+        'eur',
+    ];
+
     public function __construct()
     {
         $this->apiUrl = Str::of(config('services.coingecko.base_url'))
-            ->append('simple/price?ids=pepecoin-network&vs_currencies=usd')
+            ->append('simple/price?ids=pepecoin-network&vs_currencies=')
+            ->append(implode(',', $this->currencies))
             ->toString();
     }
 
@@ -27,7 +33,10 @@ class FetchPepePrice implements ShouldQueue
             ->get($this->apiUrl);
 
         if ($response->successful()) {
-            Cache::put('pepe_price', $response->json('pepecoin-network.usd'));
+            $data = $response->json('pepecoin-network');
+            foreach ($this->currencies as $currency) {
+                Cache::put("pepecoin_price_{$currency}", (float) $data[$currency], 3600);
+            }
         }
     }
 }

@@ -28,11 +28,11 @@
                         @endif
                     </div>
                     <div class="flex items-center">
-                        @if(Cache::has('pepe_price'))
+                        @if(Cache::has('pepecoin_price_usd'))
                             <div class="flex flex-col items-end">
                                 <div class="flex items-center space-x-1 bg-green-50 px-2 py-1 rounded-full">
                                     <span class="text-green-700 font-medium text-xs">PEPE</span>
-                                    <span class="text-gray-700 font-semibold text-xs">${{ number_format(Cache::get('pepe_price'), 8, '.', ',') }}</span>
+                                    <span class="text-gray-700 font-semibold text-xs">${{ number_format(Cache::get('pepecoin_price_usd'), 8, '.', ',') }}</span>
                                 </div>
                             </div>
                         @endif

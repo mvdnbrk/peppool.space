@@ -16,6 +16,7 @@ class PepePriceCommand extends Command
     {
         FetchPepePrice::dispatchSync();
 
-        $this->info('The current PEPE price is '.Cache::get('pepe_price', default: 'unknown'));
+        $this->info('The current PEPE price in USD is '.Cache::get('pepecoin_price_usd', default: 'unknown'));
+        $this->info('The current PEPE price in EUR is '.Cache::get('pepecoin_price_eur', default: 'unknown'));
     }
 }
