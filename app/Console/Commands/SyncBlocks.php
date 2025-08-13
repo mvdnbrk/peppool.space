@@ -23,6 +23,7 @@ class SyncBlocks extends Command
     protected $description = 'Sync blocks from Pepecoin blockchain to database (defaults to syncing new blocks only)';
 
     private PepecoinRpcService $rpcService;
+
     private bool $shouldStop = false;
 
     public function __construct(PepecoinRpcService $rpcService)
@@ -30,15 +31,15 @@ class SyncBlocks extends Command
         parent::__construct();
 
         $this->rpcService = $rpcService;
-        
+
         // Set up signal handlers for graceful shutdown
         if (function_exists('pcntl_signal')) {
-            pcntl_signal(SIGINT, function($signal) {
+            pcntl_signal(SIGINT, function ($signal) {
                 $this->shouldStop = true;
                 echo "\nReceived shutdown signal. Finishing current batch and stopping gracefully...\n";
                 echo "Press Ctrl+C again to force quit (may cause data corruption).\n";
             });
-            pcntl_signal(SIGTERM, function($signal) {
+            pcntl_signal(SIGTERM, function ($signal) {
                 $this->shouldStop = true;
                 echo "\nReceived shutdown signal. Finishing current batch and stopping gracefully...\n";
                 echo "Press Ctrl+C again to force quit (may cause data corruption).\n";
@@ -57,7 +58,7 @@ class SyncBlocks extends Command
             $chainHeight = $this->rpcService->getBlockCount();
             $endHeight = $this->option('to') ? (int) $this->option('to') : $chainHeight;
             $startHeight = $this->determineStartHeight();
-            
+
             // Apply limit if specified
             if ($this->option('limit')) {
                 $limit = (int) $this->option('limit');
@@ -67,19 +68,19 @@ class SyncBlocks extends Command
             $this->info("Chain height: {$chainHeight}");
             $this->info("Syncing blocks from {$startHeight} to {$endHeight}");
             $this->info("Batch size: {$batchSize}");
-            
+
             if ($this->option('limit')) {
                 $this->info("Limit: {$this->option('limit')} blocks");
             }
-            
+
             if ($delay > 0) {
                 $this->info("RPC delay: {$delay}ms between calls");
             }
-            
+
             if ($batchDelay > 0) {
                 $this->info("Batch delay: {$batchDelay}ms between batches");
             }
-            
+
             $this->newLine();
             $this->comment('Press Ctrl+C to stop gracefully (will finish current batch)');
             $this->newLine();
@@ -93,7 +94,7 @@ class SyncBlocks extends Command
             $totalBlocks = $endHeight - $startHeight + 1;
             $progressBar = $this->output->createProgressBar($totalBlocks);
             $progressBar->setFormat('Syncing: Blocks %message% [%bar%] %percent:3s%% (%current%/%max%)');
-            $progressBar->setMessage("{$startHeight}-" . min($startHeight + $batchSize - 1, $endHeight));
+            $progressBar->setMessage("{$startHeight}-".min($startHeight + $batchSize - 1, $endHeight));
             $progressBar->start();
 
             for ($height = $startHeight; $height <= $endHeight; $height += $batchSize) {
@@ -101,19 +102,19 @@ class SyncBlocks extends Command
                 if (function_exists('pcntl_signal_dispatch')) {
                     pcntl_signal_dispatch();
                 }
-                
+
                 if ($this->shouldStop) {
                     $this->newLine();
                     $this->info("Graceful shutdown initiated. Last processed batch: {$height}");
                     break;
                 }
-                
+
                 $batchEnd = min($height + $batchSize - 1, $endHeight);
                 $progressBar->setMessage("{$height}-{$batchEnd}");
                 $this->syncBatch($height, $batchEnd, $progressBar, $force, $delay);
-                
+
                 // Add delay between batches (except for the last batch)
-                if ($batchDelay > 0 && $batchEnd < $endHeight && !$this->shouldStop) {
+                if ($batchDelay > 0 && $batchEnd < $endHeight && ! $this->shouldStop) {
                     usleep($batchDelay * 1000); // Convert ms to microseconds
                 }
             }
@@ -140,6 +141,7 @@ class SyncBlocks extends Command
         for ($height = $startHeight; $height <= $endHeight; $height++) {
             if (! $force && Block::where('height', $height)->exists()) {
                 $progressBar->advance();
+
                 continue;
             }
             $heightsToProcess[] = $height;
@@ -151,19 +153,19 @@ class SyncBlocks extends Command
             if (function_exists('pcntl_signal_dispatch')) {
                 pcntl_signal_dispatch();
             }
-            
+
             if ($this->shouldStop) {
                 break;
             }
-            
+
             try {
                 $blockHash = $this->rpcService->getBlockHash($height);
-                
+
                 // Add delay between RPC calls if specified
-                if ($delay > 0 && $index > 0 && !$this->shouldStop) {
+                if ($delay > 0 && $index > 0 && ! $this->shouldStop) {
                     usleep($delay * 1000); // Convert ms to microseconds
                 }
-                
+
                 $blockData = $this->rpcService->getBlock($blockHash, 1);
 
                 $blocksToInsert[] = [
@@ -185,6 +187,7 @@ class SyncBlocks extends Command
             } catch (\Exception $e) {
                 $this->warn("Failed to sync block {$height}: ".$e->getMessage());
                 $progressBar->advance();
+
                 continue;
             }
         }
@@ -198,7 +201,7 @@ class SyncBlocks extends Command
                     ['hash', 'tx_count', 'size', 'difficulty', 'nonce', 'version', 'merkleroot', 'chainwork', 'auxpow', 'created_at'] // Columns to update
                 );
             } catch (\Exception $e) {
-                $this->error("Failed to insert batch: ".$e->getMessage());
+                $this->error('Failed to insert batch: '.$e->getMessage());
             }
         }
     }
@@ -217,9 +220,7 @@ class SyncBlocks extends Command
 
         // Default: start from latest block in DB + 1
         $lastSyncedHeight = Block::max('height') ?? -1;
-        
+
         return $lastSyncedHeight + 1;
     }
-
-
 }
