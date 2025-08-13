@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Services\PepecoinRpcService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class TransactionController extends Controller
@@ -14,11 +13,11 @@ class TransactionController extends Controller
         try {
             // Get transaction details
             $transaction = $rpc->call('getrawtransaction', [$txid, true]);
-            
+
             // Check if transaction is in a block or mempool
             $inBlock = isset($transaction['blockhash']);
             $blockInfo = null;
-            
+
             if ($inBlock) {
                 $blockHash = $transaction['blockhash'];
                 $block = $rpc->getBlock($blockHash, 1);
@@ -42,14 +41,14 @@ class TransactionController extends Controller
 
             // Process inputs (skip coinbase transactions)
             $inputs = [];
-            if (!isset($transaction['vin'][0]['coinbase'])) {
+            if (! isset($transaction['vin'][0]['coinbase'])) {
                 foreach ($transaction['vin'] as $input) {
                     $inputData = [
                         'txid' => $input['txid'] ?? null,
                         'vout' => $input['vout'] ?? null,
                         'address' => null,
                         'value' => 0,
-                        'scriptSig' => $input['scriptSig']['hex'] ?? null
+                        'scriptSig' => $input['scriptSig']['hex'] ?? null,
                     ];
 
                     if (isset($input['txid']) && isset($input['vout'])) {
@@ -59,7 +58,7 @@ class TransactionController extends Controller
                                 $prevOut = $prevTx['vout'][$input['vout']];
                                 $inputData['value'] = $prevOut['value'];
                                 $totalInput += $prevOut['value'];
-                                
+
                                 // Extract address from previous output
                                 if (isset($prevOut['scriptPubKey']['addresses'][0])) {
                                     $inputData['address'] = $prevOut['scriptPubKey']['addresses'][0];
@@ -70,7 +69,7 @@ class TransactionController extends Controller
                             $inputData['prevTx'] = $prevTx; // Keep full previous tx for reference
                         } catch (\Exception $e) {
                             // Previous transaction not found, skip
-                            \Log::warning("Could not fetch previous transaction {$input['txid']}: " . $e->getMessage());
+                            \Log::warning("Could not fetch previous transaction {$input['txid']}: ".$e->getMessage());
                         }
                     }
                     $inputs[] = $inputData; // Add the input data to the inputs array
@@ -80,7 +79,7 @@ class TransactionController extends Controller
 
             // Update transaction with enriched input data
             $transaction['vin'] = $inputs;
-            
+
             return view('transaction.show', [
                 'transaction' => $transaction,
                 'txid' => $txid,
@@ -94,7 +93,7 @@ class TransactionController extends Controller
 
         } catch (\Exception $e) {
             return view('transaction.show', [
-                'error' => 'Transaction not found: ' . $e->getMessage(),
+                'error' => 'Transaction not found: '.$e->getMessage(),
                 'txid' => $txid,
             ]);
         }

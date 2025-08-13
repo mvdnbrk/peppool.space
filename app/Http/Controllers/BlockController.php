@@ -54,7 +54,7 @@ class BlockController extends Controller
 
         } catch (\Exception $e) {
             return view('block.show', [
-                'error' => 'Block not found: ' . $e->getMessage(),
+                'error' => 'Block not found: '.$e->getMessage(),
                 'blockHash' => $hashOrHeight,
             ]);
         }
