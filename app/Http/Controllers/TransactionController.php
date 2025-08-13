@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Services\PepecoinRpcService;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class TransactionController extends Controller
 {
-    public function show(Request $request, PepecoinRpcService $rpc, string $txid): View
+    public function show(PepecoinRpcService $rpc, string $txid): View
     {
         try {
             // Get transaction details
