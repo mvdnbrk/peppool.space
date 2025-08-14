@@ -6,7 +6,7 @@ use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', HomepageController::class);
+Route::get('/', HomepageController::class)->name('homepage');
 
 Route::get('/block/{hashOrHeight}', [BlockController::class, 'show'])
     ->name('block.show')

@@ -5,7 +5,7 @@
             <div class="flex flex-col space-y-3 sm:hidden">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
-                        <a href="/" class="flex items-center">
+                        <a href="{{ route('homepage') }}" class="flex items-center">
                             <x-icon-logo class="w-8 h-8"/>
                             <h1 class="ml-2 text-lg font-bold text-green-700">peppool.space</h1>
                         </a>
@@ -26,7 +26,7 @@
             <!-- Desktop Layout -->
             <div class="hidden sm:flex justify-between items-center">
                 <div class="flex items-center space-x-4">
-                    <a href="/" class="flex items-center">
+                    <a href="{{ route('homepage') }}" class="flex items-center">
                         <x-icon-logo class="w-12 h-12"/>
                         <h1 class="ml-3 text-2xl font-bold text-green-700">peppool.space</h1>
                     </a>
