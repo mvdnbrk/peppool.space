@@ -161,7 +161,7 @@
                 <div class="bg-white shadow rounded-lg">
                     <div class="px-6 py-4 border-b border-gray-200">
                         <h2 class="text-lg font-semibold text-gray-900">
-                            Inputs ({{ count($transaction['vin'] ?? []) }})
+                            {{ count($transaction['vin'] ?? []) }} {{ Str::plural('Input', count($transaction['vin'] ?? [])) }}
                             @if(!$isCoinbase && $totalInput > 0)
                                 @php
                                     $formattedInput = rtrim(rtrim(number_format($totalInput, 8, '.', ','), '0'), '.');
@@ -234,7 +234,7 @@
                 <div class="bg-white shadow rounded-lg">
                     <div class="px-6 py-4 border-b border-gray-200">
                         <h2 class="text-lg font-semibold text-gray-900">
-                            Outputs ({{ count($transaction['vout'] ?? []) }})
+                            {{ count($transaction['vout'] ?? []) }} {{ Str::plural('Output', count($transaction['vout'] ?? [])) }}
                             @if($totalOutput > 0)
                                 @php
                                     $formattedOutput = rtrim(rtrim(number_format($totalOutput, 8, '.', ','), '0'), '.');
