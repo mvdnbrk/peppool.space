@@ -16,11 +16,23 @@
                     <div class="flex flex-wrap gap-4">
                         <div class="text-center">
                             <p class="text-sm font-medium text-gray-500">Balance</p>
-                            <p class="text-lg font-semibold text-gray-900">{{ number_format($balance ?? 0, 8) }} <span class="text-sm text-gray-500">PEPE</span></p>
+                            <p class="text-lg font-semibold text-gray-900">
+                                @if($balance !== null)
+                                    {{ number_format($balance, 8) }} <span class="text-sm text-gray-500">PEPE</span>
+                                @else
+                                    <span class="text-sm text-gray-400">Unknown</span>
+                                @endif
+                            </p>
                         </div>
                         <div class="text-center">
                             <p class="text-sm font-medium text-gray-500">Total Received</p>
-                            <p class="text-lg font-semibold text-gray-900">{{ number_format($totalReceived ?? 0, 8) }} <span class="text-sm text-gray-500">PEPE</span></p>
+                            <p class="text-lg font-semibold text-gray-900">
+                                @if($totalReceived !== null)
+                                    {{ number_format($totalReceived, 8) }} <span class="text-sm text-gray-500">PEPE</span>
+                                @else
+                                    <span class="text-sm text-gray-400">Unknown</span>
+                                @endif
+                            </p>
                         </div>
                     </div>
                 </div>

@@ -25,66 +25,44 @@ class AddressController extends Controller
 
             $isMine = $addressInfo['ismine'] ?? false;
 
-            // Get transactions for the address
-            $transactions = $rpc->call('searchrawtransactions', [$address, true, 0, 100]);
-
-            // Calculate total received and current balance
-            $totalReceived = 0;
+            // Get balance using listunspent if this is our address
             $balance = 0;
+            $totalReceived = null;
             $txs = [];
-
-            // Process transactions to calculate balances
-            foreach ($transactions as $tx) {
-                $txid = $tx['txid'] ?? null;
-                $confirmations = $tx['confirmations'] ?? 0;
-                $isCoinbase = ! empty($tx['vin'][0]['coinbase']);
-
-                // Check outputs (incoming transactions)
-                foreach ($tx['vout'] as $vout) {
-                    $outputValue = $vout['value'] ?? 0;
-                    $scriptPubKey = $vout['scriptPubKey'] ?? [];
-                    $addresses = $scriptPubKey['addresses'] ?? [];
-
-                    // Handle both array and single address formats
-                    $isToThisAddress = false;
-                    if (! empty($addresses) && is_array($addresses)) {
-                        $isToThisAddress = in_array($address, $addresses);
-                    } elseif (isset($scriptPubKey['address'])) {
-                        $isToThisAddress = ($scriptPubKey['address'] === $address);
-                    }
-
-                    if ($isToThisAddress) {
-                        $totalReceived += $outputValue;
-                        if ($confirmations > 0) {
-                            $balance += $outputValue;
-                        }
-
-                        // Add to transaction list
-                        $txs[$txid] = [
-                            'txid' => $txid,
-                            'time' => $tx['time'] ?? null,
-                            'confirmations' => $confirmations,
-                            'amount' => $outputValue,
+            
+            if ($isMine) {
+                try {
+                    // Get unspent outputs for this address to calculate balance
+                    $unspent = $rpc->call('listunspent', [0, 9999999, [$address]]);
+                    $balance = array_sum(array_column($unspent, 'amount'));
+                    
+                    // For owned addresses, we can get some transaction info from listunspent
+                    foreach ($unspent as $utxo) {
+                        $txs[$utxo['txid']] = [
+                            'txid' => $utxo['txid'],
+                            'time' => null, // Would need to fetch block time
+                            'confirmations' => $utxo['confirmations'],
+                            'amount' => $utxo['amount'],
                             'is_incoming' => true,
-                            'is_coinbase' => $isCoinbase,
+                            'is_coinbase' => false,
                         ];
                     }
+                } catch (\Exception $e) {
+                    // listunspent failed, fall back to basic info
                 }
-
-                // Check inputs (outgoing transactions)
-                if (isset($tx['vin']) && ! $isCoinbase) {
-                    foreach ($tx['vin'] as $vin) {
-                        if (isset($vin['txid'], $vin['vout'])) {
-                            // This would require fetching the previous transaction to check the address
-                            // For now, we'll just note that we can't track spent outputs perfectly
-                            // But we can still track the transaction as outgoing if we're the sender
-                            if (isset($txs[$txid])) {
-                                $txs[$txid]['is_incoming'] = false;
-                            }
-                        }
-                    }
-                }
+            } else {
+                // For non-owned addresses, we can't get transaction history without searchrawtransactions
+                return view('address.show', [
+                    'address' => $address,
+                    'balance' => null,
+                    'totalReceived' => null,
+                    'txs' => [],
+                    'isMine' => $isMine,
+                    'error' => 'Transaction history is only available for addresses in your wallet. This node does not support full address lookups.',
+                ]);
             }
+
+            // Balance and transactions are already calculated above
 
             return view('address.show', [
                 'address' => $address,
@@ -98,11 +76,11 @@ class AddressController extends Controller
             // Initialize empty arrays to prevent undefined variable errors
             return view('address.show', [
                 'address' => $address,
-                'balance' => 0,
-                'totalReceived' => 0,
+                'balance' => null,
+                'totalReceived' => null,
                 'txs' => [],
                 'isMine' => false,
-                'error' => 'Could not fetch address information: '.$e->getMessage(),
+                'error' => 'Could not validate address: '.$e->getMessage(),
             ]);
         }
     }
