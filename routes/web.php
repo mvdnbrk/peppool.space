@@ -3,10 +3,15 @@
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\BlockController;
 use App\Http\Controllers\HomepageController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomepageController::class)->name('homepage');
+
+// Global search routes
+Route::get('/search', [SearchController::class, 'index'])->name('search.index');
+Route::post('/search', [SearchController::class, 'store'])->name('search.store');
 
 Route::get('/block/{hashOrHeight}', [BlockController::class, 'show'])
     ->name('block.show')

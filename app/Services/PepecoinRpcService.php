@@ -106,6 +106,11 @@ class PepecoinRpcService
         return $this->call('getrawmempool', [$verbose]);
     }
 
+    public function getRawTransaction(string $txid, bool $verbose = false): mixed
+    {
+        return $this->call('getrawtransaction', [$txid, $verbose]);
+    }
+
     public function testConnection(): bool
     {
         try {

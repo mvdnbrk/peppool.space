@@ -16,6 +16,9 @@
                 </div>
             </div>
         @else
+            <!-- Global Search -->
+            <x-search class="mb-8" />
+
             <!-- Stats Overview -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                 <!-- Block Height Card -->
