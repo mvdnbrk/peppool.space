@@ -1,4 +1,4 @@
-<header class="bg-white shadow-sm border-b">
+<header class="bg-white shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="py-4 sm:py-6">
             <!-- Mobile Layout -->
