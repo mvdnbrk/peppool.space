@@ -37,7 +37,7 @@
                     </div>
                 </div>
 
-                <div class="bg-neutral-50 rounded-lg shadow p-6">
+                <div class="bg-white rounded-lg shadow p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <div class="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center">
@@ -55,7 +55,7 @@
                     </div>
                 </div>
 
-                <div class="bg-neutral-50 rounded-lg shadow p-6">
+                <div class="bg-white rounded-lg shadow p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <div class="w-10 h-10 bg-purple-500 rounded-xl flex items-center justify-center">
@@ -71,7 +71,7 @@
                     </div>
                 </div>
 
-                <div class="bg-neutral-50 rounded-lg shadow p-6">
+                <div class="bg-white rounded-lg shadow p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <div class="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center">
@@ -91,7 +91,7 @@
             <!-- Latest Blocks and Mempool -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Latest Blocks -->
-                <div class="bg-neutral-50 rounded-lg shadow">
+                <div class="bg-white rounded-lg shadow">
                     <div class="px-6 py-4 border-b border-gray-200">
                         <h2 class="text-lg font-semibold text-gray-900">Latest Blocks</h2>
                     </div>
@@ -129,7 +129,7 @@
                 </div>
 
                 <!-- Mempool Transactions -->
-                <div class="bg-neutral-50 rounded-lg shadow">
+                <div class="bg-white rounded-lg shadow">
                     <div class="px-6 py-4 border-b border-gray-200">
                         <h2 class="text-lg font-semibold text-gray-900">Mempool Transactions</h2>
                     </div>
