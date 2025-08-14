@@ -30,8 +30,10 @@ class BlockController extends Controller
                 if ($height < 0) {
                     abort(404, 'Block not found');
                 }
+
                 return $rpc->getBlockHash($height);
             }
+
             return $hashOrHeight;
         } catch (\Exception $e) {
             abort(404, 'Block not found');
