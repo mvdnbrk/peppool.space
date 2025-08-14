@@ -58,7 +58,7 @@ class AddressController extends Controller
                     'totalReceived' => null,
                     'txs' => [],
                     'isMine' => $isMine,
-                    'error' => 'Transaction history is only available for addresses in your wallet. This node does not support full address lookups.',
+                    'showComingSoon' => true,
                 ]);
             }
 
