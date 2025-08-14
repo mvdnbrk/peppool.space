@@ -1,4 +1,4 @@
-<x-layout title="Block {{ number_format($blockHeight) }} - peppool.space" breadcrumb="Block Details">
+<x-layout title="Block {{ number_format($blockHeight) }} - peppool.space">
     @if(isset($error))
         <!-- Error State -->
         <div class="bg-red-50 border border-red-200 rounded-lg p-6">

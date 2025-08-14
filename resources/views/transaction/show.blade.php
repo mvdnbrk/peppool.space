@@ -1,6 +1,5 @@
 <x-layout
     title="Transaction {{ $txid ?? 'Not Found' }} - peppool.space"
-    breadcrumb="Transaction"
 >
         @if(isset($error))
             <!-- Error State -->

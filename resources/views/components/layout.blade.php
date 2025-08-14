@@ -1,4 +1,4 @@
-@props(['title' => 'Peppool Explorer', 'breadcrumb' => null, 'network' => null])
+@props(['title' => 'Peppool Explorer', 'network' => null])
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +13,7 @@
     @endif
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <x-header :breadcrumb="$breadcrumb" />
+    <x-header />
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {{ $slot }}

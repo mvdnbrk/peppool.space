@@ -1,7 +1,4 @@
-<x-layout
-    :title="'Address ' . $address"
-    breadcrumb="Address"
->
+<x-layout :title="'Address ' . $address">
 <div class="space-y-6">
     <!-- Address Header -->
     <div class="bg-white shadow rounded-lg overflow-hidden">
