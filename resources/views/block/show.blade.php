@@ -144,7 +144,7 @@
                                 </div>
                                 @if(is_array($tx) && isset($tx['vout']))
                                     <div class="mt-2 text-sm text-gray-500">
-                                        {{ count($tx['vin'] ?? []) }} input(s), {{ count($tx['vout'] ?? []) }} output(s)
+                                        {{ count($tx['vin'] ?? []) }} {{ Str::plural('input', count($tx['vin'] ?? [])) }}, {{ count($tx['vout'] ?? []) }} {{ Str::plural('output', count($tx['vout'] ?? [])) }}
                                     </div>
                                 @endif
                             </div>
