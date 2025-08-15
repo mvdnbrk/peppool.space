@@ -157,7 +157,7 @@ class SyncTransactionsCommand extends Command
 
         foreach ($options as $key => $config) {
             $value = $this->option($key);
-            if ($value !== null && (!is_numeric($value) || !filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => $config['min']]]))) {
+            if ($value !== null && $value !== '' && (!is_numeric($value) || (int)$value < $config['min'])) {
                 $this->error("Invalid {$config['name']} value. Must be a " . ($config['min'] > 0 ? 'positive' : 'non-negative') . " integer.");
                 return Command::FAILURE;
             }
