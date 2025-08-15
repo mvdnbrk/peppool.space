@@ -100,7 +100,7 @@ class SyncTransactionsCommand extends Command
             return $validationResult;
         }
 
-        $batchSize = (int) $this->option('batch') ?: 100;
+        $batchSize = (int) $this->option('batch');
         $delay = (int) $this->option('delay');
         $batchDelay = (int) $this->option('batch-delay');
 
