@@ -98,14 +98,17 @@ class SyncTransactionsCommand extends Command
 
         if ($batchSize <= 0) {
             $this->error('Invalid batch size. Must be a positive integer.');
+
             return Command::FAILURE;
         }
         if ($delay < 0) {
             $this->error('Invalid delay. Must be a non-negative integer.');
+
             return Command::FAILURE;
         }
         if ($batchDelay < 0) {
             $this->error('Invalid batch delay. Must be a non-negative integer.');
+
             return Command::FAILURE;
         }
 
@@ -599,62 +602,51 @@ class SyncTransactionsCommand extends Command
      */
     private function recalculateAddressBalance(string $address): void
     {
-        // Calculate balance from unspent outputs
-        $balance = DB::table('transaction_outputs')
-            ->where('address', $address)
-            ->where('is_spent', false)
-            ->sum('amount');
+        DB::transaction(function () use ($address) {
+            $balance = DB::table('transaction_outputs')
+                ->where('address', $address)
+                ->where('is_spent', false)
+                ->sum('amount');
+            $totalReceived = DB::table('transaction_outputs')
+                ->where('address', $address)
+                ->sum('amount');
+            $totalSent = DB::table('transaction_inputs')
+                ->where('address', $address)
+                ->whereNotNull('amount')
+                ->sum('amount');
+            $outputTxIds = DB::table('transaction_outputs')
+                ->where('address', $address)
+                ->distinct()
+                ->pluck('tx_id');
+            $inputTxIds = DB::table('transaction_inputs')
+                ->where('address', $address)
+                ->whereNotNull('address')
+                ->distinct()
+                ->pluck('tx_id');
+            $txCount = $outputTxIds->merge($inputTxIds)->unique()->count();
+            $firstSeen = DB::table('transaction_outputs')
+                ->join('transactions', 'transaction_outputs.tx_id', '=', 'transactions.tx_id')
+                ->join('blocks', 'transactions.block_height', '=', 'blocks.height')
+                ->where('transaction_outputs.address', $address)
+                ->min('blocks.created_at');
+            $lastActivity = DB::table('transaction_outputs')
+                ->join('transactions', 'transaction_outputs.tx_id', '=', 'transactions.tx_id')
+                ->join('blocks', 'transactions.block_height', '=', 'blocks.height')
+                ->where('transaction_outputs.address', $address)
+                ->max('blocks.created_at');
 
-        // Calculate total received
-        $totalReceived = DB::table('transaction_outputs')
-            ->where('address', $address)
-            ->sum('amount');
-
-        // Calculate total sent (from inputs)
-        $totalSent = DB::table('transaction_inputs')
-            ->where('address', $address)
-            ->whereNotNull('amount')
-            ->sum('amount');
-
-        // Count unique transactions (avoid double-counting if address appears in both inputs and outputs)
-        $outputTxIds = DB::table('transaction_outputs')
-            ->where('address', $address)
-            ->distinct()
-            ->pluck('tx_id');
-
-        $inputTxIds = DB::table('transaction_inputs')
-            ->where('address', $address)
-            ->whereNotNull('address')
-            ->distinct()
-            ->pluck('tx_id');
-
-        $txCount = $outputTxIds->merge($inputTxIds)->unique()->count();
-
-        // Get first seen and last activity timestamps using simpler joins
-        $firstSeen = DB::table('transaction_outputs')
-            ->join('transactions', 'transaction_outputs.tx_id', '=', 'transactions.tx_id')
-            ->join('blocks', 'transactions.block_height', '=', 'blocks.height')
-            ->where('transaction_outputs.address', $address)
-            ->min('blocks.created_at');
-
-        $lastActivity = DB::table('transaction_outputs')
-            ->join('transactions', 'transaction_outputs.tx_id', '=', 'transactions.tx_id')
-            ->join('blocks', 'transactions.block_height', '=', 'blocks.height')
-            ->where('transaction_outputs.address', $address)
-            ->max('blocks.created_at');
-
-        // Update or create address balance record
-        DB::table('address_balances')->updateOrInsert(
-            ['address' => $address],
-            [
-                'balance' => $balance,
-                'total_received' => $totalReceived,
-                'total_sent' => $totalSent,
-                'tx_count' => $txCount,
-                'first_seen' => $firstSeen,
-                'last_activity' => $lastActivity,
-            ]
-        );
+            DB::table('address_balances')->updateOrInsert(
+                ['address' => $address],
+                [
+                    'balance' => $balance,
+                    'total_received' => $totalReceived,
+                    'total_sent' => $totalSent,
+                    'tx_count' => $txCount,
+                    'first_seen' => $firstSeen,
+                    'last_activity' => $lastActivity,
+                ]
+            );
+        });
     }
 
     /**
