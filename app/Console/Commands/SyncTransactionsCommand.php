@@ -94,25 +94,15 @@ class SyncTransactionsCommand extends Command
         $this->progressBar = $this->output->createProgressBar($totalBlocks);
         $this->progressBar->setFormat('verbose');
 
+        // Validate and parse options
+        $validationResult = $this->validateOptions();
+        if ($validationResult !== true) {
+            return $validationResult;
+        }
+
         $batchSize = (int) $this->option('batch') ?: 100;
         $delay = (int) $this->option('delay');
         $batchDelay = (int) $this->option('batch-delay');
-
-        if ($batchSize <= 0) {
-            $this->error('Invalid batch size. Must be a positive integer.');
-
-            return Command::FAILURE;
-        }
-        if ($delay < 0) {
-            $this->error('Invalid delay. Must be a non-negative integer.');
-
-            return Command::FAILURE;
-        }
-        if ($batchDelay < 0) {
-            $this->error('Invalid batch delay. Must be a non-negative integer.');
-
-            return Command::FAILURE;
-        }
 
         $this->newLine();
         $this->comment('Press Ctrl+C to stop gracefully (will finish current batch)');
@@ -152,6 +142,71 @@ class SyncTransactionsCommand extends Command
         $this->displaySummary();
 
         return Command::SUCCESS;
+    }
+
+    private function validateOptions(): bool|int
+    {
+        // Validate --from option
+        $from = $this->option('from');
+        if ($from !== null) {
+            if (!is_numeric($from) || !filter_var($from, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]])) {
+                $this->error('Invalid --from value. Must be a non-negative integer.');
+                return Command::FAILURE;
+            }
+        }
+
+        // Validate --to option
+        $to = $this->option('to');
+        if ($to !== null) {
+            if (!is_numeric($to) || !filter_var($to, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]])) {
+                $this->error('Invalid --to value. Must be a non-negative integer.');
+                return Command::FAILURE;
+            }
+        }
+
+        // Validate --limit option
+        $limit = $this->option('limit');
+        if ($limit !== null) {
+            if (!is_numeric($limit) || !filter_var($limit, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])) {
+                $this->error('Invalid --limit value. Must be a positive integer.');
+                return Command::FAILURE;
+            }
+        }
+
+        // Validate --batch option
+        $batch = $this->option('batch');
+        if ($batch !== null) {
+            if (!is_numeric($batch) || !filter_var($batch, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])) {
+                $this->error('Invalid --batch value. Must be a positive integer.');
+                return Command::FAILURE;
+            }
+        }
+
+        // Validate --delay option
+        $delay = $this->option('delay');
+        if ($delay !== null) {
+            if (!is_numeric($delay) || !filter_var($delay, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]])) {
+                $this->error('Invalid --delay value. Must be a non-negative integer.');
+                return Command::FAILURE;
+            }
+        }
+
+        // Validate --batch-delay option
+        $batchDelay = $this->option('batch-delay');
+        if ($batchDelay !== null) {
+            if (!is_numeric($batchDelay) || !filter_var($batchDelay, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]])) {
+                $this->error('Invalid --batch-delay value. Must be a non-negative integer.');
+                return Command::FAILURE;
+            }
+        }
+
+        // Validate range consistency
+        if ($from !== null && $to !== null && (int)$from > (int)$to) {
+            $this->error('Invalid range: --from cannot be greater than --to.');
+            return Command::FAILURE;
+        }
+
+        return true;
     }
 
     private function determineBlockRange(): array
