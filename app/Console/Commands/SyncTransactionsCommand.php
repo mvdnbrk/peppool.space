@@ -96,6 +96,19 @@ class SyncTransactionsCommand extends Command
         $delay = (int) $this->option('delay');
         $batchDelay = (int) $this->option('batch-delay');
 
+        if ($batchSize <= 0) {
+            $this->error('Invalid batch size. Must be a positive integer.');
+            return Command::FAILURE;
+        }
+        if ($delay < 0) {
+            $this->error('Invalid delay. Must be a non-negative integer.');
+            return Command::FAILURE;
+        }
+        if ($batchDelay < 0) {
+            $this->error('Invalid batch delay. Must be a non-negative integer.');
+            return Command::FAILURE;
+        }
+
         $this->newLine();
         $this->comment('Press Ctrl+C to stop gracefully (will finish current batch)');
         $this->newLine();
