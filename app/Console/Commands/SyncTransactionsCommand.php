@@ -628,12 +628,20 @@ class SyncTransactionsCommand extends Command
             return;
         }
 
-        $count = count($uniqueAddresses);
+        $chunkSize = 50;
+        $chunks = array_chunk($uniqueAddresses, $chunkSize);
 
-        // Process addresses silently
-        foreach ($uniqueAddresses as $address) {
-            $this->recalculateAddressBalance($address);
-            $this->processedAddresses++;
+        // Process addresses in smaller chunks to reduce database load
+        foreach ($chunks as $chunkIndex => $addressChunk) {
+            foreach ($addressChunk as $address) {
+                $this->recalculateAddressBalance($address);
+                $this->processedAddresses++;
+            }
+
+            // Add small delay between chunks to prevent overwhelming the database
+            if ($chunkIndex < count($chunks) - 1) {
+                usleep(10000); // 10ms delay between chunks
+            }
         }
 
         // Clear the affected addresses for the next batch
