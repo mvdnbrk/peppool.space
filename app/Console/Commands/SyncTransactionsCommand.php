@@ -146,62 +146,24 @@ class SyncTransactionsCommand extends Command
 
     private function validateOptions(): bool|int
     {
-        // Validate --from option
-        $from = $this->option('from');
-        if ($from !== null) {
-            if (!is_numeric($from) || !filter_var($from, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]])) {
-                $this->error('Invalid --from value. Must be a non-negative integer.');
+        $options = [
+            'from' => ['name' => '--from', 'min' => 0],
+            'to' => ['name' => '--to', 'min' => 0],
+            'limit' => ['name' => '--limit', 'min' => 1],
+            'batch' => ['name' => '--batch', 'min' => 1],
+            'delay' => ['name' => '--delay', 'min' => 0],
+            'batch-delay' => ['name' => '--batch-delay', 'min' => 0],
+        ];
+
+        foreach ($options as $key => $config) {
+            $value = $this->option($key);
+            if ($value !== null && (!is_numeric($value) || !filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => $config['min']]]))) {
+                $this->error("Invalid {$config['name']} value. Must be a " . ($config['min'] > 0 ? 'positive' : 'non-negative') . " integer.");
                 return Command::FAILURE;
             }
         }
 
-        // Validate --to option
-        $to = $this->option('to');
-        if ($to !== null) {
-            if (!is_numeric($to) || !filter_var($to, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]])) {
-                $this->error('Invalid --to value. Must be a non-negative integer.');
-                return Command::FAILURE;
-            }
-        }
-
-        // Validate --limit option
-        $limit = $this->option('limit');
-        if ($limit !== null) {
-            if (!is_numeric($limit) || !filter_var($limit, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])) {
-                $this->error('Invalid --limit value. Must be a positive integer.');
-                return Command::FAILURE;
-            }
-        }
-
-        // Validate --batch option
-        $batch = $this->option('batch');
-        if ($batch !== null) {
-            if (!is_numeric($batch) || !filter_var($batch, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])) {
-                $this->error('Invalid --batch value. Must be a positive integer.');
-                return Command::FAILURE;
-            }
-        }
-
-        // Validate --delay option
-        $delay = $this->option('delay');
-        if ($delay !== null) {
-            if (!is_numeric($delay) || !filter_var($delay, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]])) {
-                $this->error('Invalid --delay value. Must be a non-negative integer.');
-                return Command::FAILURE;
-            }
-        }
-
-        // Validate --batch-delay option
-        $batchDelay = $this->option('batch-delay');
-        if ($batchDelay !== null) {
-            if (!is_numeric($batchDelay) || !filter_var($batchDelay, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]])) {
-                $this->error('Invalid --batch-delay value. Must be a non-negative integer.');
-                return Command::FAILURE;
-            }
-        }
-
-        // Validate range consistency
-        if ($from !== null && $to !== null && (int)$from > (int)$to) {
+        if ($this->option('from') !== null && $this->option('to') !== null && (int)$this->option('from') > (int)$this->option('to')) {
             $this->error('Invalid range: --from cannot be greater than --to.');
             return Command::FAILURE;
         }
