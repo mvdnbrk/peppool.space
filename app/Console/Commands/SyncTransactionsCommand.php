@@ -367,8 +367,7 @@ class SyncTransactionsCommand extends Command
             });
 
             // Batch recalculate addresses when we reach threshold
-            $uniqueAddressCount = count(array_unique($this->affectedAddresses));
-            if ($uniqueAddressCount >= 250) {
+            if (count($this->affectedAddresses) >= 250) {
                 $this->batchRecalculateAddresses();
             }
 
