@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->string('tx_id', 64)->primary();
-            $table->unsignedBigInteger('block_height')->index();
+            $table->unsignedInteger('block_height')->index();
             $table->unsignedInteger('size');
             $table->decimal('fee', 16, 8)->default(0);
             $table->unsignedTinyInteger('version');
