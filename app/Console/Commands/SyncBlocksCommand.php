@@ -8,15 +8,15 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class SyncBlocks extends Command
+class SyncBlocksCommand extends Command
 {
-    protected $signature = 'pepe:sync-blocks
+    protected $signature = 'pepe:sync:blocks
                             {--from= : Start syncing from this block height (defaults to latest in DB + 1)}
                             {--to= : Stop syncing at this block height (defaults to current chain tip)}
                             {--limit= : Limit the total number of blocks to process}
-                            {--batch=100 : Number of blocks to process in each batch}
+                            {--batch=250 : Number of blocks to process in each batch}
                             {--delay=0 : Delay in milliseconds between RPC calls}
-                            {--batch-delay=1000 : Delay in milliseconds between batches}
+                            {--batch-delay=500 : Delay in milliseconds between batches}
                             {--force : Force sync even if blocks already exist}
                             {--genesis : Start syncing from genesis block (height 0)}';
 
@@ -29,26 +29,19 @@ class SyncBlocks extends Command
     public function __construct(PepecoinRpcService $rpcService)
     {
         parent::__construct();
-
         $this->rpcService = $rpcService;
-
-        // Set up signal handlers for graceful shutdown
-        if (function_exists('pcntl_signal')) {
-            pcntl_signal(SIGINT, function ($signal) {
-                $this->shouldStop = true;
-                echo "\nReceived shutdown signal. Finishing current batch and stopping gracefully...\n";
-                echo "Press Ctrl+C again to force quit (may cause data corruption).\n";
-            });
-            pcntl_signal(SIGTERM, function ($signal) {
-                $this->shouldStop = true;
-                echo "\nReceived shutdown signal. Finishing current batch and stopping gracefully...\n";
-                echo "Press Ctrl+C again to force quit (may cause data corruption).\n";
-            });
-        }
     }
 
     public function handle(): int
     {
+        // Set up graceful shutdown handling
+        $this->trap([SIGINT, SIGTERM], function (int $signal) {
+            $this->shouldStop = true;
+            $this->newLine();
+            $this->warn('🛑 Received shutdown signal. Finishing current batch and stopping gracefully...');
+            $this->line('💡 Press Ctrl+C again to force quit (may cause data corruption).');
+        });
+
         $batchSize = (int) $this->option('batch');
         $force = $this->option('force');
         $delay = (int) $this->option('delay');
@@ -94,23 +87,18 @@ class SyncBlocks extends Command
             $totalBlocks = $endHeight - $startHeight + 1;
             $progressBar = $this->output->createProgressBar($totalBlocks);
             $progressBar->setFormat('Syncing: Blocks %message% [%bar%] %percent:3s%% (%current%/%max%)');
-            $progressBar->setMessage("{$startHeight}-".min($startHeight + $batchSize - 1, $endHeight));
+            $progressBar->setMessage("{$startHeight}-{$endHeight}");
             $progressBar->start();
 
             for ($height = $startHeight; $height <= $endHeight; $height += $batchSize) {
                 // Check for graceful shutdown signal
-                if (function_exists('pcntl_signal_dispatch')) {
-                    pcntl_signal_dispatch();
-                }
-
                 if ($this->shouldStop) {
-                    $this->newLine();
-                    $this->info("Graceful shutdown initiated. Last processed batch: {$height}");
+                    $this->warn('🛑 Graceful shutdown requested. Stopping after current batch.');
                     break;
                 }
 
                 $batchEnd = min($height + $batchSize - 1, $endHeight);
-                $progressBar->setMessage("{$height}-{$batchEnd}");
+
                 $this->syncBatch($height, $batchEnd, $progressBar, $force, $delay);
 
                 // Add delay between batches (except for the last batch)
@@ -150,11 +138,8 @@ class SyncBlocks extends Command
         // Process blocks in the batch
         foreach ($heightsToProcess as $index => $height) {
             // Check for graceful shutdown signal during batch processing
-            if (function_exists('pcntl_signal_dispatch')) {
-                pcntl_signal_dispatch();
-            }
-
             if ($this->shouldStop) {
+                $this->warn("🛑 Graceful shutdown requested during batch processing at block #{$height}.");
                 break;
             }
 

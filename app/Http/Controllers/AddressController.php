@@ -29,13 +29,13 @@ class AddressController extends Controller
             $balance = 0;
             $totalReceived = null;
             $txs = [];
-            
+
             if ($isMine) {
                 try {
                     // Get unspent outputs for this address to calculate balance
                     $unspent = $rpc->call('listunspent', [0, 9999999, [$address]]);
                     $balance = array_sum(array_column($unspent, 'amount'));
-                    
+
                     // For owned addresses, we can get some transaction info from listunspent
                     foreach ($unspent as $utxo) {
                         $txs[$utxo['txid']] = [

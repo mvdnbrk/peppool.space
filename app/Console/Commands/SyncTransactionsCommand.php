@@ -1,0 +1,919 @@
+<?php
+
+namespace App\Console\Commands;
+
+use App\Models\Block;
+use App\Services\PepecoinRpcService;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
+class SyncTransactionsCommand extends Command
+{
+    protected $signature = 'pepe:sync:transactions
+                            {--from= : Start from specific block height}
+                            {--to= : End at specific block height}
+                            {--limit= : Limit the total number of blocks to process}
+                            {--batch=250 : Number of blocks to process in each batch}
+                            {--delay=5 : Delay in milliseconds between RPC calls}
+                            {--batch-delay=500 : Delay in milliseconds between batches}
+                            {--force : Force re-sync even if transactions already exist}';
+
+    protected $description = 'Sync transactions, inputs, outputs and address balances from blockchain';
+
+    private PepecoinRpcService $rpc;
+
+    private int $processedBlocks = 0;
+
+    private int $processedTransactions = 0;
+
+    private int $processedAddresses = 0;
+
+    private bool $shouldStop = false;
+
+    private array $affectedAddresses = [];
+
+    private $progressBar = null;
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    private function setupSignalHandlers(): void
+    {
+        if (! function_exists('pcntl_signal')) {
+            return;
+        }
+
+        // Use traditional signal handling without async
+        pcntl_signal(SIGINT, [$this, 'handleShutdownSignal']);
+        pcntl_signal(SIGTERM, [$this, 'handleShutdownSignal']);
+    }
+
+    public function handleShutdownSignal($signal)
+    {
+        $this->shouldStop = true;
+        echo "\n";
+        echo "Received shutdown signal. Finishing current batch and stopping gracefully...\n";
+        echo "Press Ctrl+C again to force quit (may cause data corruption).\n";
+    }
+
+    public function handle(PepecoinRpcService $rpc): int
+    {
+        $this->rpc = $rpc;
+        // Set up graceful shutdown handling
+        $this->trap([SIGINT, SIGTERM], function (int $signal) {
+            $this->shouldStop = true;
+            $this->newLine();
+            $this->warn('🛑 Received shutdown signal. Finishing current batch and stopping gracefully...');
+            $this->line('💡 Press Ctrl+C again to force quit (may cause data corruption).');
+        });
+
+        $this->info('🚀 Starting transaction sync for the best Pepecoin explorer!');
+
+        // Test RPC connection
+        if (! $this->rpc->testConnection()) {
+            $this->error('❌ Cannot connect to Pepecoin RPC. Please check your configuration.');
+
+            return Command::FAILURE;
+        }
+
+        $this->info('✅ RPC connection established');
+
+        // Determine block range
+        [$fromHeight, $toHeight] = $this->determineBlockRange();
+
+        if ($fromHeight > $toHeight) {
+            $this->warn('No blocks to process.');
+
+            return Command::SUCCESS;
+        }
+
+        // Validate that all blocks in range exist in database
+        $this->info('🔍 Validating block range exists in database...');
+        $validationResult = $this->validateBlockRange($fromHeight, $toHeight);
+
+        if (! $validationResult['valid']) {
+            $this->error('❌ Block validation failed!');
+            $this->error("Missing blocks in database: {$validationResult['missing_count']} blocks");
+            $this->error('Please run pepe:sync:blocks first to sync the required blocks.');
+
+            if (! empty($validationResult['missing_ranges'])) {
+                $this->line('Missing block ranges:');
+                foreach ($validationResult['missing_ranges'] as $range) {
+                    $this->line("  • {$range['start']} - {$range['end']} ({$range['count']} blocks)");
+                }
+            }
+
+            return Command::FAILURE;
+        }
+
+        $this->info('✅ All blocks in range exist in database');
+
+        $totalBlocks = $toHeight - $fromHeight + 1;
+        $this->info("📊 Processing {$totalBlocks} blocks {$fromHeight} to {$toHeight}");
+
+        $this->progressBar = $this->output->createProgressBar($totalBlocks);
+        $this->progressBar->setFormat('verbose');
+
+        $batchSize = (int) $this->option('batch') ?: 100;
+        $delay = (int) $this->option('delay');
+        $batchDelay = (int) $this->option('batch-delay');
+
+        $this->newLine();
+        $this->comment('Press Ctrl+C to stop gracefully (will finish current batch)');
+        $this->newLine();
+
+        // Process blocks in batches
+        for ($height = $fromHeight; $height <= $toHeight; $height += $batchSize) {
+            // Check for graceful shutdown signal
+            if (function_exists('pcntl_signal_dispatch')) {
+                pcntl_signal_dispatch();
+            }
+
+            // Check for shutdown signal
+            if ($this->shouldStop) {
+                $this->warn('🛑 Graceful shutdown requested. Stopping after current batch.');
+                break;
+            }
+
+            $batchEnd = min($height + $batchSize - 1, $toHeight);
+
+            $this->processBatch($height, $batchEnd, $delay);
+
+            // Progress bar is now advanced per block within processBatch
+
+            // Batch delay to prevent overwhelming the RPC
+            if ($batchDelay > 0 && $batchEnd < $toHeight) {
+                usleep($batchDelay * 1000);
+            }
+        }
+
+        // Only finish progress bar if we completed the full range
+        if (!$this->shouldStop) {
+            $this->progressBar->finish();
+        }
+        $this->newLine(2);
+
+        $this->displaySummary();
+
+        return Command::SUCCESS;
+    }
+
+    private function determineBlockRange(): array
+    {
+        $from = $this->option('from');
+        $to = $this->option('to');
+        $force = $this->option('force');
+
+        // If specific range is provided, use it
+        if ($from !== null && $to !== null) {
+            return [(int) $from, (int) $to];
+        }
+
+        // Get the range of blocks that exist in the database
+        $minBlockHeight = DB::table('blocks')->min('height') ?? 1;
+        $maxBlockHeight = DB::table('blocks')->max('height') ?? 1;
+
+        if ($minBlockHeight === null || $maxBlockHeight === null) {
+            $this->warn('No blocks found in database. Please run pepe:sync:blocks first.');
+
+            return [1, 0]; // Invalid range to trigger "no blocks to process"
+        }
+
+        // Determine starting height
+        if ($from !== null) {
+            $fromHeight = max((int) $from, $minBlockHeight);
+        } elseif (! $force) {
+            // Start from the last synced transaction block + 1, but don't go beyond available blocks
+            $lastSyncedHeight = DB::table('transactions')->max('block_height') ?? ($minBlockHeight - 1);
+            $fromHeight = max($lastSyncedHeight + 1, $minBlockHeight);
+        } else {
+            $fromHeight = $minBlockHeight; // Start from first available block if forcing
+        }
+
+        // Determine ending height - limit to blocks that exist in database
+        if ($to !== null) {
+            $toHeight = min((int) $to, $maxBlockHeight);
+        } else {
+            $toHeight = $maxBlockHeight; // Only sync up to the highest block in database
+        }
+
+        // Apply limit option if specified (limits total blocks to process)
+        $limit = $this->option('limit');
+        if ($limit !== null && $limit > 0) {
+            $toHeight = min($toHeight, $fromHeight + (int) $limit - 1);
+        }
+
+        return [$fromHeight, $toHeight];
+    }
+
+    private function validateBlockRange(int $fromHeight, int $toHeight): array
+    {
+        $totalBlocks = $toHeight - $fromHeight + 1;
+
+        // For large ranges (>10k blocks), use efficient count-based validation
+        if ($totalBlocks > 10000) {
+            $existingCount = DB::table('blocks')
+                ->whereBetween('height', [$fromHeight, $toHeight])
+                ->count();
+
+            if ($existingCount === $totalBlocks) {
+                return ['valid' => true];
+            }
+
+            // For large ranges, just return basic info without detailed missing ranges
+            return [
+                'valid' => false,
+                'missing_count' => $totalBlocks - $existingCount,
+                'missing_ranges' => [], // Skip detailed analysis for performance
+                'existing_count' => $existingCount,
+                'total_blocks' => $totalBlocks,
+            ];
+        }
+
+        // For smaller ranges, use detailed validation (original logic)
+        $existingHeights = DB::table('blocks')
+            ->whereBetween('height', [$fromHeight, $toHeight])
+            ->pluck('height')
+            ->sort()
+            ->values()
+            ->toArray();
+
+        $existingCount = count($existingHeights);
+
+        if ($existingCount === $totalBlocks) {
+            return ['valid' => true];
+        }
+
+        // Find missing blocks for small ranges only
+        $allHeights = range($fromHeight, $toHeight);
+        $missingHeights = array_diff($allHeights, $existingHeights);
+        $missingCount = count($missingHeights);
+
+        // Group missing heights into ranges for better display
+        $missingRanges = $this->groupConsecutiveNumbers($missingHeights);
+
+        return [
+            'valid' => false,
+            'missing_count' => $missingCount,
+            'missing_ranges' => $missingRanges,
+            'existing_count' => $existingCount,
+            'total_blocks' => $totalBlocks,
+        ];
+    }
+
+    private function groupConsecutiveNumbers(array $numbers): array
+    {
+        if (empty($numbers)) {
+            return [];
+        }
+
+        sort($numbers);
+        $ranges = [];
+        $start = $numbers[0];
+        $end = $numbers[0];
+
+        for ($i = 1; $i < count($numbers); $i++) {
+            if ($numbers[$i] === $end + 1) {
+                $end = $numbers[$i];
+            } else {
+                $ranges[] = [
+                    'start' => $start,
+                    'end' => $end,
+                    'count' => $end - $start + 1,
+                ];
+                $start = $end = $numbers[$i];
+            }
+        }
+
+        // Add the last range
+        $ranges[] = [
+            'start' => $start,
+            'end' => $end,
+            'count' => $end - $start + 1,
+        ];
+
+        return $ranges;
+    }
+
+    private function processBatch(int $fromHeight, int $toHeight, int $delay): void
+    {
+        for ($height = $fromHeight; $height <= $toHeight; $height++) {
+            // Check for shutdown signal
+            if ($this->shouldStop) {
+                $this->warn("🛑 Graceful shutdown requested during batch processing at block {$height}.");
+                break;
+            }
+
+            try {
+                $this->processBlock($height);
+                $this->processedBlocks++;
+
+                // Advance main progress bar after each block (only if not stopping)
+                if ($this->progressBar && !$this->shouldStop) {
+                    $this->progressBar->advance(1);
+                }
+
+                // Delay between RPC calls
+                if ($delay > 0) {
+                    usleep($delay * 1000);
+                }
+            } catch (\Exception $e) {
+                $this->error("❌ Error processing block {$height}: ".$e->getMessage());
+                Log::error('SyncTransactions: Block processing failed', [
+                    'height' => $height,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+    }
+
+    private function processBlock(int $height): void
+    {
+        // Check if block exists in blocks table first
+        $blockExists = DB::table('blocks')->where('height', $height)->exists();
+
+        if (! $blockExists) {
+            $this->warn("Block {$height} not found in database. Run sync:blocks first.");
+
+            return;
+        }
+
+        // Get block hash
+        $blockHash = $this->rpc->getBlockHash($height);
+
+        // Get block with full transaction data
+        $block = $this->rpc->getBlock($blockHash, 2);
+
+        // Skip if no transactions
+        if (empty($block['tx'])) {
+            return;
+        }
+
+        try {
+            DB::transaction(function () use ($block, $height) {
+                // Process transactions in two passes to handle dependencies
+
+                // First pass: Process all transactions (basic data only)
+                foreach ($block['tx'] as $txData) {
+                    try {
+                        $this->processTransactionBasic($txData, $height, $block['hash'], $block['time'] ?? null);
+                    } catch (\Exception $e) {
+                        $this->error("Failed to process transaction basic data for {$txData['txid']}: ".$e->getMessage());
+                        throw $e;
+                    }
+                }
+
+                // Second pass: Process inputs/outputs with full dependency resolution
+                foreach ($block['tx'] as $txData) {
+                    try {
+                        $this->processTransactionInputsOutputs($txData['txid'], $txData);
+                        $this->processedTransactions++;
+                    } catch (\Exception $e) {
+                        $this->error("Failed to process transaction I/O for {$txData['txid']}: ".$e->getMessage());
+                        throw $e;
+                    }
+                }
+            });
+
+            // Batch recalculate addresses when we reach threshold (100 addresses)
+            $uniqueAddressCount = count(array_unique($this->affectedAddresses));
+            if ($uniqueAddressCount >= 250) {
+                $this->batchRecalculateAddresses();
+            }
+
+        } catch (\Exception $e) {
+            $this->error("Database transaction failed for block {$height}: ".$e->getMessage());
+            throw $e;
+        }
+    }
+
+    private function processTransactionBasic(array $txData, int $blockHeight, string $blockHash, ?int $blockTime): void
+    {
+        $txid = $txData['txid'];
+
+        // Skip if transaction already exists (unless forcing)
+        if (! $this->option('force') && DB::table('transactions')->where('tx_id', $txid)->exists()) {
+            return;
+        }
+
+        $isCoinbase = ! empty($txData['vin'][0]['coinbase']);
+
+        // Calculate fee manually (input total - output total)
+        $fee = 0;
+        if (!$isCoinbase) {
+            $fee = $this->calculateTransactionFee($txData);
+        }
+
+        // Insert/update transaction with complete data
+        try {
+            DB::table('transactions')->updateOrInsert(
+                ['tx_id' => $txid],
+                [
+                    'block_height' => $blockHeight,
+                    'size' => $txData['size'] ?? 0,
+                    'fee' => $fee,
+                    'version' => $txData['version'] ?? 1,
+                    'locktime' => $txData['locktime'] ?? 0,
+                    'is_coinbase' => $isCoinbase,
+                ]
+            );
+        } catch (\Exception $e) {
+            $this->error("Failed to insert transaction {$txid} for block {$blockHeight}: ".$e->getMessage());
+            throw $e;
+        }
+
+        // Process outputs first (so they're available for input resolution)
+        $this->processTransactionOutputs($txid, $txData['vout'] ?? []);
+    }
+
+    private function processTransactionInputsOutputs(string $txid, array $txData): void
+    {
+        // Skip if transaction doesn't exist
+        if (! DB::table('transactions')->where('tx_id', $txid)->exists()) {
+            return;
+        }
+
+        $isCoinbase = ! empty($txData['vin'][0]['coinbase']);
+
+        // Process inputs (now that all outputs in the block are available)
+        $this->processTransactionInputs($txid, $txData['vin'] ?? []);
+    }
+
+    private function processTransactionInputs(string $txId, array $inputs): void
+    {
+        $inputCount = count($inputs);
+
+        // Clear existing inputs if forcing
+        if ($this->option('force')) {
+            DB::table('transaction_inputs')->where('tx_id', $txId)->delete();
+        }
+
+        // Process inputs in batches for large transactions
+        $batchSize = $inputCount > 1000 ? 100 : 500;
+        $batches = array_chunk($inputs, $batchSize);
+
+        foreach ($batches as $batchIndex => $batch) {
+            // Process input batch silently
+
+            foreach ($batch as $index => $input) {
+                $isCoinbase = ! empty($input['coinbase']);
+
+                $inputData = [
+                    'tx_id' => $txId,
+                    'input_index' => $index,
+                    'prev_tx_id' => $isCoinbase ? null : $input['txid'],
+                    'prev_vout' => $isCoinbase ? null : $input['vout'],
+                    'script_sig' => $input['scriptSig']['hex'] ?? null,
+                    'sequence' => $input['sequence'] ?? 4294967295,
+                    'coinbase_data' => $isCoinbase ? $input['coinbase'] : null,
+                ];
+
+                // For non-coinbase inputs, try to resolve the address and amount
+                if (! $isCoinbase && isset($input['txid'], $input['vout'])) {
+                    $prevOutput = DB::table('transaction_outputs')
+                        ->where('tx_id', $input['txid'])
+                        ->where('output_index', $input['vout'])
+                        ->select('address', 'amount')
+                        ->first();
+
+                    if ($prevOutput) {
+                        $inputData['address'] = $prevOutput->address;
+                        $inputData['amount'] = $prevOutput->amount;
+
+                        // Mark the previous output as spent
+                        DB::table('transaction_outputs')
+                            ->where('tx_id', $input['txid'])
+                            ->where('output_index', $input['vout'])
+                            ->update([
+                                'is_spent' => true,
+                                'spent_by_tx_id' => $txId,
+                                'spent_by_input_index' => $index,
+                            ]);
+
+                        // Track affected address for batch recalculation
+                        $this->affectedAddresses[] = $prevOutput->address;
+                    }
+                }
+
+                DB::table('transaction_inputs')->updateOrInsert(
+                    [
+                        'tx_id' => $txId,
+                        'input_index' => $index,
+                    ],
+                    $inputData
+                );
+            }
+
+            // Add small delay for very large transactions to prevent overwhelming the database
+            if ($inputCount > 1000 && $batchIndex < count($batches) - 1) {
+                usleep(10000); // 10ms delay between batches
+            }
+        }
+    }
+
+    private function processTransactionOutputs(string $txId, array $outputs): void
+    {
+        $outputCount = count($outputs);
+
+        // Clear existing outputs if forcing
+        if ($this->option('force')) {
+            DB::table('transaction_outputs')->where('tx_id', $txId)->delete();
+        }
+
+        // Process outputs in batches for large transactions
+        $batchSize = $outputCount > 1000 ? 100 : 500;
+        $batches = array_chunk($outputs, $batchSize);
+
+        foreach ($batches as $batchIndex => $batch) {
+            // Process output batch silently
+
+            foreach ($batch as $index => $output) {
+                $addresses = $output['scriptPubKey']['addresses'] ?? [];
+                $address = ! empty($addresses) ? $addresses[0] : null;
+                $scriptType = $output['scriptPubKey']['type'] ?? null;
+
+                // Handle OP_RETURN outputs
+                $opReturnData = null;
+                $opReturnDecoded = null;
+                $opReturnProtocol = null;
+
+                if ($scriptType === 'nulldata') {
+                    $opReturnData = $this->extractOpReturnData($output['scriptPubKey']['hex'] ?? '');
+                    if ($opReturnData) {
+                        $opReturnDecoded = $this->decodeOpReturnData($opReturnData);
+                        $opReturnProtocol = $this->detectOpReturnProtocol($opReturnData);
+                    }
+                }
+
+                $outputData = [
+                    'tx_id' => $txId,
+                    'output_index' => $index,
+                    'address' => $address,
+                    'amount' => $output['value'],
+                    'script_pub_key' => $output['scriptPubKey']['hex'] ?? '',
+                    'script_type' => $scriptType,
+                    'op_return_data' => $opReturnData,
+                    'op_return_decoded' => $opReturnDecoded,
+                    'op_return_protocol' => $opReturnProtocol,
+                    'is_spent' => false, // Will be updated when spent
+                ];
+
+                DB::table('transaction_outputs')->updateOrInsert(
+                    [
+                        'tx_id' => $txId,
+                        'output_index' => $index,
+                    ],
+                    $outputData
+                );
+
+                // Track affected address for batch recalculation
+                if ($address) {
+                    $this->affectedAddresses[] = $address;
+                }
+            }
+
+            // Add small delay for very large transactions to prevent overwhelming the database
+            if ($outputCount > 1000 && $batchIndex < count($batches) - 1) {
+                usleep(10000); // 10ms delay between batches
+            }
+        }
+    }
+
+    /**
+     * Batch recalculate address balances for all affected addresses
+     * Called every 100 blocks or at end of sync for efficiency
+     */
+    private function batchRecalculateAddresses(): void
+    {
+        $uniqueAddresses = array_unique($this->affectedAddresses);
+
+        if (empty($uniqueAddresses) || $this->shouldStop) {
+            return;
+        }
+
+        $count = count($uniqueAddresses);
+
+        // Process addresses silently - no additional output needed
+
+        // Process addresses silently
+        foreach ($uniqueAddresses as $address) {
+            $this->recalculateAddressBalance($address);
+            $this->processedAddresses++;
+        }
+
+        // Clear the affected addresses for the next batch
+        $this->affectedAddresses = [];
+    }
+
+    /**
+     * Recalculate address balance from scratch (for verification/repair)
+     * Only use this when incremental updates may be inaccurate
+     */
+    private function recalculateAddressBalance(string $address): void
+    {
+        // Calculate balance from unspent outputs
+        $balance = DB::table('transaction_outputs')
+            ->where('address', $address)
+            ->where('is_spent', false)
+            ->sum('amount');
+
+        // Calculate total received
+        $totalReceived = DB::table('transaction_outputs')
+            ->where('address', $address)
+            ->sum('amount');
+
+        // Calculate total sent (from inputs)
+        $totalSent = DB::table('transaction_inputs')
+            ->where('address', $address)
+            ->whereNotNull('amount')
+            ->sum('amount');
+
+        // Count unique transactions (avoid double-counting if address appears in both inputs and outputs)
+        $outputTxIds = DB::table('transaction_outputs')
+            ->where('address', $address)
+            ->distinct()
+            ->pluck('tx_id');
+
+        $inputTxIds = DB::table('transaction_inputs')
+            ->where('address', $address)
+            ->whereNotNull('address')
+            ->distinct()
+            ->pluck('tx_id');
+
+        $txCount = $outputTxIds->merge($inputTxIds)->unique()->count();
+
+        // Get first seen and last activity timestamps using simpler joins
+        $firstSeen = DB::table('transaction_outputs')
+            ->join('transactions', 'transaction_outputs.tx_id', '=', 'transactions.tx_id')
+            ->join('blocks', 'transactions.block_height', '=', 'blocks.height')
+            ->where('transaction_outputs.address', $address)
+            ->min('blocks.created_at');
+
+        $lastActivity = DB::table('transaction_outputs')
+            ->join('transactions', 'transaction_outputs.tx_id', '=', 'transactions.tx_id')
+            ->join('blocks', 'transactions.block_height', '=', 'blocks.height')
+            ->where('transaction_outputs.address', $address)
+            ->max('blocks.created_at');
+
+        // Update or create address balance record
+        DB::table('address_balances')->updateOrInsert(
+            ['address' => $address],
+            [
+                'balance' => $balance,
+                'total_received' => $totalReceived,
+                'total_sent' => $totalSent,
+                'tx_count' => $txCount,
+                'first_seen' => $firstSeen,
+                'last_activity' => $lastActivity,
+            ]
+        );
+    }
+
+    /**
+     * Extract OP_RETURN data from script hex
+     */
+    private function extractOpReturnData(string $scriptHex): ?string
+    {
+        if (empty($scriptHex)) {
+            return null;
+        }
+
+        // OP_RETURN scripts start with 6a (OP_RETURN opcode)
+        if (! str_starts_with($scriptHex, '6a')) {
+            return null;
+        }
+
+        // Remove OP_RETURN opcode (6a)
+        $data = substr($scriptHex, 2);
+
+        // Next byte is the data length
+        if (strlen($data) < 2) {
+            return null;
+        }
+
+        $lengthHex = substr($data, 0, 2);
+        $length = hexdec($lengthHex);
+
+        // Extract the actual data
+        $opReturnData = substr($data, 2, $length * 2);
+
+        return $opReturnData ?: null;
+    }
+
+    /**
+     * Attempt to decode OP_RETURN data as UTF-8 text
+     */
+    private function decodeOpReturnData(string $hexData): ?string
+    {
+        if (empty($hexData)) {
+            return null;
+        }
+
+        // Convert hex to binary
+        $binary = hex2bin($hexData);
+        if ($binary === false) {
+            return null;
+        }
+
+        // Check if it's valid UTF-8
+        if (mb_check_encoding($binary, 'UTF-8')) {
+            // Remove null bytes and control characters for display
+            $decoded = preg_replace('/[\x00-\x1F\x7F]/', '', $binary);
+
+            return trim($decoded) ?: null;
+        }
+
+        return null;
+    }
+
+    /**
+     * Detect known protocols in OP_RETURN data
+     */
+    private function detectOpReturnProtocol(string $hexData): ?string
+    {
+        if (empty($hexData)) {
+            return null;
+        }
+
+        // Common protocol prefixes (in hex)
+        $protocols = [
+            '4f4d4e49' => 'omni',           // "OMNI"
+            '434f554e' => 'counterparty',   // "COUN" (Counterparty)
+            '5350' => 'simple_ledger',      // "SP" (Simple Ledger Protocol)
+            '534c50' => 'simple_ledger',    // "SLP" (Simple Ledger Protocol)
+            '4f41' => 'open_assets',        // "OA" (Open Assets)
+            '434852' => 'chronicled',       // "CHR" (Chronicled)
+            '4d47' => 'mastercoin',         // "MG" (Mastercoin/Omni)
+            '5354' => 'storj',              // "ST" (Storj)
+            '4343' => 'colored_coins',      // "CC" (Colored Coins)
+        ];
+
+        foreach ($protocols as $prefix => $protocol) {
+            if (str_starts_with(strtoupper($hexData), strtoupper($prefix))) {
+                return $protocol;
+            }
+        }
+
+        // Check for common text patterns
+        $decoded = $this->decodeOpReturnData($hexData);
+        if ($decoded) {
+            // Look for common patterns in decoded text
+            if (preg_match('/^(http|https):\/\//i', $decoded)) {
+                return 'url';
+            }
+            if (preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $decoded)) {
+                return 'email';
+            }
+            if (preg_match('/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/', $decoded)) {
+                return 'uuid';
+            }
+            if (strlen($decoded) > 10 && ctype_print($decoded)) {
+                return 'text';
+            }
+        }
+
+        return 'unknown';
+    }
+
+    private function calculateTransactionFee(array $txData): string
+    {
+        // Calculate total output value in satoshis (integer arithmetic)
+        $totalOutputSatoshis = 0;
+        foreach ($txData['vout'] ?? [] as $output) {
+            $totalOutputSatoshis += $this->toSatoshis($output['value']);
+        }
+
+        // Calculate total input value by looking up previous outputs
+        $totalInputSatoshis = 0;
+        foreach ($txData['vin'] ?? [] as $input) {
+            if (isset($input['coinbase'])) {
+                continue; // Skip coinbase inputs
+            }
+
+            if (isset($input['txid'], $input['vout'])) {
+                // Look up the previous output value from database
+                $prevOutput = DB::table('transaction_outputs')
+                    ->where('tx_id', $input['txid'])
+                    ->where('output_index', $input['vout'])
+                    ->value('amount');
+
+                if ($prevOutput !== null) {
+                    $totalInputSatoshis += $this->toSatoshis($prevOutput);
+                } else {
+                    // If we can't find the input, try to get it from RPC
+                    try {
+                        $prevTx = $this->rpc->getRawTransaction($input['txid'], true);
+                        if (isset($prevTx['vout'][$input['vout']]['value'])) {
+                            $totalInputSatoshis += $this->toSatoshis($prevTx['vout'][$input['vout']]['value']);
+                        }
+                    } catch (\Exception $e) {
+                        Log::warning("Could not get input value for {$input['txid']}:{$input['vout']}: " . $e->getMessage());
+                    }
+                }
+            }
+        }
+
+        // Fee is the difference between inputs and outputs (in satoshis)
+        $feeSatoshis = max(0, $totalInputSatoshis - $totalOutputSatoshis);
+        
+        // Convert back to decimal format
+        $result = $this->fromSatoshis($feeSatoshis);
+        
+        // Debug logging for fee calculation
+        if ($feeSatoshis > 0) {
+            Log::info("Fee calculation debug", [
+                'tx_id' => $txData['txid'] ?? 'unknown',
+                'input_satoshis' => $totalInputSatoshis,
+                'output_satoshis' => $totalOutputSatoshis,
+                'fee_satoshis' => $feeSatoshis,
+                'final_fee' => $result
+            ]);
+        }
+        
+        return $result;
+    }
+
+    /**
+     * Convert decimal amount to satoshis (integer)
+     */
+    private function toSatoshis($amount): int
+    {
+        // Handle scientific notation by using bcmath first
+        $amountStr = (string) $amount;
+        if (stripos($amountStr, 'e') !== false) {
+            // Convert scientific notation to decimal using bcmath
+            $decimal = bcadd('0', $amountStr, 8);
+        } else {
+            $decimal = $amountStr;
+        }
+        
+        // Multiply by 100,000,000 using bcmath to avoid precision loss
+        $satoshiStr = bcmul($decimal, '100000000', 0);
+        return (int) $satoshiStr;
+    }
+
+    /**
+     * Convert satoshis (integer) back to decimal format
+     */
+    private function fromSatoshis(int $satoshis): string
+    {
+        // Use bcmath to divide by 100,000,000 and get exact decimal
+        return bcdiv((string) $satoshis, '100000000', 8);
+    }
+
+    private function displaySummary(): void
+    {
+        // Final batch recalculation for any remaining addresses
+        $this->batchRecalculateAddresses();
+
+        $this->info("✅ Transaction sync completed successfully!");
+
+        $this->table(
+            ['Metric', 'Count'],
+            [
+                ['Blocks Processed', number_format($this->processedBlocks)],
+                ['Transactions Processed', number_format($this->processedTransactions)],
+                ['Addresses Updated', number_format($this->processedAddresses)],
+            ]
+        );
+
+        // Show database statistics
+        $totalTxs = DB::table('transactions')->count();
+        $totalAddresses = DB::table('address_balances')->count();
+        $totalBalance = DB::table('address_balances')->sum('balance');
+        $opReturnCount = DB::table('transaction_outputs')->whereNotNull('op_return_data')->count();
+
+        $this->info('📊 Database Statistics:');
+        $this->table(
+            ['Metric', 'Value'],
+            [
+                ['Total Transactions', number_format($totalTxs)],
+                ['Total Addresses', number_format($totalAddresses)],
+                ['OP_RETURN Outputs', number_format($opReturnCount)],
+                ['Total PEPE Supply', number_format($totalBalance, 8).' PEPE'],
+            ]
+        );
+
+        // Show OP_RETURN protocol breakdown
+        $protocolStats = DB::table('transaction_outputs')
+            ->whereNotNull('op_return_protocol')
+            ->selectRaw('op_return_protocol, COUNT(*) as count')
+            ->groupBy('op_return_protocol')
+            ->orderByDesc('count')
+            ->get();
+
+        if ($protocolStats->isNotEmpty()) {
+            $this->info('🔍 OP_RETURN Protocol Breakdown:');
+            $this->table(
+                ['Protocol', 'Count'],
+                $protocolStats->map(fn ($stat) => [
+                    ucfirst($stat->op_return_protocol),
+                    number_format($stat->count),
+                ])->toArray()
+            );
+        }
+    }
+}

@@ -101,14 +101,14 @@ class PepecoinRpcService
         return $this->call('getblock', [$hash, $verbosity]);
     }
 
+    public function getRawTransaction(string $txid, bool $verbose = true): array
+    {
+        return $this->call('getrawtransaction', [$txid, $verbose]);
+    }
+
     public function getRawMempool(bool $verbose = false): array
     {
         return $this->call('getrawmempool', [$verbose]);
-    }
-
-    public function getRawTransaction(string $txid, bool $verbose = false): mixed
-    {
-        return $this->call('getrawtransaction', [$txid, $verbose]);
     }
 
     public function testConnection(): bool
