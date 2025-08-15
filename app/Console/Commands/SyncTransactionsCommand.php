@@ -312,11 +312,13 @@ class SyncTransactionsCommand extends Command
                     usleep($delay * 1000);
                 }
             } catch (\Exception $e) {
-                $this->error("❌ Error processing block {$height}: ".$e->getMessage());
+                $this->error("❌ Critical error processing block {$height}: ".$e->getMessage());
+                $this->error("Stopping sync to prevent data gaps. Fix the issue and restart from block {$height}.");
                 Log::error('SyncTransactions: Block processing failed', [
                     'height' => $height,
                     'error' => $e->getMessage(),
                 ]);
+                throw $e; // Re-throw to stop the sync process
             }
         }
     }
@@ -333,7 +335,7 @@ class SyncTransactionsCommand extends Command
         }
 
         // Get block with full transaction data
-        $block = $this->rpc->getBlock($blockHash, 2);
+        $block = $this->retryRpcCall(fn() => $this->rpc->getBlock($blockHash, 2), "getBlock for {$blockHash}");
 
         // Skip if no transactions
         if (empty($block['tx'])) {
@@ -579,6 +581,26 @@ class SyncTransactionsCommand extends Command
         }
     }
 
+    private function retryRpcCall(callable $rpcCall, string $operation, int $maxRetries = 3, int $delayMs = 1000): mixed
+    {
+        $lastException = null;
+        
+        for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
+            try {
+                return $rpcCall();
+            } catch (\Exception $e) {
+                $lastException = $e;
+                
+                if ($attempt < $maxRetries) {
+                    usleep($delayMs * 1000);
+                    $delayMs *= 2; // Exponential backoff
+                }
+            }
+        }
+        
+        throw $lastException;
+    }
+
     private function batchRecalculateAddresses(): void
     {
         $uniqueAddresses = array_keys($this->affectedAddresses);
@@ -775,7 +797,7 @@ class SyncTransactionsCommand extends Command
                 } else {
                     // If we can't find the input, try to get it from RPC
                     try {
-                        $prevTx = $this->rpc->getRawTransaction($input['txid'], true);
+                        $prevTx = $this->retryRpcCall(fn() => $this->rpc->getRawTransaction($input['txid'], true), "getRawTransaction for {$input['txid']}");
                         if (isset($prevTx['vout'][$input['vout']]['value'])) {
                             $totalInputSatoshis += $this->toSatoshis($prevTx['vout'][$input['vout']]['value']);
                         }
