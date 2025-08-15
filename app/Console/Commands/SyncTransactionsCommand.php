@@ -22,15 +22,15 @@ class SyncTransactionsCommand extends Command
 
     private PepecoinRpcService $rpc;
 
+    private bool $shouldStop = false;
+
+    private array $affectedAddresses = [];
+
     private int $processedBlocks = 0;
 
     private int $processedTransactions = 0;
 
     private int $processedAddresses = 0;
-
-    private bool $shouldStop = false;
-
-    private array $affectedAddresses = [];
 
     private $progressBar = null;
 
@@ -337,7 +337,7 @@ class SyncTransactionsCommand extends Command
         }
 
         // Get block with full transaction data
-        $block = $this->retryRpcCall(fn() => $this->rpc->getBlock($blockHash, 2), "getBlock for {$blockHash}");
+        $block = $this->retryRpcCall(fn () => $this->rpc->getBlock($blockHash, 2), "getBlock for {$blockHash}");
 
         // Skip if no transactions
         if (empty($block['tx'])) {
@@ -486,7 +486,7 @@ class SyncTransactionsCommand extends Command
 
                         // Track affected address for batch recalculation
                         $this->affectedAddresses[$prevOutput->address] = true;
-                        
+
                         // Check threshold after each input to process addresses early
                         if (count($this->affectedAddresses) >= $this->addressBatchSize) {
                             $this->batchRecalculateAddresses();
@@ -568,7 +568,7 @@ class SyncTransactionsCommand extends Command
                 // Track affected address for batch recalculation
                 if ($address) {
                     $this->affectedAddresses[$address] = true;
-                    
+
                     // Check threshold after each output to process addresses early
                     if (count($this->affectedAddresses) >= $this->addressBatchSize) {
                         $this->batchRecalculateAddresses();
@@ -586,20 +586,20 @@ class SyncTransactionsCommand extends Command
     private function retryRpcCall(callable $rpcCall, string $operation, int $maxRetries = 3, int $delayMs = 1000): mixed
     {
         $lastException = null;
-        
+
         for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
             try {
                 return $rpcCall();
             } catch (\Exception $e) {
                 $lastException = $e;
-                
+
                 if ($attempt < $maxRetries) {
                     usleep($delayMs * 1000);
                     $delayMs *= 2; // Exponential backoff
                 }
             }
         }
-        
+
         throw $lastException;
     }
 
@@ -799,7 +799,7 @@ class SyncTransactionsCommand extends Command
                 } else {
                     // If we can't find the input, try to get it from RPC
                     try {
-                        $prevTx = $this->retryRpcCall(fn() => $this->rpc->getRawTransaction($input['txid'], true), "getRawTransaction for {$input['txid']}");
+                        $prevTx = $this->retryRpcCall(fn () => $this->rpc->getRawTransaction($input['txid'], true), "getRawTransaction for {$input['txid']}");
                         if (isset($prevTx['vout'][$input['vout']]['value'])) {
                             $totalInputSatoshis += $this->toSatoshis($prevTx['vout'][$input['vout']]['value']);
                         }
