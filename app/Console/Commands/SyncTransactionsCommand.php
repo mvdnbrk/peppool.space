@@ -640,7 +640,7 @@ class SyncTransactionsCommand extends Command
 
             // Add small delay between chunks to prevent overwhelming the database
             if ($chunkIndex < count($chunks) - 1) {
-                usleep(10000); // 10ms delay between chunks
+                usleep(5000); // 5ms delay between chunks
             }
         }
 
