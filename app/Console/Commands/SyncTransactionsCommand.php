@@ -482,6 +482,11 @@ class SyncTransactionsCommand extends Command
 
                         // Track affected address for batch recalculation
                         $this->affectedAddresses[$prevOutput->address] = true;
+                        
+                        // Check threshold after each input to process addresses early
+                        if (count($this->affectedAddresses) >= 250) {
+                            $this->batchRecalculateAddresses();
+                        }
                     }
                 }
 
@@ -559,6 +564,11 @@ class SyncTransactionsCommand extends Command
                 // Track affected address for batch recalculation
                 if ($address) {
                     $this->affectedAddresses[$address] = true;
+                    
+                    // Check threshold after each output to process addresses early
+                    if (count($this->affectedAddresses) >= 250) {
+                        $this->batchRecalculateAddresses();
+                    }
                 }
             }
 
