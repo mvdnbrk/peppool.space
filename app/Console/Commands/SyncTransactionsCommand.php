@@ -482,7 +482,7 @@ class SyncTransactionsCommand extends Command
                             ]);
 
                         // Track affected address for batch recalculation
-                        $this->affectedAddresses[] = $prevOutput->address;
+                        $this->affectedAddresses[$prevOutput->address] = true;
                     }
                 }
 
@@ -559,7 +559,7 @@ class SyncTransactionsCommand extends Command
 
                 // Track affected address for batch recalculation
                 if ($address) {
-                    $this->affectedAddresses[] = $address;
+                    $this->affectedAddresses[$address] = true;
                 }
             }
 
@@ -572,7 +572,7 @@ class SyncTransactionsCommand extends Command
 
     private function batchRecalculateAddresses(): void
     {
-        $uniqueAddresses = array_unique($this->affectedAddresses);
+        $uniqueAddresses = array_keys($this->affectedAddresses);
 
         if (empty($uniqueAddresses) || $this->shouldStop) {
             return;
