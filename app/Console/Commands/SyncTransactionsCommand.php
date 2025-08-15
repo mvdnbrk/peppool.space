@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Block;
 use App\Services\PepecoinRpcService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -34,30 +33,6 @@ class SyncTransactionsCommand extends Command
     private array $affectedAddresses = [];
 
     private $progressBar = null;
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    private function setupSignalHandlers(): void
-    {
-        if (! function_exists('pcntl_signal')) {
-            return;
-        }
-
-        // Use traditional signal handling without async
-        pcntl_signal(SIGINT, [$this, 'handleShutdownSignal']);
-        pcntl_signal(SIGTERM, [$this, 'handleShutdownSignal']);
-    }
-
-    public function handleShutdownSignal($signal)
-    {
-        $this->shouldStop = true;
-        echo "\n";
-        echo "Received shutdown signal. Finishing current batch and stopping gracefully...\n";
-        echo "Press Ctrl+C again to force quit (may cause data corruption).\n";
-    }
 
     public function handle(PepecoinRpcService $rpc): int
     {
