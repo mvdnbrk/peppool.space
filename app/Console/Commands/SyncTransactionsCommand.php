@@ -570,10 +570,6 @@ class SyncTransactionsCommand extends Command
         }
     }
 
-    /**
-     * Batch recalculate address balances for all affected addresses
-     * Called every 100 blocks or at end of sync for efficiency
-     */
     private function batchRecalculateAddresses(): void
     {
         $uniqueAddresses = array_unique($this->affectedAddresses);
@@ -583,8 +579,6 @@ class SyncTransactionsCommand extends Command
         }
 
         $count = count($uniqueAddresses);
-
-        // Process addresses silently - no additional output needed
 
         // Process addresses silently
         foreach ($uniqueAddresses as $address) {
@@ -596,10 +590,6 @@ class SyncTransactionsCommand extends Command
         $this->affectedAddresses = [];
     }
 
-    /**
-     * Recalculate address balance from scratch (for verification/repair)
-     * Only use this when incremental updates may be inaccurate
-     */
     private function recalculateAddressBalance(string $address): void
     {
         DB::transaction(function () use ($address) {
@@ -649,9 +639,6 @@ class SyncTransactionsCommand extends Command
         });
     }
 
-    /**
-     * Extract OP_RETURN data from script hex
-     */
     private function extractOpReturnData(string $scriptHex): ?string
     {
         if (empty($scriptHex)) {
@@ -706,9 +693,6 @@ class SyncTransactionsCommand extends Command
         return null;
     }
 
-    /**
-     * Detect known protocols in OP_RETURN data
-     */
     private function detectOpReturnProtocol(string $hexData): ?string
     {
         if (empty($hexData)) {
@@ -800,9 +784,6 @@ class SyncTransactionsCommand extends Command
         return $this->fromSatoshis($feeSatoshis);
     }
 
-    /**
-     * Convert decimal amount to satoshis (integer)
-     */
     private function toSatoshis($amount): int
     {
         // Handle scientific notation by using bcmath first
