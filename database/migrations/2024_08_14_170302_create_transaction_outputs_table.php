@@ -11,9 +11,9 @@ return new class extends Migration
         Schema::create('transaction_outputs', function (Blueprint $table) {
             $table->id();
             $table->string('tx_id', 64);
-            $table->unsignedTinyInteger('output_index');
+            $table->unsignedSmallInteger('output_index');
             $table->string('address', 35)->nullable()->index();
-            $table->decimal('amount', 16, 8);
+            $table->decimal('amount', 30, 8);
             $table->text('script_pub_key');
             $table->string('script_type', 20)->nullable();
             $table->text('op_return_data')->nullable();
