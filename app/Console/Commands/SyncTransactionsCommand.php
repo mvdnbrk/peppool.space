@@ -307,17 +307,14 @@ class SyncTransactionsCommand extends Command
 
     private function processBlock(int $height): void
     {
-        // Check if block exists in blocks table first
-        $blockExists = DB::table('blocks')->where('height', $height)->exists();
+        // Get block hash from database
+        $blockHash = DB::table('blocks')->where('height', $height)->value('hash');
 
-        if (! $blockExists) {
+        if (! $blockHash) {
             $this->warn("Block {$height} not found in database. Run sync:blocks first.");
 
             return;
         }
-
-        // Get block hash
-        $blockHash = $this->rpc->getBlockHash($height);
 
         // Get block with full transaction data
         $block = $this->rpc->getBlock($blockHash, 2);
