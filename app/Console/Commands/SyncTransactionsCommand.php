@@ -110,11 +110,6 @@ class SyncTransactionsCommand extends Command
 
         // Process blocks in batches
         for ($height = $fromHeight; $height <= $toHeight; $height += $batchSize) {
-            // Check for graceful shutdown signal
-            if (function_exists('pcntl_signal_dispatch')) {
-                pcntl_signal_dispatch();
-            }
-
             // Check for shutdown signal
             if ($this->shouldStop) {
                 $this->warn('🛑 Graceful shutdown requested. Stopping after current batch.');
