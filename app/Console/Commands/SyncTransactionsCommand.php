@@ -151,7 +151,7 @@ class SyncTransactionsCommand extends Command
         }
 
         // Only finish progress bar if we completed the full range
-        if (!$this->shouldStop) {
+        if (! $this->shouldStop) {
             $this->progressBar->finish();
         }
         $this->newLine(2);
@@ -312,7 +312,7 @@ class SyncTransactionsCommand extends Command
                 $this->processedBlocks++;
 
                 // Advance main progress bar after each block (only if not stopping)
-                if ($this->progressBar && !$this->shouldStop) {
+                if ($this->progressBar && ! $this->shouldStop) {
                     $this->progressBar->advance(1);
                 }
 
@@ -403,7 +403,7 @@ class SyncTransactionsCommand extends Command
 
         // Calculate fee manually (input total - output total)
         $fee = 0;
-        if (!$isCoinbase) {
+        if (! $isCoinbase) {
             $fee = $this->calculateTransactionFee($txData);
         }
 
@@ -810,7 +810,7 @@ class SyncTransactionsCommand extends Command
                             $totalInputSatoshis += $this->toSatoshis($prevTx['vout'][$input['vout']]['value']);
                         }
                     } catch (\Exception $e) {
-                        Log::warning("Could not get input value for {$input['txid']}:{$input['vout']}: " . $e->getMessage());
+                        Log::warning("Could not get input value for {$input['txid']}:{$input['vout']}: ".$e->getMessage());
                     }
                 }
             }
@@ -818,21 +818,21 @@ class SyncTransactionsCommand extends Command
 
         // Fee is the difference between inputs and outputs (in satoshis)
         $feeSatoshis = max(0, $totalInputSatoshis - $totalOutputSatoshis);
-        
+
         // Convert back to decimal format
         $result = $this->fromSatoshis($feeSatoshis);
-        
+
         // Debug logging for fee calculation
         if ($feeSatoshis > 0) {
-            Log::info("Fee calculation debug", [
+            Log::info('Fee calculation debug', [
                 'tx_id' => $txData['txid'] ?? 'unknown',
                 'input_satoshis' => $totalInputSatoshis,
                 'output_satoshis' => $totalOutputSatoshis,
                 'fee_satoshis' => $feeSatoshis,
-                'final_fee' => $result
+                'final_fee' => $result,
             ]);
         }
-        
+
         return $result;
     }
 
@@ -849,9 +849,10 @@ class SyncTransactionsCommand extends Command
         } else {
             $decimal = $amountStr;
         }
-        
+
         // Multiply by 100,000,000 using bcmath to avoid precision loss
         $satoshiStr = bcmul($decimal, '100000000', 0);
+
         return (int) $satoshiStr;
     }
 
@@ -869,7 +870,7 @@ class SyncTransactionsCommand extends Command
         // Final batch recalculation for any remaining addresses
         $this->batchRecalculateAddresses();
 
-        $this->info("✅ Transaction sync completed successfully!");
+        $this->info('✅ Transaction sync completed successfully!');
 
         $this->table(
             ['Metric', 'Count'],
