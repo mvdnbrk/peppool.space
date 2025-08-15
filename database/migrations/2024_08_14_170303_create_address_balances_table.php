@@ -11,9 +11,9 @@ return new class extends Migration
         Schema::create('address_balances', function (Blueprint $table) {
             $table->id();
             $table->string('address', 35)->unique()->index();
-            $table->decimal('balance', 16, 8)->default(0)->index();
-            $table->decimal('total_received', 16, 8)->default(0);
-            $table->decimal('total_sent', 16, 8)->default(0);
+            $table->decimal('balance', 30, 8)->default(0)->index();
+            $table->decimal('total_received', 32, 8)->default(0);
+            $table->decimal('total_sent', 30, 8)->default(0);
             $table->unsignedInteger('tx_count')->default(0);
             $table->timestamp('first_seen')->nullable();
             $table->timestamp('last_activity')->nullable()->index();
