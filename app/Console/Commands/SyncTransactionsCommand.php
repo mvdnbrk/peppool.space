@@ -34,6 +34,8 @@ class SyncTransactionsCommand extends Command
 
     private $progressBar = null;
 
+    private int $addressBatchSize = 250;
+
     public function handle(PepecoinRpcService $rpc): int
     {
         $this->rpc = $rpc;
@@ -369,7 +371,7 @@ class SyncTransactionsCommand extends Command
             });
 
             // Batch recalculate addresses when we reach threshold
-            if (count($this->affectedAddresses) >= 250) {
+            if (count($this->affectedAddresses) >= $this->addressBatchSize) {
                 $this->batchRecalculateAddresses();
             }
 
@@ -486,7 +488,7 @@ class SyncTransactionsCommand extends Command
                         $this->affectedAddresses[$prevOutput->address] = true;
                         
                         // Check threshold after each input to process addresses early
-                        if (count($this->affectedAddresses) >= 250) {
+                        if (count($this->affectedAddresses) >= $this->addressBatchSize) {
                             $this->batchRecalculateAddresses();
                         }
                     }
@@ -568,7 +570,7 @@ class SyncTransactionsCommand extends Command
                     $this->affectedAddresses[$address] = true;
                     
                     // Check threshold after each output to process addresses early
-                    if (count($this->affectedAddresses) >= 250) {
+                    if (count($this->affectedAddresses) >= $this->addressBatchSize) {
                         $this->batchRecalculateAddresses();
                     }
                 }
