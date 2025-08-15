@@ -350,7 +350,7 @@ class SyncTransactionsCommand extends Command
                 }
             });
 
-            // Batch recalculate addresses when we reach threshold (100 addresses)
+            // Batch recalculate addresses when we reach threshold
             $uniqueAddressCount = count(array_unique($this->affectedAddresses));
             if ($uniqueAddressCount >= 250) {
                 $this->batchRecalculateAddresses();
@@ -792,20 +792,7 @@ class SyncTransactionsCommand extends Command
         $feeSatoshis = max(0, $totalInputSatoshis - $totalOutputSatoshis);
 
         // Convert back to decimal format
-        $result = $this->fromSatoshis($feeSatoshis);
-
-        // Debug logging for fee calculation
-        if ($feeSatoshis > 0) {
-            Log::info('Fee calculation debug', [
-                'tx_id' => $txData['txid'] ?? 'unknown',
-                'input_satoshis' => $totalInputSatoshis,
-                'output_satoshis' => $totalOutputSatoshis,
-                'fee_satoshis' => $feeSatoshis,
-                'final_fee' => $result,
-            ]);
-        }
-
-        return $result;
+        return $this->fromSatoshis($feeSatoshis);
     }
 
     /**
