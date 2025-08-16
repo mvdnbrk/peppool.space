@@ -152,14 +152,16 @@ class SyncTransactionsCommand extends Command
 
         foreach ($options as $key => $config) {
             $value = $this->option($key);
-            if ($value !== null && $value !== '' && (!is_numeric($value) || (int)$value < $config['min'])) {
-                $this->error("Invalid {$config['name']} value. Must be a " . ($config['min'] > 0 ? 'positive' : 'non-negative') . " integer.");
+            if ($value !== null && $value !== '' && (! is_numeric($value) || (int) $value < $config['min'])) {
+                $this->error("Invalid {$config['name']} value. Must be a ".($config['min'] > 0 ? 'positive' : 'non-negative').' integer.');
+
                 return Command::FAILURE;
             }
         }
 
-        if ($this->option('from') !== null && $this->option('to') !== null && (int)$this->option('from') > (int)$this->option('to')) {
+        if ($this->option('from') !== null && $this->option('to') !== null && (int) $this->option('from') > (int) $this->option('to')) {
             $this->error('Invalid range: --from cannot be greater than --to.');
+
             return Command::FAILURE;
         }
 
