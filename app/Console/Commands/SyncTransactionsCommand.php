@@ -500,7 +500,6 @@ class SyncTransactionsCommand extends Command
 
                         // Track affected address for batch recalculation
                         $this->affectedAddresses[$prevOutput->address] = true;
-
                     }
                 }
 
@@ -578,7 +577,6 @@ class SyncTransactionsCommand extends Command
                 // Track affected address for batch recalculation
                 if ($address) {
                     $this->affectedAddresses[$address] = true;
-
                 }
             }
 
@@ -640,49 +638,75 @@ class SyncTransactionsCommand extends Command
     private function recalculateAddressBalance(string $address): void
     {
         DB::transaction(function () use ($address) {
-            // Single query to get output statistics and transaction IDs
-            $outputStats = DB::table('transaction_outputs')
-                ->selectRaw('
-                    SUM(CASE WHEN is_spent = 0 THEN amount ELSE 0 END) as balance,
-                    SUM(amount) as total_received,
-                    COUNT(DISTINCT tx_id) as output_tx_count
-                ')
+            // Calculate balance from unspent outputs
+            $balance = DB::table('transaction_outputs')
                 ->where('address', $address)
-                ->first();
+                ->where('is_spent', false)
+                ->sum('amount');
 
-            // Single query to get input statistics and transaction IDs
-            $inputStats = DB::table('transaction_inputs')
-                ->selectRaw('
-                    SUM(amount) as total_sent,
-                    COUNT(DISTINCT tx_id) as input_tx_count
-                ')
+            // Calculate total received
+            $totalReceived = DB::table('transaction_outputs')
+                ->where('address', $address)
+                ->sum('amount');
+
+            // Calculate total sent (from inputs)
+            $totalSent = DB::table('transaction_inputs')
                 ->where('address', $address)
                 ->whereNotNull('amount')
-                ->first();
+                ->sum('amount');
 
-            // Single query to get timestamp information
-            $timeStats = DB::table('transaction_outputs')
-                ->join('transactions', 'transaction_outputs.tx_id', '=', 'transactions.tx_id')
-                ->join('blocks', 'transactions.block_height', '=', 'blocks.height')
-                ->selectRaw('
-                    MIN(blocks.created_at) as first_seen,
-                    MAX(blocks.created_at) as last_activity
-                ')
-                ->where('transaction_outputs.address', $address)
-                ->first();
+            // Count unique transactions (avoid double-counting if address appears in both inputs and outputs)
+            $outputTxIds = DB::table('transaction_outputs')
+                ->where('address', $address)
+                ->distinct()
+                ->pluck('tx_id');
 
-            // Calculate unique transaction count (approximate - may have slight overlap)
-            $txCount = ($outputStats->output_tx_count ?? 0) + ($inputStats->input_tx_count ?? 0);
+            $inputTxIds = DB::table('transaction_inputs')
+                ->where('address', $address)
+                ->whereNotNull('address')
+                ->distinct()
+                ->pluck('tx_id');
 
+            $txCount = $outputTxIds->merge($inputTxIds)->unique()->count();
+
+            // Simple timestamp queries without expensive JOINs
+            $firstTxId = DB::table('transaction_outputs')
+                ->where('address', $address)
+                ->orderBy('tx_id')
+                ->value('tx_id');
+
+            $lastTxId = DB::table('transaction_outputs')
+                ->where('address', $address)
+                ->orderByDesc('tx_id')
+                ->value('tx_id');
+
+            $firstSeen = null;
+            $lastActivity = null;
+
+            if ($firstTxId) {
+                $firstBlockHeight = DB::table('transactions')->where('tx_id', $firstTxId)->value('block_height');
+                if ($firstBlockHeight) {
+                    $firstSeen = DB::table('blocks')->where('height', $firstBlockHeight)->value('created_at');
+                }
+            }
+
+            if ($lastTxId) {
+                $lastBlockHeight = DB::table('transactions')->where('tx_id', $lastTxId)->value('block_height');
+                if ($lastBlockHeight) {
+                    $lastActivity = DB::table('blocks')->where('height', $lastBlockHeight)->value('created_at');
+                }
+            }
+
+            // Update or create address balance record
             DB::table('address_balances')->updateOrInsert(
                 ['address' => $address],
                 [
-                    'balance' => $outputStats->balance ?? 0,
-                    'total_received' => $outputStats->total_received ?? 0,
-                    'total_sent' => $inputStats->total_sent ?? 0,
+                    'balance' => $balance,
+                    'total_received' => $totalReceived,
+                    'total_sent' => $totalSent,
                     'tx_count' => $txCount,
-                    'first_seen' => $timeStats->first_seen,
-                    'last_activity' => $timeStats->last_activity,
+                    'first_seen' => $firstSeen,
+                    'last_activity' => $lastActivity,
                 ]
             );
         });
