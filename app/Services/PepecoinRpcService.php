@@ -20,6 +20,8 @@ class PepecoinRpcService
 
     private readonly int $timeout;
 
+    private readonly string $url;
+
     public function __construct()
     {
         $this->host = config('pepecoin.rpc.host', '127.0.0.1');
@@ -27,12 +29,11 @@ class PepecoinRpcService
         $this->username = config('pepecoin.rpc.username', '');
         $this->password = config('pepecoin.rpc.password', '');
         $this->timeout = config('pepecoin.rpc.timeout', 30);
+        $this->url = "http://{$this->host}:{$this->port}/";
     }
 
     public function call(string $method, array $params = []): mixed
     {
-        $url = "http://{$this->host}:{$this->port}/";
-
         $payload = [
             'jsonrpc' => '2.0',
             'id' => uniqid(),
@@ -43,7 +44,7 @@ class PepecoinRpcService
         try {
             $response = Http::withBasicAuth($this->username, $this->password)
                 ->timeout($this->timeout)
-                ->post($url, $payload);
+                ->post($this->url, $payload);
 
             if (! $response->successful()) {
                 throw new Exception("RPC request failed with status: {$response->status()}");
@@ -64,6 +65,65 @@ class PepecoinRpcService
                 'error' => $e->getMessage(),
             ]);
             throw $e;
+        }
+    }
+
+    public function batchCall(array $calls): array
+    {
+        $payload = [];
+        foreach ($calls as $call) {
+            $payload[] = [
+                'jsonrpc' => '2.0',
+                'id' => uniqid(),
+                'method' => $call['method'],
+                'params' => $call['params'] ?? [],
+            ];
+        }
+
+        try {
+            $response = Http::withBasicAuth($this->username, $this->password)
+                ->timeout($this->timeout)
+                ->post($this->url, $payload);
+
+            if (! $response->successful()) {
+                throw new Exception("Batch RPC request failed with status: {$response->status()}");
+            }
+
+            $data = $response->json();
+
+            if (! is_array($data) || count($data) !== count($calls)) {
+                throw new Exception('Invalid batch response format');
+            }
+
+            $results = [];
+            foreach ($data as $item) {
+                if (isset($item['error']) && $item['error'] !== null) {
+                    throw new Exception("Batch RPC error: {$item['error']['message']} (code: {$item['error']['code']})");
+                }
+                $results[] = $item['result'] ?? [];
+            }
+
+            return $results;
+
+        } catch (Exception $e) {
+            Log::error('Pepecoin batch RPC call failed', [
+                'calls' => $calls,
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
+    }
+
+    public function testConnection(): bool
+    {
+        try {
+            $this->getBlockchainInfo();
+
+            return true;
+        } catch (Exception $e) {
+            Log::warning('RPC connection test failed: '.$e->getMessage());
+
+            return false;
         }
     }
 
@@ -109,18 +169,5 @@ class PepecoinRpcService
     public function getRawMempool(bool $verbose = false): array
     {
         return $this->call('getrawmempool', [$verbose]);
-    }
-
-    public function testConnection(): bool
-    {
-        try {
-            $this->getBlockchainInfo();
-
-            return true;
-        } catch (Exception $e) {
-            Log::warning('RPC connection test failed: '.$e->getMessage());
-
-            return false;
-        }
     }
 }
