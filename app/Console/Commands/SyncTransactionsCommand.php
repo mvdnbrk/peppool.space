@@ -39,6 +39,7 @@ class SyncTransactionsCommand extends Command
     public function handle(PepecoinRpcService $rpc): int
     {
         $this->rpc = $rpc;
+
         // Set up graceful shutdown handling
         $this->trap([SIGINT, SIGTERM], function (int $signal) {
             $this->shouldStop = true;
@@ -46,6 +47,12 @@ class SyncTransactionsCommand extends Command
             $this->warn('🛑 Received shutdown signal. Finishing current batch and stopping gracefully...');
             $this->line('💡 Press Ctrl+C again to force quit (may cause data corruption).');
         });
+
+        // Validate and parse options
+        $validationResult = $this->validateOptions();
+        if ($validationResult !== true) {
+            return $validationResult;
+        }
 
         $this->info('🚀 Starting transaction sync for the best Pepecoin explorer!');
 
@@ -93,12 +100,6 @@ class SyncTransactionsCommand extends Command
 
         $this->progressBar = $this->output->createProgressBar($totalBlocks);
         $this->progressBar->setFormat('verbose');
-
-        // Validate and parse options
-        $validationResult = $this->validateOptions();
-        if ($validationResult !== true) {
-            return $validationResult;
-        }
 
         $batchSize = (int) $this->option('batch');
         $delay = (int) $this->option('delay');
