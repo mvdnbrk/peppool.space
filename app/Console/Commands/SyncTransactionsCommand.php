@@ -610,27 +610,27 @@ class SyncTransactionsCommand extends Command
 
     private function batchRecalculateAddresses(): void
     {
-        $uniqueAddresses = array_keys($this->affectedAddresses);
+        // $uniqueAddresses = array_keys($this->affectedAddresses);
 
-        if (empty($uniqueAddresses) || $this->shouldStop) {
-            return;
-        }
+        // if (empty($uniqueAddresses) || $this->shouldStop) {
+        //     return;
+        // }
 
-        $chunkSize = 50;
-        $chunks = array_chunk($uniqueAddresses, $chunkSize);
+        // $chunkSize = 50;
+        // $chunks = array_chunk($uniqueAddresses, $chunkSize);
 
-        // Process addresses in smaller chunks to reduce database load
-        foreach ($chunks as $chunkIndex => $addressChunk) {
-            foreach ($addressChunk as $address) {
-                $this->recalculateAddressBalance($address);
-                $this->processedAddresses++;
-            }
+        // // Process addresses in smaller chunks to reduce database load
+        // foreach ($chunks as $chunkIndex => $addressChunk) {
+        //     foreach ($addressChunk as $address) {
+        //         $this->recalculateAddressBalance($address);
+        //         $this->processedAddresses++;
+        //     }
 
-            // Add small delay between chunks to prevent overwhelming the database
-            if ($chunkIndex < count($chunks) - 1) {
-                usleep(5000); // 5ms delay between chunks
-            }
-        }
+        //     // Add small delay between chunks to prevent overwhelming the database
+        //     if ($chunkIndex < count($chunks) - 1) {
+        //         usleep(5000); // 5ms delay between chunks
+        //     }
+        // }
 
         // Clear the affected addresses for the next batch
         $this->affectedAddresses = [];
