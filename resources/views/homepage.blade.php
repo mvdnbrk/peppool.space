@@ -95,7 +95,7 @@
                 <!-- Latest Blocks -->
                 <div class="bg-white rounded-b-lg shadow overflow-hidden">
                     <div class="relative">
-                        <x-wave color="text-green-700" flip="true" class="-mt-px rotate-180"/>
+                        <x-wave color="text-green-700" flip="true" class="-mt-px rotate-180 bg-gray-50"/>
                         <div class="px-6 py-2 bg-green-700">
                             <h2 class="text-lg font-semibold text-white">Latest Blocks</h2>
                         </div>
@@ -137,7 +137,7 @@
                 <!-- Mempool Transactions -->
                 <div class="bg-white rounded-b-lg shadow overflow-hidden">
                     <div class="relative">
-                        <x-wave color="text-green-700" class="-mt-px rotate-180"/>
+                        <x-wave color="text-green-700" class="-mt-px rotate-180 bg-gray-50"/>
                         <div class="px-6 py-2 bg-green-700">
                             <h2 class="text-lg font-semibold text-white">Mempool Transactions</h2>
                         </div>
