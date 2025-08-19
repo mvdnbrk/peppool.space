@@ -126,13 +126,17 @@ class SyncBalancesCommand extends Command
                 ->count('tx_id');
 
             // Get first and last activity
-            $firstSeen = DB::table('transaction_outputs')
-                ->where('address', $address)
-                ->min('created_at');
+            $firstSeen = DB::table('transaction_outputs as to')
+                ->join('transactions as t', 'to.tx_id', '=', 't.tx_id')
+                ->join('blocks as b', 't.block_height', '=', 'b.height')
+                ->where('to.address', $address)
+                ->min('b.created_at');
 
-            $lastActivity = DB::table('transaction_outputs')
-                ->where('address', $address)
-                ->max('created_at');
+            $lastActivity = DB::table('transaction_outputs as to')
+                ->join('transactions as t', 'to.tx_id', '=', 't.tx_id')
+                ->join('blocks as b', 't.block_height', '=', 'b.height')
+                ->where('to.address', $address)
+                ->max('b.created_at');
 
             // Update or create address balance record
             DB::table('address_balances')->updateOrInsert(
