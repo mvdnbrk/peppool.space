@@ -62,7 +62,7 @@ class SyncBalancesCommand extends Command
             ->whereNotNull('address')
             ->orderBy('address');
 
-        $totalAddresses = (clone $query)->count();
+        $totalAddresses = (clone $query)->count('address');
         $this->line("Found {$totalAddresses} addresses to process");
 
         if ($totalAddresses === 0) {
