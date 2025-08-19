@@ -1,5 +1,4 @@
 <x-layout title="Peppool.space - Real-time Pepecoin Blockchain Explorer" :network="$network">
-
         @if(isset($error))
             <!-- Error State -->
             <div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
