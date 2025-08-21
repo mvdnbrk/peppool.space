@@ -5,13 +5,15 @@
     "description": "This is the peppool.space website.",
     "keywords": [
         "pep",
-        "pool"
+        "pool",
+        "pepecoin",
+        "blockchain",
+        "explorer"
     ],
-    "license": "MIT",
     "require": {
         "php": "^8.4",
         "blade-ui-kit/blade-icons": "^1.8",
-        "laravel/framework": "^12.3",
+        "laravel/framework": "^12.25",
         "laravel/tinker": "^2.10"
     },
     "require-dev": {
