@@ -1,4 +1,5 @@
 import './bootstrap';
+import './timestamps';
 
 const REST_BASE = 'https://peppool.space/api';
 const POLL_INTERVAL = 30000; // 30 seconds for polling
