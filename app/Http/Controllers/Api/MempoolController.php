@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Services\PepecoinExplorerService;
+use Illuminate\Http\JsonResponse;
 
 class MempoolController extends Controller
 {
@@ -18,7 +18,7 @@ class MempoolController extends Controller
             $this->explorerService->getMempoolInfo()
                 ->only(['size', 'bytes'])
                 ->mapWithKeys(fn ($value, $key) => [
-                    $key === 'size' ? 'count' : $key => $value
+                    $key === 'size' ? 'count' : $key => $value,
                 ])
         );
     }
