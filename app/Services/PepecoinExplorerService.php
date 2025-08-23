@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class PepecoinExplorerService
 {
@@ -15,10 +16,19 @@ class PepecoinExplorerService
         $this->rpcService = $rpcService;
     }
 
+    private function getCacheKey(string $key): string
+    {
+        return Str::of($key)
+            ->replaceFirst('get', '')
+            ->prepend('pep_explorer')
+            ->snake()
+            ->toString();
+    }
+
     public function getBlockTipHeight(): int
     {
         return Cache::remember(
-            'explorer_block_tip_height',
+            $this->getCacheKey(__FUNCTION__),
             Carbon::now()->addSeconds(30),
             fn (): int => $this->rpcService->getBlockCount()
         );
@@ -27,7 +37,7 @@ class PepecoinExplorerService
     public function getBlockTipHash(): string
     {
         return Cache::remember(
-            'explorer_block_tip_hash',
+            $this->getCacheKey(__FUNCTION__),
             Carbon::now()->addSeconds(30),
             fn (): string => $this->rpcService->getBlockHash(
                 $this->getBlockTipHeight()
@@ -38,7 +48,7 @@ class PepecoinExplorerService
     public function getMempoolInfo(): Collection
     {
         return Cache::remember(
-            'explorer_mempool_info',
+            $this->getCacheKey(__FUNCTION__),
             Carbon::now()->addSeconds(10),
             fn (): Collection => new Collection($this->rpcService->getMempoolInfo())
         );
