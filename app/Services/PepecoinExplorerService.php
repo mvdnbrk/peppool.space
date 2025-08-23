@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
 class PepecoinExplorerService
@@ -31,6 +32,15 @@ class PepecoinExplorerService
             fn (): string => $this->rpcService->getBlockHash(
                 $this->getBlockTipHeight()
             )
+        );
+    }
+
+    public function getMempoolInfo(): Collection
+    {
+        return Cache::remember(
+            'explorer_mempool_info',
+            Carbon::now()->addSeconds(10),
+            fn (): Collection => new Collection($this->rpcService->getMempoolInfo())
         );
     }
 }
