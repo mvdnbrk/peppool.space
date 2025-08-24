@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\BlockController;
+use App\Http\Controllers\DocumentationController;
 use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TransactionController;
@@ -24,3 +25,6 @@ Route::get('/tx/{txid}', [TransactionController::class, 'show'])
 Route::get('/address/{address}', [AddressController::class, 'show'])
     ->name('address.show')
     ->where('address', 'P[1-9A-HJ-NP-Za-km-z]{25,33}');
+
+Route::get('/docs/api', DocumentationController::class)
+    ->name('docs.api');
