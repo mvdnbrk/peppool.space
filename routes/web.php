@@ -7,10 +7,10 @@ use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Response;
 
 Route::get('/', HomepageController::class)->name('homepage');
 
-// Global search routes
 Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 Route::post('/search', [SearchController::class, 'store'])->name('search.store');
 
@@ -28,3 +28,5 @@ Route::get('/address/{address}', [AddressController::class, 'show'])
 
 Route::get('/docs/api', DocumentationController::class)
     ->name('docs.api');
+
+Route::redirect('/api', '/docs/api', Response::HTTP_MOVED_PERMANENTLY);
