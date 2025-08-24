@@ -2,7 +2,7 @@
 $title = config('app.name') . ' | Page not found';
 @endphp
 
-<x-layout :title="$title">
+<x-layout :title="$title" og_image="peppool-error-404.png">
     <main class="flex-grow flex items-center justify-center px-4 py-12 sm:py-24">
         <div class="text-center">
             <p class="text-base font-semibold text-green-700">404</p>
