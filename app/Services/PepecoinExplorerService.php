@@ -10,12 +10,10 @@ use Illuminate\Support\Str;
 
 class PepecoinExplorerService
 {
-    private readonly PepecoinRpcService $rpcService;
-
-    public function __construct(PepecoinRpcService $rpcService)
-    {
-        $this->rpcService = $rpcService;
-    }
+    public function __construct(
+        private readonly PepecoinRpcService $rpcService,
+        private int $mempoolCacheTtl = 10,
+    ) {}
 
     private function getCacheKey(string $key): string
     {
@@ -50,7 +48,7 @@ class PepecoinExplorerService
     {
         return Cache::remember(
             $this->getCacheKey(__FUNCTION__),
-            Carbon::now()->addSeconds(10),
+            Carbon::now()->addSeconds($this->mempoolCacheTtl),
             fn (): Collection => new Collection($this->rpcService->getMempoolInfo())
         );
     }
