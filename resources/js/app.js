@@ -4,14 +4,23 @@ import './timestamps';
 const REST_BASE = import.meta.env.VITE_APP_URL ? `${import.meta.env.VITE_APP_URL}/api` : '/api';
 const POLL_HEIGHT_INTERVAL = 30000; // 30 seconds for polling
 const POLL_MEMPOOL_INTERVAL = 10000; // 10 seconds for polling
+const POLL_PRICE_INTERVAL = 300000; // 5 minutes for price polling
 const CHECK_INTERVAL = 1000; // 1 second for checking element presence
 
 let pollHeightIntervalId = null;
 let pollMempoolIntervalId = null;
+let pollPriceIntervalId = null;
 let isVisible = document.visibilityState === 'visible';
 
 function formatNumber(num) {
   return num.toLocaleString('en-US');
+}
+
+function updatePepecoinPrice(price) {
+    const element = document.getElementById('pepecoin-price');
+    if (element) {
+        element.innerText = `$${parseFloat(price).toFixed(8)}`;
+    }
 }
 
 function updateBlockHeight(height) {
@@ -60,6 +69,19 @@ async function pollMempoolCount() {
   }
 }
 
+async function pollPepecoinPrice() {
+    try {
+        const response = await fetch(`${REST_BASE}/prices`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        updatePepecoinPrice(data.USD);
+    } catch (error) {
+        console.error('Error fetching Pepecoin price:', error);
+    }
+}
+
 function managePolling() {
   if (!isVisible) {
     if (pollHeightIntervalId) {
@@ -70,7 +92,10 @@ function managePolling() {
       clearInterval(pollMempoolIntervalId);
       pollMempoolIntervalId = null;
     }
-
+    if (pollPriceIntervalId) {
+      clearInterval(pollPriceIntervalId);
+      pollPriceIntervalId = null;
+    }
     return;
   }
 
@@ -79,6 +104,9 @@ function managePolling() {
 
   pollMempoolCount();
   pollMempoolIntervalId = setInterval(pollMempoolCount, POLL_MEMPOOL_INTERVAL);
+
+  pollPepecoinPrice();
+  pollPriceIntervalId = setInterval(pollPepecoinPrice, POLL_PRICE_INTERVAL);
 }
 
 document.addEventListener('visibilitychange', () => {
@@ -90,7 +118,8 @@ function startPollingWhenReady() {
   const checkElement = setInterval(() => {
     if (
         document.getElementById('current-block-height') ||
-        document.getElementById('mempool-count')
+        document.getElementById('mempool-count') ||
+        document.getElementById('pepecoin-price')
     ) {
       clearInterval(checkElement);
       managePolling();
