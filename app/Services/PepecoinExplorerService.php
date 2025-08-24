@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Price;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -51,6 +52,28 @@ class PepecoinExplorerService
             $this->getCacheKey(__FUNCTION__),
             Carbon::now()->addSeconds(10),
             fn (): Collection => new Collection($this->rpcService->getMempoolInfo())
+        );
+    }
+
+    public function getPrices(): Collection
+    {
+        return Cache::remember(
+            $this->getCacheKey(__FUNCTION__),
+            Carbon::now()->addMinutes(5),
+            function (): Collection {
+                $prices = Price::whereIn('currency', ['EUR', 'USD'])
+                    ->latest()
+                    ->take(2)
+                    ->get();
+
+                $result = $prices->isNotEmpty()
+                    ? $prices->pluck('price', 'currency')
+                        ->merge(['timestamp' => $prices->first()->created_at->timestamp])
+                        ->toArray()
+                    : ['EUR' => 0, 'USD' => 0, 'timestamp' => time()];
+
+                return new Collection($result);
+            }
         );
     }
 }
