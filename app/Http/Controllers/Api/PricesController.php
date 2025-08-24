@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\PepecoinExplorerService;
 use Illuminate\Http\JsonResponse;
 
-class PriceController extends Controller
+class PricesController extends Controller
 {
     public function __invoke(PepecoinExplorerService $explorerService): JsonResponse
     {
