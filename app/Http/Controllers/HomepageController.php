@@ -4,12 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Block;
 use App\Services\PepecoinRpcService;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class HomepageController extends Controller
 {
-    public function __invoke(Request $request, PepecoinRpcService $rpc): View
+    public function __invoke(PepecoinRpcService $rpc): View
     {
         try {
             $blockchainInfo = $rpc->getBlockchainInfo();
