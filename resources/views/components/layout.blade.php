@@ -1,4 +1,8 @@
-@props(['title' => 'Peppool Explorer', 'network' => null])
+@props([
+    'title' => 'Peppool Explorer', 
+    'network' => null,
+    'og_image' => 'default-card-large.png'
+])
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,13 +16,13 @@
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="{{ $title }}">
     <meta property="og:description" content="Real-time Pepecoin blockchain explorer. View blocks, transactions, addresses, and more on the Pepecoin network.">
-    <meta property="og:image" content="https://cdn.peppool.space/opengraph/default-card-large.png">
+    <meta property="og:image" content="https://cdn.peppool.space/opengraph/{{ $og_image }}">
 
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ url()->current() }}">
     <meta property="twitter:title" content="{{ $title }}">
     <meta property="twitter:description" content="Real-time Pepecoin blockchain explorer. View blocks, transactions, addresses, and more on the Pepecoin network.">
-    <meta property="twitter:image" content="https://cdn.peppool.space/opengraph/default-card-large.png">
+    <meta property="twitter:image" content="https://cdn.peppool.space/opengraph/{{ $og_image }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 

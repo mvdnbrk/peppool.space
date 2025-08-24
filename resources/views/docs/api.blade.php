@@ -1,4 +1,4 @@
-<x-layout title="Pepecoin API Documentation">
+<x-layout title="Pepecoin API Documentation" og_image="pepecoin-api.png">
         <div class="mb-6 md:mb-8 text-gray-600">
             <h1 class="text-2xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4">Pepecoin API Documentation</h1>
             <p class="text-sm md:text-base">
