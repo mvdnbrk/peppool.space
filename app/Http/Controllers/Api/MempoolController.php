@@ -22,4 +22,11 @@ class MempoolController extends Controller
                 ])
         );
     }
+
+    public function txids(): JsonResponse
+    {
+        return new JsonResponse(
+            $this->explorerService->getMempoolTxIds()
+        );
+    }
 }

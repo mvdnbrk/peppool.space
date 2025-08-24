@@ -53,6 +53,17 @@ class PepecoinExplorerService
         );
     }
 
+    public function getMempoolTxIds(): Collection
+    {
+        return Cache::remember(
+            $this->getCacheKey(__FUNCTION__),
+            Carbon::now()->addseconds($this->mempoolCacheTtl),
+            function (): Collection {
+                return new Collection($this->rpcService->getRawMempool());
+            }
+        );
+    }
+
     public function getPrices(): Collection
     {
         return Cache::remember(
