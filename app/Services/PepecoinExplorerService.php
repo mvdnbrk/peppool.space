@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Block;
 use App\Models\Price;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -23,6 +24,35 @@ class PepecoinExplorerService
             ->prepend('pep_explorer')
             ->snake()
             ->toString();
+    }
+
+    public function getAverageBlockTime(int $blockWindow = 50): float
+    {
+        return Cache::remember(
+            $this->getCacheKey(__FUNCTION__ . '_' . $blockWindow),
+            Carbon::now()->addMinutes(10),
+            function () use ($blockWindow): float {
+                $blocks = Block::latest('created_at')
+                    ->take($blockWindow)
+                    ->get(['height', 'created_at']);
+
+                if ($blocks->count() < 2) {
+                    return 60.0; // PepeCoin target
+                }
+
+                $timeDifferences = Collection::make($blocks)
+                    ->skip(1)
+                    ->zip($blocks->take($blocks->count() - 1))
+                    ->map(function ($pair) {
+                        [$current, $previous] = $pair;
+                        return $current->created_at->diffInSeconds($previous->created_at);
+                    });
+
+                $avg = $timeDifferences->average();
+
+                return $avg > 0 ? round($avg, 2) : 60.0;
+            }
+        );
     }
 
     public function getBlockTipHeight(): int
