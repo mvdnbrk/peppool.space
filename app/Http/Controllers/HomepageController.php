@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Block;
+use App\Services\PepecoinExplorerService;
 use App\Services\PepecoinRpcService;
 use Exception;
 use Illuminate\Http\Response;
@@ -10,19 +11,15 @@ use Illuminate\View\View;
 
 class HomepageController extends Controller
 {
-    public function __invoke(PepecoinRpcService $rpc): View
+    public function __invoke(PepecoinRpcService $rpc, PepecoinExplorerService $explorer): View
     {
         try {
-            $blockchainInfo = $rpc->getBlockchainInfo();
-            $mempoolInfo = $rpc->getMempoolInfo();
-            $networkInfo = $rpc->getNetworkInfo();
-
             return view('homepage', [
-                'blockchain' => $blockchainInfo,
-                'mempool' => $mempoolInfo,
-                'network' => $networkInfo,
+                'blockchain' => $rpc->getBlockchainInfo(),
+                'mempool' => $explorer->getMempoolInfo(),
+                'network' => $rpc->getNetworkInfo(),
                 'latestBlocks' => Block::getLatestBlocks(),
-                'mempoolTransactions' => array_slice($rpc->getRawMempool(false), 0, 20),
+                'mempoolTransactions' => $explorer->getMempoolTxIds()->take(10),
             ]);
 
         } catch (Exception $e) {
