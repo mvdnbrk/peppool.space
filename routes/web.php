@@ -6,8 +6,8 @@ use App\Http\Controllers\DocumentationController;
 use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TransactionController;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomepageController::class)->name('homepage');
 
