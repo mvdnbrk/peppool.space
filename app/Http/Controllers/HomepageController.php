@@ -22,6 +22,7 @@ class HomepageController extends Controller
                 'latestBlocks' => Block::getLatestBlocks(),
                 'mempoolTransactions' => $explorer->getMempoolTxIds()->take(10),
                 'chainSize' => Number::fileSize($explorer->getChainSize(), precision: 1),
+                'blockHeight' => Number::format($explorer->getBlockTipHeight()),
             ]);
 
         } catch (Exception $e) {

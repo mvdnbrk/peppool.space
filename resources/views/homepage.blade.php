@@ -17,7 +17,7 @@
                 <div class="ml-5">
                     <p class="text-sm font-medium text-gray-500">Block Height</p>
                     <p class="text-2xl font-bold text-gray-900" id="current-block-height">
-                        {{ number_format($blockchain['blocks'] ?? 0) }}
+                        {{ $blockHeight }}
                     </p>
                 </div>
             </div>
