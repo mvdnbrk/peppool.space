@@ -5,7 +5,7 @@
     <!-- Stats Overview -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
         <!-- Block Height Card -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-6" aria-label="Current block height: {{ $blockHeight }}" role="status">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center">
@@ -24,7 +24,7 @@
         </div>
 
         <!-- Mempool Card -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-6" aria-label="Mempool: {{ number_format($mempool['size'] ?? 0) }} transactions waiting" role="status">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center">
@@ -43,7 +43,7 @@
         </div>
 
         <!-- Difficulty Card -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-6" aria-label="Current network difficulty: {{ $difficulty }}" role="status">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-10 h-10 bg-purple-500 rounded-xl flex items-center justify-center">
@@ -60,7 +60,7 @@
         </div>
 
         <!-- Hashrate Card -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-6" aria-label="Current network hashrate: {{ $hashrate }}" role="status">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-10 h-10 bg-cyan-500 rounded-xl flex items-center justify-center">
@@ -80,7 +80,7 @@
         </div>
 
         <!-- Chain Size Card -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-6" aria-label="Blockchain size: {{ $chainSize }}" role="status">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center">
