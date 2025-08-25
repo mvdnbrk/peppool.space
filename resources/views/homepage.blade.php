@@ -69,7 +69,7 @@
                 </div>
                 <div class="ml-5">
                     <p class="text-sm font-medium text-gray-500">Chain Size</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ number_format(($blockchain['size_on_disk'] ?? 0) / 1024 / 1024 / 1024, 2) }} GB</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ $chainSize }}</p>
                 </div>
             </div>
         </div>

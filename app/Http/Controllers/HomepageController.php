@@ -7,6 +7,7 @@ use App\Services\PepecoinExplorerService;
 use App\Services\PepecoinRpcService;
 use Exception;
 use Illuminate\Http\Response;
+use Illuminate\Support\Number;
 use Illuminate\View\View;
 
 class HomepageController extends Controller
@@ -20,6 +21,7 @@ class HomepageController extends Controller
                 'network' => $rpc->getNetworkInfo(),
                 'latestBlocks' => Block::getLatestBlocks(),
                 'mempoolTransactions' => $explorer->getMempoolTxIds()->take(10),
+                'chainSize' => Number::fileSize($explorer->getChainSize(), precision: 1),
             ]);
 
         } catch (Exception $e) {

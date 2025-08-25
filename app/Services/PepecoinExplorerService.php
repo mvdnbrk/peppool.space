@@ -85,4 +85,16 @@ class PepecoinExplorerService
             }
         );
     }
+
+    public function getChainSize(): int
+    {
+        return Cache::remember(
+            $this->getCacheKey(__FUNCTION__),
+            Carbon::now()->addHours(4),
+            function (): int {
+                return (new Collection($this->rpcService->getBlockchainInfo()))
+                    ->get('size_on_disk', 0);
+            }
+        );
+    }
 }
