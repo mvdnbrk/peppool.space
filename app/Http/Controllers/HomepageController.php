@@ -23,6 +23,8 @@ class HomepageController extends Controller
                 'mempoolTransactions' => $explorer->getMempoolTxIds()->take(10),
                 'chainSize' => Number::fileSize($explorer->getChainSize(), precision: 1),
                 'blockHeight' => Number::format($explorer->getBlockTipHeight()),
+                'difficulty' => format_difficulty($explorer->getDifficulty()),
+                'hashrate' => format_hashrate($explorer->getHashrate()),
             ]);
 
         } catch (Exception $e) {

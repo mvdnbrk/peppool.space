@@ -13,6 +13,7 @@ class PepecoinExplorerService
     public function __construct(
         private readonly PepecoinRpcService $rpcService,
         private int $mempoolCacheTtl = 10,
+        private int $difficultyCacheTtl = 180,
     ) {}
 
     private function getCacheKey(string $key): string
@@ -41,6 +42,31 @@ class PepecoinExplorerService
             fn (): string => $this->rpcService->getBlockHash(
                 $this->getBlockTipHeight()
             )
+        );
+    }
+
+    public function getDifficulty(): float
+    {
+        return Cache::remember(
+            $this->getCacheKey(__FUNCTION__),
+            Carbon::now()->addSeconds($this->difficultyCacheTtl),
+            function (): float {
+                return (new Collection($this->rpcService->getBlockchainInfo()))->get('difficulty', 0.0);
+            }
+        );
+    }
+
+    public function getHashrate(): float
+    {
+        return Cache::remember(
+            $this->getCacheKey(__FUNCTION__),
+            Carbon::now()->addSeconds($this->difficultyCacheTtl),
+            function (): float {
+                $difficulty = $this->getDifficulty();
+
+                // 2^32 ≈ 4294967296; target block time = 60 seconds for PepeCoin
+                return $difficulty * 4294967296 / 60;
+            }
         );
     }
 

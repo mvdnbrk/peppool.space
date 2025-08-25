@@ -3,7 +3,7 @@
     <x-search class="mb-8" />
 
     <!-- Stats Overview -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
         <!-- Block Height Card -->
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center">
@@ -15,7 +15,7 @@
                     </div>
                 </div>
                 <div class="ml-5">
-                    <p class="text-sm font-medium text-gray-500">Block Height</p>
+                    <p class="text-sm font-medium text-gray-500">Block</p>
                     <p class="text-2xl font-bold text-gray-900" id="current-block-height">
                         {{ $blockHeight }}
                     </p>
@@ -42,22 +42,44 @@
             </div>
         </div>
 
+        <!-- Difficulty Card -->
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-10 h-10 bg-purple-500 rounded-xl flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M14.79,10.62L3.5,21.9L2.1,20.5L13.38,9.21L14.79,10.62M19.27,7.73L19.86,7.14L19.07,6.35L19.71,5.71L18.29,4.29L17.65,4.93L16.86,4.14L16.27,4.73C14.53,3.31 12.57,2.17 10.47,1.37L9.64,3.16C11.39,4.08 13,5.19 14.5,6.5L14,7L17,10L17.5,9.5C18.81,11 19.92,12.61 20.84,14.36L22.63,13.53C21.83,11.43 20.69,9.47 19.27,7.73Z"/>
                         </svg>
                     </div>
                 </div>
                 <div class="ml-5">
                     <p class="text-sm font-medium text-gray-500">Difficulty</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ number_format($blockchain['difficulty'] ?? 0, 2) }}</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ $difficulty }}</p>
                 </div>
             </div>
         </div>
 
+        <!-- Hashrate Card -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <div class="w-10 h-10 bg-cyan-500 rounded-xl flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <circle cx="18" cy="5" r="3" stroke-width="2"/>
+                            <circle cx="18" cy="19" r="3" stroke-width="2"/>
+                            <circle cx="6" cy="12" r="3" stroke-width="2"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.408 6.51199L8.59436 10.4866M15.408 17.488L8.59436 13.5134"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="ml-5">
+                    <p class="text-sm font-medium text-gray-500">Network</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ $hashrate }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chain Size Card -->
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
