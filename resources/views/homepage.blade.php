@@ -170,7 +170,7 @@
                         </div>
                     </a>
                 @endforeach
-                <div class="px-6 py-8 text-center {{ !empty($mempoolTransactions) ? 'invisible' : '' }}">
+                <div class="px-6 py-8 text-center {{ $mempoolTransactions->isEmpty() ? 'visible' : 'invisible' }}">
                     <p class="text-gray-500">no transactions in mempool</p>
                 </div>
             </div>
