@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Block;
 use App\Services\PepecoinRpcService;
+use Exception;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class HomepageController extends Controller
@@ -23,15 +25,8 @@ class HomepageController extends Controller
                 'mempoolTransactions' => array_slice($rpc->getRawMempool(false), 0, 20),
             ]);
 
-        } catch (\Exception $e) {
-            return view('homepage', [
-                'error' => 'Unable to connect to Pepecoin node: '.$e->getMessage(),
-                'blockchain' => null,
-                'mempool' => null,
-                'network' => null,
-                'latestBlocks' => [],
-                'mempoolTransactions' => [],
-            ]);
+        } catch (Exception $e) {
+            abort(Response::HTTP_SERVICE_UNAVAILABLE, 'Unable to connect to Pepecoin node: '.$e->getMessage());
         }
     }
 }
