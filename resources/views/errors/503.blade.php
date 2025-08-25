@@ -6,7 +6,7 @@
                 Service Unavailable
             </h1>
             <p class="mt-6 text-lg font-medium text-pretty text-gray-500 sm:text-xl">
-                We're performing some maintenance. Please check back soon.
+                We are performing some maintenance. Please check back soon.
             </p>
         </div>
     </main>
