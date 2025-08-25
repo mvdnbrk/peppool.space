@@ -95,7 +95,7 @@ class PepecoinExplorerService
                 $difficulty = $this->getDifficulty();
 
                 // 2^32 ≈ 4294967296; target block time = 60 seconds for PepeCoin
-                return $difficulty * 4294967296 / 60;
+                return $difficulty * 4294967296 / $this->getAverageBlockTime();
             }
         );
     }
