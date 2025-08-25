@@ -129,7 +129,7 @@
                 <x-wave color="text-green-700" class="-mt-px"/>
             </div>
             <div class="overflow-hidden">
-                @forelse($mempoolTransactions as $txid)
+                @foreach($mempoolTransactions as $txid)
                     <a href="{{ route('transaction.show', $txid) }}" class="block px-6 py-4 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors">
                         <div class="flex items-center">
                             <div class="flex-shrink-0">
@@ -147,11 +147,10 @@
                             </div>
                         </div>
                     </a>
-                @empty
-                    <div class="px-6 py-8 text-center">
-                        <p class="text-gray-500">No transactions in mempool</p>
-                    </div>
-                @endforelse
+                @endforeach
+                <div class="px-6 py-8 text-center {{ !empty($mempoolTransactions) ? 'invisible' : '' }}">
+                    <p class="text-gray-500">no transactions in mempool</p>
+                </div>
             </div>
         </div>
     </div>
