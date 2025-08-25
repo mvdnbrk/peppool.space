@@ -1,5 +1,5 @@
 @props([
-    'title' => 'Peppool Explorer', 
+    'title' => 'Peppool Explorer',
     'network' => null,
     'og_image' => 'default-card-large.png'
 ])
@@ -30,7 +30,7 @@
     <script src="https://cdn.usefathom.com/script.js" data-site="{{ config('services.fathom.site_id') }}" defer></script>
     @endif
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="bg-gray-50 dark:bg-zinc-700 min-h-screen">
     <x-header />
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
