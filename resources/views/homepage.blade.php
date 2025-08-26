@@ -5,7 +5,7 @@
     <!-- Stats Overview -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
         <!-- Block Height Card -->
-        <div class="bg-white rounded-lg shadow p-6" aria-label="Current block height: {{ $blockHeight }}" role="status">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" aria-label="Current block height: {{ $blockHeight }}" role="status">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center">
@@ -15,8 +15,8 @@
                     </div>
                 </div>
                 <div class="ml-5">
-                    <p class="text-sm font-medium text-gray-500">Block</p>
-                    <p class="text-2xl font-bold text-gray-900" id="current-block-height">
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Block</p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white" id="current-block-height">
                         {{ $blockHeight }}
                     </p>
                 </div>
@@ -24,7 +24,7 @@
         </div>
 
         <!-- Mempool Card -->
-        <div class="bg-white rounded-lg shadow p-6" aria-label="Mempool: {{ number_format($mempool['size'] ?? 0) }} transactions waiting" role="status">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" aria-label="Mempool: {{ number_format($mempool['size'] ?? 0) }} transactions waiting" role="status">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center">
@@ -34,8 +34,8 @@
                     </div>
                 </div>
                 <div class="ml-5">
-                    <p class="text-sm font-medium text-gray-500">Mempool</p>
-                    <p class="text-2xl font-bold text-gray-900">
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Mempool</p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white">
                         <span id="mempool-count">{{ number_format($mempool['size'] ?? 0) }}</span> txs
                     </p>
                 </div>
@@ -43,7 +43,7 @@
         </div>
 
         <!-- Difficulty Card -->
-        <div class="bg-white rounded-lg shadow p-6" aria-label="Current network difficulty: {{ $difficulty }}" role="status">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" aria-label="Current network difficulty: {{ $difficulty }}" role="status">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-10 h-10 bg-purple-500 rounded-xl flex items-center justify-center">
@@ -53,14 +53,14 @@
                     </div>
                 </div>
                 <div class="ml-5">
-                    <p class="text-sm font-medium text-gray-500">Difficulty</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $difficulty }}</p>
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Difficulty</p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $difficulty }}</p>
                 </div>
             </div>
         </div>
 
         <!-- Hashrate Card -->
-        <div class="bg-white rounded-lg shadow p-6" aria-label="Current network hashrate: {{ $hashrate }}" role="status">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" aria-label="Current network hashrate: {{ $hashrate }}" role="status">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-10 h-10 bg-cyan-500 rounded-xl flex items-center justify-center">
@@ -73,14 +73,14 @@
                     </div>
                 </div>
                 <div class="ml-5">
-                    <p class="text-sm font-medium text-gray-500">Network</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $hashrate }}</p>
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Network</p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $hashrate }}</p>
                 </div>
             </div>
         </div>
 
         <!-- Chain Size Card -->
-        <div class="bg-white rounded-lg shadow p-6" aria-label="Blockchain size: {{ $chainSize }}" role="status">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" aria-label="Blockchain size: {{ $chainSize }}" role="status">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center">
@@ -90,8 +90,8 @@
                     </div>
                 </div>
                 <div class="ml-5">
-                    <p class="text-sm font-medium text-gray-500">Chain Size</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $chainSize }}</p>
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Chain Size</p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $chainSize }}</p>
                 </div>
             </div>
         </div>
