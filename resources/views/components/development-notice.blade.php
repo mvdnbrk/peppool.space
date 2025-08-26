@@ -1,11 +1,11 @@
 <!-- Development Notice Component -->
-<div id="dev-notice" class="fixed bottom-4 left-4 right-4 sm:right-auto sm:max-w-sm lg:max-w-md z-50 bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-900/40 border border-green-200 dark:border-green-700 text-green-800 dark:text-green-100 p-4 rounded-lg shadow-lg transition-all duration-300" role="alert" style="display: none;">
+<div id="dev-notice" class="fixed bottom-4 left-4 right-4 sm:right-auto sm:max-w-sm lg:max-w-md z-50 bg-green-100 dark:bg-green-800 border border-green-200 dark:border-green-600 text-green-800 dark:text-green-100 p-4 rounded-lg shadow-lg transition-all duration-300" role="alert" style="display: none;">
     <div class="flex items-start gap-3 sm:gap-4">
         <!-- Pepe Avatar -->
         <div class="flex-shrink-0 self-end">
             <button
                 id="pepe-avatar"
-                class="w-20 h-20 sm:w-24 sm:h-24 bg-green-100 dark:bg-green-900/30 rounded-lg p-2 sm:p-2.5 flex items-center justify-center hover:bg-green-200 dark:hover:bg-green-400/50 transition-colors cursor-pointer"
+                class="w-20 h-20 sm:w-24 sm:h-24 bg-green-100 dark:bg-green-700 rounded-lg p-2 sm:p-2.5 flex items-center justify-center hover:bg-green-200 dark:hover:bg-green-600 transition-colors cursor-pointer"
                 aria-label="Minimize development notice"
             >
                 <x-svg.pizza-ninjas-pepe class="w-full h-full" />
@@ -56,7 +56,7 @@
 </div>
 
 <!-- Minimized Pepe Notice -->
-<div id="pepe-minimized" class="fixed bottom-4 left-4 z-50 bg-green-100 dark:bg-green-900/30 rounded-lg p-2 shadow-lg cursor-pointer hover:bg-green-200 dark:hover:bg-green-800/50 transition-all duration-300" style="display: none;" role="button" aria-label="Open development notice">
+<div id="pepe-minimized" class="fixed bottom-4 left-4 z-50 bg-green-100 dark:bg-green-700 rounded-lg p-2 shadow-lg cursor-pointer hover:bg-green-200 dark:hover:bg-green-600 transition-all duration-300" style="display: none;" role="button" aria-label="Open development notice">
     <div class="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
         <x-svg.pizza-ninjas-pepe class="w-full h-full" />
     </div>
