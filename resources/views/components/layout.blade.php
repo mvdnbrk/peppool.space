@@ -38,5 +38,8 @@
     </main>
 
     <x-footer :network="$network" />
+    
+    <!-- Floating Theme Toggle -->
+    <x-theme-toggle />
 </body>
 </html>
