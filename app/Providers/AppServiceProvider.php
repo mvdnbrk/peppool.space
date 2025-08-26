@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Services\PepecoinRpcService;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +23,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        \Blade::component('svg.pizza-ninjas-pepe', \App\View\Components\Svg\PizzaNinjasPepe::class);
     }
 }

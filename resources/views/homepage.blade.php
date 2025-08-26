@@ -1,4 +1,5 @@
 <x-layout title="Peppool.space - Real-time Pepecoin Blockchain Explorer" :network="$network">
+
     <!-- Global Search -->
     <x-search class="mb-8" />
 
