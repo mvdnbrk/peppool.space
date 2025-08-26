@@ -10,14 +10,7 @@
             title="Light mode"
             aria-label="Switch to light theme"
         >
-            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                <!-- Sun rays -->
-                <g stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.6">
-                    <path d="M10 3V1M10 19v-2M17 10h2M1 10h2M15.66 4.34l1.41-1.41M2.93 17.07l1.41-1.41M15.66 15.66l1.41 1.41M2.93 2.93l1.41 1.41"/>
-                </g>
-                <!-- Sun center -->
-                <circle cx="10" cy="10" r="3.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
-            </svg>
+            <x-icon-sun class="w-4 h-4" />
         </button>
 
         <!-- System Mode -->
@@ -29,14 +22,7 @@
             title="System preference"
             aria-label="Switch to system theme preference"
         >
-            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                <!-- Monitor base -->
-                <rect x="2" y="4" width="16" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
-                <!-- Screen -->
-                <rect x="3.5" y="5.5" width="13" height="7" rx="0.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
-                <!-- Stand -->
-                <path d="M8 14v2h4v-2M6 16h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
+            <x-icon-computer-desktop class="w-4 h-4" />
         </button>
 
         <!-- Dark Mode -->
@@ -48,12 +34,7 @@
             title="Dark mode"
             aria-label="Switch to dark theme"
         >
-            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                <!-- Moon crescent outline -->
-                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" fill="none" stroke="currentColor" stroke-width="1.5"/>
-                <!-- Moon inner detail -->
-                <path d="M15.5 11.5A6.5 6.5 0 018.5 4.5a6.48 6.48 0 00-1.793 4.5A6.5 6.5 0 0015.5 11.5z" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
-            </svg>
+            <x-icon-moon class="w-4 h-4" />
         </button>
     </div>
 </div>

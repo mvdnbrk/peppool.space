@@ -4,9 +4,7 @@
         <div class="bg-red-50 border border-red-200 rounded-lg p-6">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <svg class="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                    </svg>
+                    <x-icon-exclamation-circle class="w-5 h-5 text-red-400" />
                 </div>
                 <div class="ml-3">
                     <h3 class="text-sm font-medium text-red-800">{{ $error }}</h3>
@@ -63,9 +61,7 @@
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
+                            <x-icon-clock class="w-5 h-5 text-white" />
                         </div>
                     </div>
                     <div class="ml-5">
@@ -79,9 +75,7 @@
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                            </svg>
+                            <x-icon-document-text class="w-5 h-5 text-white" />
                         </div>
                     </div>
                     <div class="ml-5">
@@ -95,9 +89,7 @@
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-10 h-10 bg-purple-500 rounded-xl flex items-center justify-center">
-                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M14.79,10.62L3.5,21.9L2.1,20.5L13.38,9.21L14.79,10.62M19.27,7.73L19.86,7.14L19.07,6.35L19.71,5.71L18.29,4.29L17.65,4.93L16.86,4.14L16.27,4.73C14.53,3.31 12.57,2.17 10.47,1.37L9.64,3.16C11.39,4.08 13,5.19 14.5,6.5L14,7L17,10L17.5,9.5C18.81,11 19.92,12.61 20.84,14.36L22.63,13.53C21.83,11.43 20.69,9.47 19.27,7.73Z"/>
-                            </svg>
+                            <x-icon-hammer class="w-5 h-5 text-white" />
                         </div>
                     </div>
                     <div class="ml-5">
@@ -111,9 +103,7 @@
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
-                            </svg>
+                            <x-icon-database class="w-5 h-5 text-white" />
                         </div>
                     </div>
                     <div class="ml-5">

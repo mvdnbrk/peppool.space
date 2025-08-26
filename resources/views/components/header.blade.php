@@ -28,9 +28,7 @@
 
                     <!-- API Link -->
                     <a href="{{ route('docs.api') }}" class="group flex items-center space-x-1 sm:space-x-2 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition-all duration-200 border border-green-200 hover:border-green-300">
-                        <svg class="w-3 h-3 sm:w-4 sm:h-4 text-green-600 group-hover:text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
+                        <x-icon-terminal class="w-3 h-3 sm:w-4 sm:h-4 text-green-600 group-hover:text-green-700" />
                         <span class="text-green-700 group-hover:text-green-800 font-medium text-xs sm:text-sm">API</span>
                     </a>
                 </div>
