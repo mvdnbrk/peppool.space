@@ -59,7 +59,7 @@
 
         <!-- Block Stats -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-            <div class="bg-white rounded-lg shadow p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center">
@@ -69,13 +69,13 @@
                         </div>
                     </div>
                     <div class="ml-5">
-                        <p class="text-sm font-medium text-gray-500">Block Time</p>
-                        <p class="text-lg font-bold text-gray-900">{{ date('Y-m-d H:i:s', $block['time']) }}</p>
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Block Time</p>
+                        <p class="text-lg font-bold text-gray-900 dark:text-white">{{ date('Y-m-d H:i:s', $block['time']) }}</p>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center">
@@ -85,13 +85,13 @@
                         </div>
                     </div>
                     <div class="ml-5">
-                        <p class="text-sm font-medium text-gray-500">Transactions</p>
-                        <p class="text-lg font-bold text-gray-900">{{ count($block['tx'] ?? []) }}</p>
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Transactions</p>
+                        <p class="text-lg font-bold text-gray-900 dark:text-white">{{ count($block['tx'] ?? []) }}</p>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-10 h-10 bg-purple-500 rounded-xl flex items-center justify-center">
@@ -101,13 +101,13 @@
                         </div>
                     </div>
                     <div class="ml-5">
-                        <p class="text-sm font-medium text-gray-500">Difficulty</p>
-                        <p class="text-lg font-bold text-gray-900">{{ format_difficulty($block['difficulty']) }}</p>
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Difficulty</p>
+                        <p class="text-lg font-bold text-gray-900 dark:text-white">{{ format_difficulty($block['difficulty']) }}</p>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center">
@@ -117,8 +117,8 @@
                         </div>
                     </div>
                     <div class="ml-5">
-                        <p class="text-sm font-medium text-gray-500">Size</p>
-                        <p class="text-lg font-bold text-gray-900">{{ number_format($block['size'] ?? 0) }} bytes</p>
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Size</p>
+                        <p class="text-lg font-bold text-gray-900 dark:text-white">{{ number_format($block['size'] ?? 0) }} bytes</p>
                     </div>
                 </div>
             </div>

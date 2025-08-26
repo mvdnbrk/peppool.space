@@ -68,7 +68,7 @@
 
             <!-- Transaction Stats -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-                <div class="bg-white rounded-lg shadow p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <div class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center">
@@ -78,14 +78,14 @@
                             </div>
                         </div>
                         <div class="ml-5">
-                            <p class="text-sm font-medium text-gray-500">
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
                                 @if($inBlock)
                                     Block Time
                                 @else
                                     Received Time
                                 @endif
                             </p>
-                            <p class="text-lg font-bold text-gray-900">
+                            <p class="text-lg font-bold text-gray-900 dark:text-white">
                                 @if($inBlock && $blockInfo)
                                     {{ date('Y-m-d H:i:s', $blockInfo['time']) }}
                                 @else
@@ -97,7 +97,7 @@
                 </div>
 
                 @if($inBlock && $blockInfo)
-                    <div class="bg-white rounded-lg shadow p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                         <div class="flex items-center">
                             <div class="flex-shrink-0">
                                 <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
@@ -107,14 +107,14 @@
                                 </div>
                             </div>
                             <div class="ml-5">
-                                <p class="text-sm font-medium text-gray-500">Confirmations</p>
-                                <p class="text-lg font-bold text-gray-900">{{ number_format($blockInfo['confirmations']) }}</p>
+                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Confirmations</p>
+                                <p class="text-lg font-bold text-gray-900 dark:text-white">{{ number_format($blockInfo['confirmations']) }}</p>
                             </div>
                         </div>
                     </div>
                 @endif
 
-                <div class="bg-white rounded-lg shadow p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <div class="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center">
@@ -124,14 +124,14 @@
                             </div>
                         </div>
                         <div class="ml-5">
-                            <p class="text-sm font-medium text-gray-500">Size</p>
-                            <p class="text-lg font-bold text-gray-900">{{ number_format($transaction['size'] ?? 0) }} bytes</p>
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Size</p>
+                            <p class="text-lg font-bold text-gray-900 dark:text-white">{{ number_format($transaction['size'] ?? 0) }} bytes</p>
                         </div>
                     </div>
                 </div>
 
                 @if(!$isCoinbase && $fee > 0)
-                    <div class="bg-white rounded-lg shadow p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                         <div class="flex items-center">
                             <div class="flex-shrink-0">
                                 <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
@@ -141,12 +141,12 @@
                                 </div>
                             </div>
                             <div class="ml-5">
-                                <p class="text-sm font-medium text-gray-500">Fee</p>
+                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Fee</p>
                                 @php
                                     $formattedFee = rtrim(rtrim(number_format($fee, 8, '.', ','), '0'), '.');
                                     $parts = explode('.', $formattedFee);
                                 @endphp
-                                <p class="text-lg font-bold text-gray-900">
+                                <p class="text-lg font-bold text-gray-900 dark:text-white">
                                     {{ $parts[0] }}<span class="text-sm">@if(isset($parts[1])).<span class="text-xs">{{ $parts[1] }}</span>@endif</span> <span>PEPE</span>
                                 </p>
                             </div>
