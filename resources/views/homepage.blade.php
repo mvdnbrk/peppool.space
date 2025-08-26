@@ -100,7 +100,7 @@
     <!-- Latest Blocks and Mempool -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Latest Blocks -->
-        <div class="bg-white rounded-b-lg shadow overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow overflow-hidden">
             <div class="relative">
                 <x-wave color="text-green-700" flip="true" class="-mt-px rotate-180 bg-gray-50 dark:bg-gray-900"/>
                 <div class="px-6 py-2 bg-green-700">
@@ -110,39 +110,39 @@
             </div>
             <div class="overflow-hidden">
                 @forelse($latestBlocks as $block)
-                    <a href="{{ route('block.show', $block['height']) }}" class="block px-6 py-4 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors">
+                    <a href="{{ route('block.show', $block['height']) }}" class="block px-6 py-4 border-b border-gray-100 dark:border-gray-700 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center space-x-4">
                                 <div class="flex-shrink-0">
-                                    <div class="px-3 py-1 bg-green-100 rounded-md flex items-center justify-center">
-                                        <span class="text-sm font-semibold text-green-600">{{ $block['height'] }}</span>
+                                    <div class="px-3 py-1 bg-green-100 dark:bg-green-900 rounded-md flex items-center justify-center">
+                                        <span class="text-sm font-semibold text-green-600 dark:text-green-400">{{ $block['height'] }}</span>
                                     </div>
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <p class="text-sm font-medium text-gray-900">
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white">
                                         {{ substr($block['hash'], 0, 16) }}...{{ substr($block['hash'], -8) }}
                                     </p>
-                                    <timestamp datetime="{{ \Carbon\Carbon::createFromTimestamp($block['time'])->toAtomString() }}" class="text-sm text-gray-500">
+                                    <timestamp datetime="{{ \Carbon\Carbon::createFromTimestamp($block['time'])->toAtomString() }}" class="text-sm text-gray-500 dark:text-gray-400">
                                         {{ \Carbon\Carbon::createFromTimestamp($block['time'])->diffForHumans() }}
                                     </timestamp>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <p class="text-sm font-medium text-gray-900">{{ $block['tx_count'] }} txs</p>
-                                <p class="text-sm text-gray-500">{{ number_format($block['size'] / 1024, 1) }} KB</p>
+                                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $block['tx_count'] }} txs</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ number_format($block['size'] / 1024, 1) }} KB</p>
                             </div>
                         </div>
                     </a>
                 @empty
                     <div class="px-6 py-8 text-center">
-                        <p class="text-gray-500">No blocks available</p>
+                        <p class="text-gray-500 dark:text-gray-400">No blocks available</p>
                     </div>
                 @endforelse
             </div>
         </div>
 
         <!-- Mempool Transactions -->
-        <div class="bg-white rounded-b-lg shadow overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow overflow-hidden">
             <div class="relative">
                 <x-wave color="text-green-700" class="-mt-px rotate-180 bg-gray-50 dark:bg-gray-900"/>
                 <div class="px-6 py-2 bg-green-700">
@@ -152,26 +152,26 @@
             </div>
             <div class="overflow-hidden">
                 @foreach($mempoolTransactions as $txid)
-                    <a href="{{ route('transaction.show', $txid) }}" class="block px-6 py-4 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors">
+                    <a href="{{ route('transaction.show', $txid) }}" class="block px-6 py-4 border-b border-gray-100 dark:border-gray-700 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                         <div class="flex items-center">
                             <div class="flex-shrink-0">
-                                <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                <div class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/>
                                     </svg>
                                 </div>
                             </div>
                             <div class="ml-4 min-w-0 flex-1">
-                                <p class="text-sm font-medium text-gray-900 truncate">
+                                <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
                                     {{ substr($txid, 0, 16) }}...{{ substr($txid, -8) }}
                                 </p>
-                                <p class="text-sm text-gray-500">Unconfirmed</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Unconfirmed</p>
                             </div>
                         </div>
                     </a>
                 @endforeach
                 <div class="px-6 py-8 text-center {{ $mempoolTransactions->isEmpty() ? 'visible' : 'invisible' }}">
-                    <p class="text-gray-500">no transactions in mempool</p>
+                    <p class="text-gray-500 dark:text-gray-400">no transactions in mempool</p>
                 </div>
             </div>
         </div>
