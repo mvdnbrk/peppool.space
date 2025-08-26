@@ -1,6 +1,6 @@
 <x-layout title="Pepecoin API Documentation" og_image="pepecoin-api.png">
-        <div class="mb-6 md:mb-8 text-gray-600">
-            <h1 class="text-2xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4">Pepecoin API Documentation</h1>
+        <div class="mb-6 md:mb-8 text-gray-600 dark:text-gray-400">
+            <h1 class="text-2xl md:text-4xl font-bold text-gray-900 dark:text-gray-300 mb-3 md:mb-4">Pepecoin API Documentation</h1>
             <p class="text-sm md:text-base">
                 The Peppool.space API provides programmatic access to Pepecoin blockchain data and market information.
             </p>
@@ -9,12 +9,12 @@
             </p>
         </div>
 
-        <div class="mb-6 md:mb-8 p-4 md:p-6 bg-gray-50 rounded-lg">
+        <div class="mb-6 md:mb-8 p-4 md:p-6 bg-gray-50 dark:bg-white rounded-lg">
             <h2 class="text-lg md:text-xl font-semibold mb-2">Base URL</h2>
             <code class="text-xs md:text-sm bg-white px-2 md:px-3 py-1 rounded border break-all">{{ url('/api') }}</code>
         </div>
 
-        <div class="mb-6 md:mb-8 p-4 md:p-6 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <div class="mb-6 md:mb-8 p-4 md:p-6 bg-yellow-50 dark:bg-white border border-yellow-200 dark:border-gray-200 rounded-lg">
             <h2 class="text-lg md:text-xl font-semibold mb-2 text-yellow-800">Rate Limiting</h2>
             <p class="text-sm md:text-base text-yellow-700">All API endpoints are rate-limited to <strong>60 requests per minute</strong> per IP address.</p>
         </div>
@@ -22,7 +22,7 @@
         <!-- Endpoints -->
         <div class="space-y-8">
             <!-- Block Hash Endpoint -->
-            <div class="border border-gray-200 rounded-lg p-4 md:p-6">
+            <div class="border border-gray-200 rounded-lg p-4 md:p-6 bg-white">
                 <div class="flex flex-wrap items-center mb-3 md:mb-4 gap-2">
                     <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">GET</span>
                     <code class="text-base md:text-lg font-mono break-all">/blocks/tip/hash</code>
@@ -47,7 +47,7 @@
             </div>
 
             <!-- Block Height Endpoint -->
-            <div class="border border-gray-200 rounded-lg p-6">
+            <div class="border border-gray-200 rounded-lg p-6 bg-white">
                 <div class="flex items-center mb-4">
                     <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded mr-3">GET</span>
                     <code class="text-lg font-mono">/blocks/tip/height</code>
@@ -72,7 +72,7 @@
             </div>
 
             <!-- Mempool Endpoint -->
-            <div class="border border-gray-200 rounded-lg p-6">
+            <div class="border border-gray-200 rounded-lg p-6 bg-white">
                 <div class="flex items-center mb-4">
                     <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded mr-3">GET</span>
                     <code class="text-lg font-mono">/mempool</code>
@@ -127,7 +127,7 @@
             </div>
 
             <!-- Mempool TXIDs Endpoint -->
-            <div class="border border-gray-200 rounded-lg p-6">
+            <div class="border border-gray-200 rounded-lg p-6 bg-white">
                 <div class="flex items-center mb-4">
                     <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded mr-3">GET</span>
                     <code class="text-lg font-mono">/mempool/txids</code>
@@ -156,7 +156,7 @@
             </div>
 
             <!-- Prices Endpoint -->
-            <div class="border border-gray-200 rounded-lg p-6">
+            <div class="border border-gray-200 rounded-lg p-6 bg-white">
                 <div class="flex items-center mb-4">
                     <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded mr-3">GET</span>
                     <code class="text-lg font-mono">/prices</code>
@@ -218,7 +218,7 @@
         </div>
 
         <!-- Error Responses -->
-        <div class="mt-8 p-6 bg-red-50 border border-red-200 rounded-lg">
+        <div class="mt-8 p-6 bg-red-50 dark:bg-white border border-red-200 dark:border-gray-200 rounded-lg">
             <h2 class="text-xl font-semibold mb-4 text-red-800">Error Responses</h2>
             <div class="space-y-6 md:space-y-8">
                 <div>
