@@ -24,7 +24,7 @@
     <meta property="twitter:description" content="Real-time Pepecoin blockchain explorer. View blocks, transactions, addresses, and more on the Pepecoin network.">
     <meta property="twitter:image" content="https://cdn.peppool.space/opengraph/{{ $og_image }}">
 
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/development-notice.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @if(config('services.fathom.site_id'))
     <script src="https://cdn.usefathom.com/script.js" data-site="{{ config('services.fathom.site_id') }}" defer></script>
