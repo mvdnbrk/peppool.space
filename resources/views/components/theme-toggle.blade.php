@@ -3,15 +3,18 @@
     x-data="{
         showTooltip: false,
         tooltipText: '',
-        hoveredButton: null,
+        tooltipPosition: { x: 0, y: 0 },
         setTooltip(text, buttonElement) {
             this.tooltipText = text;
-            this.hoveredButton = buttonElement;
+            const rect = buttonElement.getBoundingClientRect();
+            this.tooltipPosition = {
+                x: rect.left - 16,
+                y: rect.top + window.scrollY + rect.height / 2
+            };
             this.showTooltip = true;
         },
         hideTooltip() {
             this.showTooltip = false;
-            this.hoveredButton = null;
         }
     }"
     class="fixed bottom-4 right-4 z-50 hidden md:block" 
@@ -19,7 +22,7 @@
 >
     <!-- Sleek Tooltip with Arrow -->
     <div 
-        x-show="showTooltip && hoveredButton"
+        x-show="showTooltip"
         x-transition:enter="transition ease-out duration-300"
         x-transition:enter-start="opacity-0 scale-95 translate-x-2"
         x-transition:enter-end="opacity-100 scale-100 translate-x-0"
@@ -27,7 +30,7 @@
         x-transition:leave-start="opacity-100 scale-100 translate-x-0"
         x-transition:leave-end="opacity-0 scale-95 translate-x-2"
         class="fixed z-60 pointer-events-none"
-        :style="hoveredButton ? `right: ${window.innerWidth - hoveredButton.getBoundingClientRect().left + 20}px; top: ${hoveredButton.getBoundingClientRect().top + window.scrollY + hoveredButton.offsetHeight / 2}px; transform: translateY(-50%);` : ''"
+        :style="`left: ${tooltipPosition.x}px; top: ${tooltipPosition.y}px; transform: translate(-100%, -50%);`"
         x-cloak
     >
         <!-- Tooltip Content -->
