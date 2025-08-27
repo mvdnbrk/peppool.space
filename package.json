@@ -7,7 +7,9 @@
         "dev": "vite"
     },
     "devDependencies": {
+        "@alpinejs/focus": "^3.14.9",
         "@tailwindcss/vite": "^4.1.12",
+        "alpinejs": "^3.14.9",
         "axios": "^1.11.0",
         "concurrently": "^9.0.1",
         "laravel-vite-plugin": "^2.0.0",
