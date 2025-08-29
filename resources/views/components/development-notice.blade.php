@@ -24,7 +24,7 @@
                     class="ml-2 text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-200 transition-colors p-0.5 cursor-pointer hover:cursor-pointer"
                     aria-label="Minimize development notice"
                 >
-                    <x-icon-close class="w-4 h-4" />
+                    <x-icon-minus class="w-4 h-4" />
                 </button>
             </div>
 
