@@ -6,83 +6,44 @@
     <!-- Stats Overview -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
         <!-- Block Height Card -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" aria-label="Current block height: {{ $blockHeight }}" role="status">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <div class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center">
-                        <x-icon-cube class="w-5 h-5 text-white" />
-                    </div>
-                </div>
-                <div class="ml-5">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Block</p>
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white" id="current-block-height">
-                        {{ $blockHeight }}
-                    </p>
-                </div>
-            </div>
-        </div>
+        <x-stat-card aria-label="Current block height: {{ $blockHeight }}" icon-bg="bg-blue-500" label="Block">
+            <x-slot:icon>
+                <x-icon-cube class="w-5 h-5 text-white" />
+            </x-slot:icon>
+            <span class="text-2xl" id="current-block-height">{{ $blockHeight }}</span>
+        </x-stat-card>
 
         <!-- Mempool Card -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" aria-label="Mempool: {{ number_format($mempool['size'] ?? 0) }} transactions waiting" role="status">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <div class="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center">
-                        <x-icon-refresh class="w-5 h-5 text-white" />
-                    </div>
-                </div>
-                <div class="ml-5">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Mempool</p>
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white">
-                        <span id="mempool-count">{{ number_format($mempool['size'] ?? 0) }}</span> txs
-                    </p>
-                </div>
-            </div>
-        </div>
+        <x-stat-card aria-label="Mempool: {{ number_format($mempool['size'] ?? 0) }} transactions waiting" icon-bg="bg-green-500" label="Mempool">
+            <x-slot:icon>
+                <x-icon-refresh class="w-5 h-5 text-white" />
+            </x-slot:icon>
+            <span class="text-2xl"><span id="mempool-count">{{ number_format($mempool['size'] ?? 0) }}</span> txs</span>
+        </x-stat-card>
 
         <!-- Difficulty Card -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" aria-label="Current network difficulty: {{ $difficulty }}" role="status">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <div class="w-10 h-10 bg-purple-500 rounded-xl flex items-center justify-center">
-                        <x-icon-hammer class="w-5 h-5 text-white" />
-                    </div>
-                </div>
-                <div class="ml-5">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Difficulty</p>
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $difficulty }}</p>
-                </div>
-            </div>
-        </div>
+        <x-stat-card aria-label="Current network difficulty: {{ $difficulty }}" icon-bg="bg-purple-500" label="Difficulty">
+            <x-slot:icon>
+                <x-icon-hammer class="w-5 h-5 text-white" />
+            </x-slot:icon>
+            <span class="text-2xl">{{ $difficulty }}</span>
+        </x-stat-card>
 
         <!-- Hashrate Card -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" aria-label="Current network hashrate: {{ $hashrate }}" role="status">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <div class="w-10 h-10 bg-cyan-500 rounded-xl flex items-center justify-center">
-                        <x-icon-share class="w-5 h-5 text-white" />
-                    </div>
-                </div>
-                <div class="ml-5">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Network</p>
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $hashrate }}</p>
-                </div>
-            </div>
-        </div>
+        <x-stat-card aria-label="Current network hashrate: {{ $hashrate }}" icon-bg="bg-cyan-500" label="Network">
+            <x-slot:icon>
+                <x-icon-share class="w-5 h-5 text-white" />
+            </x-slot:icon>
+            <span class="text-2xl">{{ $hashrate }}</span>
+        </x-stat-card>
 
         <!-- Chain Size Card -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" aria-label="Blockchain size: {{ $chainSize }}" role="status">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <div class="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center">
-                        <x-icon-database class="w-5 h-5 text-white" />
-                    </div>
-                </div>
-                <div class="ml-5">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Chain Size</p>
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $chainSize }}</p>
-                </div>
-            </div>
-        </div>
+        <x-stat-card aria-label="Blockchain size: {{ $chainSize }}" icon-bg="bg-orange-500" label="Chain Size">
+            <x-slot:icon>
+                <x-icon-database class="w-5 h-5 text-white" />
+            </x-slot:icon>
+            <span class="text-2xl">{{ $chainSize }}</span>
+        </x-stat-card>
     </div>
 
     <!-- Latest Blocks and Mempool -->

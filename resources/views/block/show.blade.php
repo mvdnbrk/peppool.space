@@ -57,66 +57,38 @@
 
         <!-- Block Stats -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center">
-                            <x-icon-clock class="w-5 h-5 text-white" />
-                        </div>
-                    </div>
-                    <div class="ml-5">
-                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Mined</p>
-                        <timestamp
-                            x-data="timestamp"
-                            datetime="{{ \Carbon\Carbon::createFromTimestamp($block['time'])->toAtomString() }}"
-                            x-text="relativeTime"
-                            title="{{ date('Y-m-d H:i:s', $block['time']) }}"
-                            class="text-lg font-bold text-gray-900 dark:text-white"></timestamp>
-                    </div>
-                </div>
-            </div>
+            <x-stat-card icon-bg="bg-blue-500" label="Mined">
+                <x-slot:icon>
+                    <x-icon-clock class="w-5 h-5 text-white" />
+                </x-slot:icon>
+                <timestamp
+                    x-data="timestamp"
+                    datetime="{{ \Carbon\Carbon::createFromTimestamp($block['time'])->toAtomString() }}"
+                    x-text="relativeTime"
+                    title="{{ date('Y-m-d H:i:s', $block['time']) }}"
+                    class="text-lg font-bold text-gray-900 dark:text-white"></timestamp>
+            </x-stat-card>
 
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center">
-                            <x-icon-document-text class="w-5 h-5 text-white" />
-                        </div>
-                    </div>
-                    <div class="ml-5">
-                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Transactions</p>
-                        <p class="text-lg font-bold text-gray-900 dark:text-white">{{ count($block['tx'] ?? []) }}</p>
-                    </div>
-                </div>
-            </div>
+            <x-stat-card icon-bg="bg-green-500" label="Transactions">
+                <x-slot:icon>
+                    <x-icon-document-text class="w-5 h-5 text-white" />
+                </x-slot:icon>
+                <span class="text-lg">{{ count($block['tx'] ?? []) }}</span>
+            </x-stat-card>
 
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="w-10 h-10 bg-purple-500 rounded-xl flex items-center justify-center">
-                            <x-icon-hammer class="w-5 h-5 text-white" />
-                        </div>
-                    </div>
-                    <div class="ml-5">
-                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Difficulty</p>
-                        <p class="text-lg font-bold text-gray-900 dark:text-white">{{ format_difficulty($block['difficulty']) }}</p>
-                    </div>
-                </div>
-            </div>
+            <x-stat-card icon-bg="bg-purple-500" label="Difficulty">
+                <x-slot:icon>
+                    <x-icon-hammer class="w-5 h-5 text-white" />
+                </x-slot:icon>
+                <span class="text-lg">{{ format_difficulty($block['difficulty']) }}</span>
+            </x-stat-card>
 
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center">
-                            <x-icon-database class="w-5 h-5 text-white" />
-                        </div>
-                    </div>
-                    <div class="ml-5">
-                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Size</p>
-                        <p class="text-lg font-bold text-gray-900 dark:text-white">{{ number_format($block['size'] ?? 0) }} bytes</p>
-                    </div>
-                </div>
-            </div>
+            <x-stat-card icon-bg="bg-orange-500" label="Size">
+                <x-slot:icon>
+                    <x-icon-database class="w-5 h-5 text-white" />
+                </x-slot:icon>
+                <span class="text-lg">{{ number_format($block['size'] ?? 0) }} bytes</span>
+            </x-stat-card>
         </div>
 
         <!-- Transactions -->

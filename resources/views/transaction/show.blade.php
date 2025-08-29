@@ -66,86 +66,52 @@
 
             <!-- Transaction Stats -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <div class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center">
-                                <x-icon-clock class="w-5 h-5 text-white" />
-                            </div>
-                        </div>
-                        <div class="ml-5">
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                @if($inBlock)
-                                    Time
-                                @else
-                                    Received
-                                @endif
-                            </p>
-                            @php
-                                $ts = $inBlock && $blockInfo
-                                    ? \Carbon\Carbon::createFromTimestamp($blockInfo['time'])
-                                    : \Carbon\Carbon::createFromTimestamp($transaction['timereceived'] ?? $transaction['time'] ?? time());
-                            @endphp
-                            <timestamp
-                                x-data="timestamp"
-                                datetime="{{ $ts->toAtomString() }}"
-                                x-text="relativeTime"
-                                title="{{ $ts->format('Y-m-d H:i:s') }}"
-                                class="text-lg font-bold text-gray-900 dark:text-white"></timestamp>
-                        </div>
-                    </div>
-                </div>
+                <x-stat-card icon-bg="bg-blue-500" label="{{ $inBlock ? 'Time' : 'Received' }}">
+                    <x-slot:icon>
+                        <x-icon-clock class="w-5 h-5 text-white" />
+                    </x-slot:icon>
+                    @php
+                        $ts = $inBlock && $blockInfo
+                            ? \Carbon\Carbon::createFromTimestamp($blockInfo['time'])
+                            : \Carbon\Carbon::createFromTimestamp($transaction['timereceived'] ?? $transaction['time'] ?? time());
+                    @endphp
+                    <timestamp
+                        x-data="timestamp"
+                        datetime="{{ $ts->toAtomString() }}"
+                        x-text="relativeTime"
+                        title="{{ $ts->format('Y-m-d H:i:s') }}"
+                        class="text-lg font-bold text-gray-900 dark:text-white"></timestamp>
+                </x-stat-card>
 
                 @if($inBlock && $blockInfo)
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-                                    <x-icon-check-circle class="w-6 h-6 text-green-600" />
-                                </div>
-                            </div>
-                            <div class="ml-5">
-                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Confirmations</p>
-                                <p class="text-lg font-bold text-gray-900 dark:text-white">{{ number_format($blockInfo['confirmations']) }}</p>
-                            </div>
-                        </div>
-                    </div>
+                    <x-stat-card icon-bg="bg-green-500" label="Confirmations">
+                        <x-slot:icon>
+                            <x-icon-check-circle class="w-5 h-5 text-white" />
+                        </x-slot:icon>
+                        <span class="text-lg">{{ number_format($blockInfo['confirmations']) }}</span>
+                    </x-stat-card>
                 @endif
 
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <div class="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center">
-                                <x-icon-database class="w-5 h-5 text-white" />
-                            </div>
-                        </div>
-                        <div class="ml-5">
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Size</p>
-                            <p class="text-lg font-bold text-gray-900 dark:text-white">{{ number_format($transaction['size'] ?? 0) }} bytes</p>
-                        </div>
-                    </div>
-                </div>
+                <x-stat-card icon-bg="bg-orange-500" label="Size">
+                    <x-slot:icon>
+                        <x-icon-database class="w-5 h-5 text-white" />
+                    </x-slot:icon>
+                    <span class="text-lg">{{ number_format($transaction['size'] ?? 0) }} bytes</span>
+                </x-stat-card>
 
                 @if(!$isCoinbase && $fee > 0)
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                                    <x-icon-currency-dollar class="w-6 h-6 text-blue-600" />
-                                </div>
-                            </div>
-                            <div class="ml-5">
-                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Fee</p>
-                                @php
-                                    $formattedFee = rtrim(rtrim(number_format($fee, 8, '.', ','), '0'), '.');
-                                    $parts = explode('.', $formattedFee);
-                                @endphp
-                                <p class="text-lg font-bold text-gray-900 dark:text-white">
-                                    {{ $parts[0] }}<span class="text-sm">@if(isset($parts[1])).<span class="text-xs">{{ $parts[1] }}</span>@endif</span> <span>PEPE</span>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    <x-stat-card icon-bg="bg-blue-500/10" label="Fee">
+                        <x-slot:icon>
+                            <x-icon-currency-dollar class="w-5 h-5 text-blue-600" />
+                        </x-slot:icon>
+                        @php
+                            $formattedFee = rtrim(rtrim(number_format($fee, 8, '.', ','), '0'), '.');
+                            $parts = explode('.', $formattedFee);
+                        @endphp
+                        <span class="text-lg font-bold text-gray-900 dark:text-white">
+                            {{ $parts[0] }}<span class="text-sm">@if(isset($parts[1])).<span class="text-xs">{{ $parts[1] }}</span>@endif</span> <span>PEPE</span>
+                        </span>
+                    </x-stat-card>
                 @endif
             </div>
 
