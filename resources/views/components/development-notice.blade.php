@@ -8,7 +8,7 @@
                 class="w-20 h-20 sm:w-24 sm:h-24 bg-green-100 dark:bg-green-700 rounded-lg p-2 sm:p-2.5 flex items-center justify-center hover:bg-green-200 dark:hover:bg-green-600 transition-colors cursor-pointer"
                 aria-label="Minimize development notice"
             >
-            <x-custom-pizza-ninjas-pepe/>
+                <x-custom-pizza-ninjas-pepe/>
             </button>
         </div>
 
