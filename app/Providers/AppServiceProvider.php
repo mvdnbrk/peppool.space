@@ -8,9 +8,6 @@ use Illuminate\Support\Facades\Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         $this->app->singleton(PepecoinRpcService::class, function ($app) {
@@ -18,11 +15,8 @@ class AppServiceProvider extends ServiceProvider
         });
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        \Blade::component('svg.pizza-ninjas-pepe', \App\View\Components\Svg\PizzaNinjasPepe::class);
+        Blade::component('views.components.svg.pizza-ninjas-pepe', \App\View\Components\Svg\PizzaNinjasPepe::class);
     }
 }
