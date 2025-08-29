@@ -8,7 +8,6 @@ Alpine.start();
 
 import './bootstrap';
 import './timestamps';
-import './development-notice';
 
 const REST_BASE = import.meta.env.VITE_APP_URL ? `${import.meta.env.VITE_APP_URL}/api` : '/api';
 const POLL_HEIGHT_INTERVAL = 30000; // 30 seconds for polling
