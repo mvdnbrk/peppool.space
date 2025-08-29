@@ -17,6 +17,6 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        Blade::component('views.components.svg.pizza-ninjas-pepe', \App\View\Components\Svg\PizzaNinjasPepe::class);
+        //
     }
 }

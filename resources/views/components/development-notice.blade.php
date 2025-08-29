@@ -8,7 +8,7 @@
                 class="w-20 h-20 sm:w-24 sm:h-24 bg-green-100 dark:bg-green-700 rounded-lg p-2 sm:p-2.5 flex items-center justify-center hover:bg-green-200 dark:hover:bg-green-600 transition-colors cursor-pointer"
                 aria-label="Minimize development notice"
             >
-                <x-views.components.svg.pizza-ninjas-pepe class="w-full h-full" />
+            <x-custom-pizza-ninjas-pepe/>
             </button>
         </div>
 
@@ -54,6 +54,6 @@
 <!-- Minimized Pepe Notice -->
 <div id="pepe-minimized" class="fixed bottom-4 left-4 z-50 bg-green-100 dark:bg-green-700 rounded-lg p-2 shadow-lg cursor-pointer hover:bg-green-200 dark:hover:bg-green-600 transition-all duration-300" style="display: none;" role="button" aria-label="Open development notice">
     <div class="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
-        <x-views.components.svg.pizza-ninjas-pepe class="w-full h-full" />
+        <x-custom-pizza-ninjas-pepe/>
     </div>
 </div>
