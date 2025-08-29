@@ -4,17 +4,29 @@
         showTooltip: false,
         tooltipText: '',
         tooltipPosition: { x: 0, y: 0 },
+        activeButton: null,
+        init() {
+            // Update tooltip position on scroll
+            window.addEventListener('scroll', this.updateTooltipPosition.bind(this), { passive: true });
+        },
         setTooltip(text, buttonElement) {
             this.tooltipText = text;
-            const rect = buttonElement.getBoundingClientRect();
-            this.tooltipPosition = {
-                x: rect.left - 16,
-                y: rect.top + window.scrollY + rect.height / 2
-            };
+            this.activeButton = buttonElement;
+            this.updateTooltipPosition();
             this.showTooltip = true;
         },
         hideTooltip() {
             this.showTooltip = false;
+            this.activeButton = null;
+        },
+        updateTooltipPosition() {
+            if (this.activeButton) {
+                const rect = this.activeButton.getBoundingClientRect();
+                this.tooltipPosition = {
+                    x: rect.left - 16,
+                    y: rect.top + rect.height / 2
+                };
+            }
         }
     }"
     class="fixed bottom-4 right-4 z-50 hidden md:block" 
@@ -55,6 +67,7 @@
             @mouseleave="hideTooltip"
             @focus="setTooltip('Light mode', $el)"
             @blur="hideTooltip"
+            @scroll.window="showTooltip && setTooltip('Light mode', $el)"
             data-theme="light"
             aria-label="Switch to light theme"
         >
@@ -85,6 +98,7 @@
             @mouseleave="hideTooltip"
             @focus="setTooltip('Dark mode', $el)"
             @blur="hideTooltip"
+            @scroll.window="showTooltip && setTooltip('Dark mode', $el)"
             data-theme="dark"
             aria-label="Switch to dark theme"
         >
