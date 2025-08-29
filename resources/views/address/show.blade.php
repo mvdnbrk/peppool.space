@@ -71,7 +71,12 @@
                             </a>
                             <div class="mt-1 text-sm text-gray-500">
                                 @if($tx['time'])
-                                    {{ \Carbon\Carbon::createFromTimestamp($tx['time'])->toDateTimeString() }}
+                                    @php $ts = \Carbon\Carbon::createFromTimestamp($tx['time']); @endphp
+                                    <timestamp
+                                        x-data="timestamp"
+                                        datetime="{{ $ts->toAtomString() }}"
+                                        x-text="relativeTime"
+                                        title="{{ $ts->format('Y-m-d H:i:s') }}"></timestamp>
                                 @else
                                     Unconfirmed
                                 @endif

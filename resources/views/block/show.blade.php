@@ -65,8 +65,13 @@
                         </div>
                     </div>
                     <div class="ml-5">
-                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Block Time</p>
-                        <p class="text-lg font-bold text-gray-900 dark:text-white">{{ date('Y-m-d H:i:s', $block['time']) }}</p>
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Mined</p>
+                        <timestamp
+                            x-data="timestamp"
+                            datetime="{{ \Carbon\Carbon::createFromTimestamp($block['time'])->toAtomString() }}"
+                            x-text="relativeTime"
+                            title="{{ date('Y-m-d H:i:s', $block['time']) }}"
+                            class="text-lg font-bold text-gray-900 dark:text-white"></timestamp>
                     </div>
                 </div>
             </div>

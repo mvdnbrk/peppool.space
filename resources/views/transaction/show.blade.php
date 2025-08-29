@@ -76,18 +76,22 @@
                         <div class="ml-5">
                             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
                                 @if($inBlock)
-                                    Block Time
+                                    Time
                                 @else
-                                    Received Time
+                                    Received
                                 @endif
                             </p>
-                            <p class="text-lg font-bold text-gray-900 dark:text-white">
-                                @if($inBlock && $blockInfo)
-                                    {{ date('Y-m-d H:i:s', $blockInfo['time']) }}
-                                @else
-                                    {{ date('Y-m-d H:i:s', $transaction['time'] ?? time()) }}
-                                @endif
-                            </p>
+                            @php
+                                $ts = $inBlock && $blockInfo
+                                    ? \Carbon\Carbon::createFromTimestamp($blockInfo['time'])
+                                    : \Carbon\Carbon::createFromTimestamp($transaction['time'] ?? time());
+                            @endphp
+                            <timestamp
+                                x-data="timestamp"
+                                datetime="{{ $ts->toAtomString() }}"
+                                x-text="relativeTime"
+                                title="{{ $ts->format('Y-m-d H:i:s') }}"
+                                class="text-lg font-bold text-gray-900 dark:text-white"></timestamp>
                         </div>
                     </div>
                 </div>

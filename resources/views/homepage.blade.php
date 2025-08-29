@@ -110,9 +110,11 @@
                                     <p class="text-sm font-medium text-gray-900 dark:text-white">
                                         {{ substr($block['hash'], 0, 16) }}...{{ substr($block['hash'], -8) }}
                                     </p>
-                                    <timestamp datetime="{{ \Carbon\Carbon::createFromTimestamp($block['time'])->toAtomString() }}" class="text-sm text-gray-500 dark:text-gray-400">
-                                        {{ \Carbon\Carbon::createFromTimestamp($block['time'])->diffForHumans() }}
-                                    </timestamp>
+                                    <timestamp
+                                        x-data="timestamp"
+                                        datetime="{{ \Carbon\Carbon::createFromTimestamp($block['time'])->toAtomString() }}"
+                                        x-text="relativeTime"
+                                        class="text-sm text-gray-500 dark:text-gray-400"></timestamp>
                                 </div>
                             </div>
                             <div class="text-right">
