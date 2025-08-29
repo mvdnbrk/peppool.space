@@ -29,7 +29,7 @@ class PepecoinExplorerService
     public function getAverageBlockTime(int $blockWindow = 50): float
     {
         return Cache::remember(
-            $this->getCacheKey(__FUNCTION__ . '_' . $blockWindow),
+            $this->getCacheKey(__FUNCTION__.'_'.$blockWindow),
             Carbon::now()->addMinutes(10),
             function () use ($blockWindow): float {
                 $blocks = Block::latest('created_at')
@@ -45,6 +45,7 @@ class PepecoinExplorerService
                     ->zip($blocks->take($blocks->count() - 1))
                     ->map(function ($pair) {
                         [$current, $previous] = $pair;
+
                         return $current->created_at->diffInSeconds($previous->created_at);
                     });
 

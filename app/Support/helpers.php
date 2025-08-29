@@ -2,8 +2,9 @@
 
 use Illuminate\Support\Number;
 
-if (!function_exists('format_hashrate')) {
-    function format_hashrate(float $hashrate): string {
+if (! function_exists('format_hashrate')) {
+    function format_hashrate(float $hashrate): string
+    {
         $units = ['H/s', 'KH/s', 'MH/s', 'GH/s', 'TH/s', 'PH/s', 'EH/s'];
         $i = 0;
 
@@ -12,12 +13,13 @@ if (!function_exists('format_hashrate')) {
             $i++;
         }
 
-        return Number::format($hashrate, 2) . ' ' . $units[$i];
+        return Number::format($hashrate, 2).' '.$units[$i];
     }
 }
 
-if (!function_exists('format_difficulty')) {
-    function format_difficulty(float $difficulty): string {
+if (! function_exists('format_difficulty')) {
+    function format_difficulty(float $difficulty): string
+    {
         $units = ['', 'K', 'M', 'G', 'T', 'P', 'E'];
         $i = 0;
 
@@ -26,6 +28,6 @@ if (!function_exists('format_difficulty')) {
             $i++;
         }
 
-        return Number::format($difficulty, 2) . ' ' . $units[$i];
+        return Number::format($difficulty, 2).' '.$units[$i];
     }
 }
