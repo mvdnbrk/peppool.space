@@ -84,7 +84,7 @@
                             @php
                                 $ts = $inBlock && $blockInfo
                                     ? \Carbon\Carbon::createFromTimestamp($blockInfo['time'])
-                                    : \Carbon\Carbon::createFromTimestamp($transaction['time'] ?? time());
+                                    : \Carbon\Carbon::createFromTimestamp($transaction['timereceived'] ?? $transaction['time'] ?? time());
                             @endphp
                             <timestamp
                                 x-data="timestamp"

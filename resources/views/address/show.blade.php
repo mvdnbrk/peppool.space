@@ -70,8 +70,8 @@
                                 {{ $tx['txid'] }}
                             </a>
                             <div class="mt-1 text-sm text-gray-500">
-                                @if($tx['time'])
-                                    @php $ts = \Carbon\Carbon::createFromTimestamp($tx['time']); @endphp
+                                @if($tx['time'] ?? $tx['timereceived'] ?? false)
+                                    @php $ts = \Carbon\Carbon::createFromTimestamp($tx['timereceived'] ?? $tx['time']); @endphp
                                     <timestamp
                                         x-data="timestamp"
                                         datetime="{{ $ts->toAtomString() }}"
