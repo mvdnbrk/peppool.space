@@ -102,25 +102,49 @@
                 <x-wave color="text-green-700" class="-mt-px"/>
             </div>
             <div class="overflow-hidden">
-                @foreach($mempoolTransactions as $txid)
-                    <a href="{{ route('transaction.show', $txid) }}" class="block px-6 py-4 border-b border-gray-100 dark:border-gray-700 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <div class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
-                                    <x-icon-refresh class="w-4 h-4 text-green-600 dark:text-green-400" />
+                <div
+                    x-data='{
+                        txids: @json($mempoolTransactions),
+                        updateCount() {
+                            const el = document.getElementById("mempool-count");
+                            if (el) el.innerText = (this.txids.length || 0).toLocaleString("en-US");
+                        },
+                        async fetchTxids() {
+                            try {
+                                const res = await fetch("{{ route('api.mempool.txids') }}");
+                                if (!res.ok) return;
+                                const data = await res.json();
+                                if (!Array.isArray(data)) return;
+                                // Update only if changed to avoid flicker
+                                const sameLength = this.txids.length === data.length;
+                                const sameContent = sameLength && this.txids.every((v, i) => v === data[i]);
+                                if (!sameContent) { this.txids = data; this.updateCount(); }
+                            } catch (_) {
+                                // swallow errors; keep current list
+                            }
+                        }
+                    }'
+                    x-init='updateCount(); fetchTxids(); const i=setInterval(()=>fetchTxids(), 10000); $el._mempoolInt=i;'
+                    x-effect='() => { if (document.hidden && $el._mempoolInt) { clearInterval($el._mempoolInt); $el._mempoolInt=null; } else if (!document.hidden && !$el._mempoolInt) { $el._mempoolInt=setInterval(()=>fetchTxids(), 10000); } }'
+                >
+                    <template x-for="txid in txids" :key="txid">
+                        <a :href="`/tx/${txid}`" class="block px-6 py-4 border-b border-gray-100 dark:border-gray-700 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <div class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
+                                        <x-icon-refresh class="w-4 h-4 text-green-600 dark:text-green-400" />
+                                    </div>
+                                </div>
+                                <div class="ml-4 min-w-0 flex-1">
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate" x-text="txid.substring(0,16) + '...' + txid.substring(txid.length-8)"></p>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Unconfirmed</p>
                                 </div>
                             </div>
-                            <div class="ml-4 min-w-0 flex-1">
-                                <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
-                                    {{ substr($txid, 0, 16) }}...{{ substr($txid, -8) }}
-                                </p>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Unconfirmed</p>
-                            </div>
-                        </div>
-                    </a>
-                @endforeach
-                <div class="px-6 py-8 text-center {{ $mempoolTransactions->isEmpty() ? 'visible' : 'invisible' }}">
-                    <p class="text-gray-500 dark:text-gray-400">no transactions in mempool</p>
+                        </a>
+                    </template>
+                    <div class="px-6 py-8 text-center" x-show="txids.length === 0">
+                        <p class="text-gray-500 dark:text-gray-400">no transactions in mempool</p>
+                    </div>
                 </div>
             </div>
         </div>

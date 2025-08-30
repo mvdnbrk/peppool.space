@@ -11,12 +11,10 @@ import './timestamps';
 
 const REST_BASE = import.meta.env.VITE_APP_URL ? `${import.meta.env.VITE_APP_URL}/api` : '/api';
 const POLL_HEIGHT_INTERVAL = 30000; // 30 seconds for polling
-const POLL_MEMPOOL_INTERVAL = 10000; // 10 seconds for polling
 const POLL_PRICE_INTERVAL = 300000; // 5 minutes for price polling
 const CHECK_INTERVAL = 1000; // 1 second for checking element presence
 
 let pollHeightIntervalId = null;
-let pollMempoolIntervalId = null;
 let pollPriceIntervalId = null;
 let isVisible = document.visibilityState === 'visible';
 
@@ -38,13 +36,6 @@ function updateBlockHeight(height) {
   }
 }
 
-function updateMempoolCount(count) {
-  const element = document.getElementById('mempool-count');
-  if (element) {
-    element.innerText = formatNumber(count);
-  }
-}
-
 async function pollBlockHeight() {
   try {
     const response = await fetch(`${REST_BASE}/blocks/tip/height`);
@@ -58,22 +49,6 @@ async function pollBlockHeight() {
     }
   } catch (error) {
     console.error('Error polling block height:', error);
-  }
-}
-
-async function pollMempoolCount() {
-  try {
-    const response = await fetch(`${REST_BASE}/mempool`);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await response.json();
-    const count = data.count;
-    if (!isNaN(count)) {
-      updateMempoolCount(count);
-    }
-  } catch (error) {
-    console.error('Error polling mempool count:', error);
   }
 }
 
@@ -96,10 +71,6 @@ function managePolling() {
       clearInterval(pollHeightIntervalId);
       pollHeightIntervalId = null;
     }
-    if (pollMempoolIntervalId) {
-      clearInterval(pollMempoolIntervalId);
-      pollMempoolIntervalId = null;
-    }
     if (pollPriceIntervalId) {
       clearInterval(pollPriceIntervalId);
       pollPriceIntervalId = null;
@@ -110,8 +81,6 @@ function managePolling() {
   pollBlockHeight();
   pollHeightIntervalId = setInterval(pollBlockHeight, POLL_HEIGHT_INTERVAL);
 
-  pollMempoolCount();
-  pollMempoolIntervalId = setInterval(pollMempoolCount, POLL_MEMPOOL_INTERVAL);
 
   pollPepecoinPrice();
   pollPriceIntervalId = setInterval(pollPepecoinPrice, POLL_PRICE_INTERVAL);
