@@ -103,32 +103,11 @@
             </div>
             <div class="overflow-hidden">
                 <div
-                    x-data='{
-                        txids: @json($mempoolTransactions),
-                        updateCount() {
-                            const el = document.getElementById("mempool-count");
-                            if (el) el.innerText = (this.txids.length || 0).toLocaleString("en-US");
-                        },
-                        async fetchTxids() {
-                            try {
-                                const res = await fetch("{{ route('api.mempool.txids') }}");
-                                if (!res.ok) return;
-                                const data = await res.json();
-                                if (!Array.isArray(data)) return;
-                                // Update only if changed to avoid flicker
-                                const sameLength = this.txids.length === data.length;
-                                const sameContent = sameLength && this.txids.every((v, i) => v === data[i]);
-                                if (!sameContent) { this.txids = data; this.updateCount(); }
-                            } catch (_) {
-                                // swallow errors; keep current list
-                            }
-                        }
-                    }'
-                    x-init='updateCount(); fetchTxids(); const i=setInterval(()=>fetchTxids(), 10000); $el._mempoolInt=i;'
-                    x-effect='() => { if (document.hidden && $el._mempoolInt) { clearInterval($el._mempoolInt); $el._mempoolInt=null; } else if (!document.hidden && !$el._mempoolInt) { $el._mempoolInt=setInterval(()=>fetchTxids(), 10000); } }'
+                    x-data="mempoolWidget({ initialTxids: @js($mempoolTransactions), apiUrl: '{{ route('api.mempool.txids') }}', intervalMs: 10000 })"
+                    x-init="init()"
                 >
                     <template x-for="txid in txids" :key="txid">
-                        <a :href="`/tx/${txid}`" class="block px-6 py-4 border-b border-gray-100 dark:border-gray-700 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <a x-transition.opacity.duration.200ms :href="`/tx/${txid}`" class="block px-6 py-4 border-b border-gray-100 dark:border-gray-700 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0">
                                     <div class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
