@@ -7,7 +7,45 @@
 
 @variant dark (.dark &);
 
+/* Self-hosted Ubuntu fonts (Cloudflare CDN) */
+@font-face {
+    font-family: 'Ubuntu';
+    src: url('https://cdn.peppool.space/fonts/ubuntu/Ubuntu-Italic.woff2') format('woff2'),
+         url('https://cdn.peppool.space/fonts/ubuntu/Ubuntu-Italic.woff') format('woff');
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Ubuntu';
+    src: url('https://cdn.peppool.space/fonts/ubuntu/Ubuntu-BoldItalic.woff2') format('woff2'),
+         url('https://cdn.peppool.space/fonts/ubuntu/Ubuntu-BoldItalic.woff') format('woff');
+    font-style: italic;
+    font-weight: 700;
+    font-display: swap;
+}
+
 @theme {
+    /* Keep existing default stack; Ubuntu is optional via utility classes below */
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* Utilities to opt-in to Ubuntu italic variants without changing global defaults */
+.font-ubuntu-italic {
+    font-family: 'Ubuntu', var(--font-sans);
+    font-style: italic;
+    font-weight: 400;
+}
+
+.font-ubuntu-bold-italic {
+    font-family: 'Ubuntu', var(--font-sans);
+    font-style: italic;
+    font-weight: 700;
+}
+
+/* Generic Ubuntu family utility to combine with Tailwind's italic/font-bold */
+.font-ubuntu {
+    font-family: 'Ubuntu', var(--font-sans);
 }

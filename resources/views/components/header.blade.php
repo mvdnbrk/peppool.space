@@ -11,7 +11,9 @@
                 <a href="{{ route('homepage') }}" class="flex items-center">
                     <x-icon-logo class="w-12 h-12"/>
                     <h1 class="ml-3 sm:ml-4 text-3xl sm:text-4xl italic tracking-wide text-black">
-                        <span class="text-green-700 font-bold">Pep</span>pool<span class="text-lg sm:text-xl">.space</span>
+                        <span class="text-green-700 font-ubuntu font-bold italic inline-block transform scale-x-[1.08] origin-left">Pep</span>
+                        <span class="font-ubuntu italic inline-block transform scale-x-[1.08] origin-left -ml-1">pool</span>
+                        <span class="text-lg sm:text-xl font-ubuntu italic">.space</span>
                     </h1>
                 </a>
 
