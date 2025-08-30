@@ -83,11 +83,15 @@ document.addEventListener('DOMContentLoaded', startPollingWhenReady);
 window.mempoolWidget = ({ apiUrl, intervalMs = 10000, initialTxids = [] } = {}) => ({
   txids: initialTxids,
   _timer: null,
+  _inFlight: false,
+  _controller: null,
 
   init() {
     this.updateCount();
     this.fetchTxids();
-    this._timer = setInterval(() => this.fetchTxids(), intervalMs);
+    if (!this._timer) {
+      this._timer = setInterval(() => this.fetchTxids(), intervalMs);
+    }
 
     // Pause/resume polling on tab visibility changes
     document.addEventListener('visibilitychange', () => {
@@ -107,9 +111,16 @@ window.mempoolWidget = ({ apiUrl, intervalMs = 10000, initialTxids = [] } = {}) 
   },
 
   async fetchTxids() {
+    if (this._inFlight) return;
+    this._inFlight = true;
+    if (this._controller) {
+      try { this._controller.abort(); } catch (_) {}
+    }
+    this._controller = new AbortController();
+    const { signal } = this._controller;
     try {
       const url = apiUrl ?? `${REST_BASE}/mempool/txids`;
-      const res = await fetch(url);
+      const res = await fetch(url, { signal });
       if (!res.ok) return;
       const data = await res.json();
       if (!Array.isArray(data)) return;
@@ -121,8 +132,14 @@ window.mempoolWidget = ({ apiUrl, intervalMs = 10000, initialTxids = [] } = {}) 
         this.txids = data;
         this.updateCount();
       }
-    } catch (_) {
-      // swallow errors; keep current list
+    } catch (err) {
+      // ignore abort errors
+      if (err?.name !== 'AbortError') {
+        // swallow other errors
+      }
+    } finally {
+      this._inFlight = false;
+      this._controller = null;
     }
   }
 });
