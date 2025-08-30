@@ -82,11 +82,21 @@ document.addEventListener('DOMContentLoaded', startPollingWhenReady);
 
 window.mempoolWidget = ({ apiUrl, intervalMs = 10000, initialTxids = [] } = {}) => ({
   txids: initialTxids,
+  // Track when each txid was first seen to render newest-first regardless of API order
+  firstSeen: {},
   _timer: null,
   _inFlight: false,
   _controller: null,
 
   init() {
+    // Initialize firstSeen timestamps for initial txids so their relative order is preserved
+    const now = Date.now();
+    for (let i = 0; i < this.txids.length; i++) {
+      const id = this.txids[i];
+      if (!this.firstSeen[id]) this.firstSeen[id] = now - (this.txids.length - i);
+    }
+    // Ensure sorted newest-first by firstSeen
+    this.txids.sort((a, b) => (this.firstSeen[b] || 0) - (this.firstSeen[a] || 0));
     this.updateCount();
     this.fetchTxids();
     if (!this._timer) {
@@ -125,11 +135,29 @@ window.mempoolWidget = ({ apiUrl, intervalMs = 10000, initialTxids = [] } = {}) 
       const data = await res.json();
       if (!Array.isArray(data)) return;
 
-      // Avoid flicker: only update when changed
-      const sameLength = this.txids.length === data.length;
-      const sameContent = sameLength && this.txids.every((v, i) => v === data[i]);
-      if (!sameContent) {
-        this.txids = data;
+      // Merge strategy: detect new txids (API order not guaranteed)
+      const existing = new Set(this.txids);
+      const newOnes = data.filter((txid) => !existing.has(txid));
+
+      if (newOnes.length) {
+        // Record firstSeen for new txids
+        const now = Date.now();
+        for (let i = 0; i < newOnes.length; i++) {
+          const id = newOnes[i];
+          if (!this.firstSeen[id]) this.firstSeen[id] = now - (newOnes.length - i);
+        }
+
+        // Merge new ones with existing, dedupe
+        const merged = [...newOnes, ...this.txids];
+        const seen = new Set();
+        this.txids = merged.filter((t) => (seen.has(t) ? false : (seen.add(t), true)));
+
+        // Sort by firstSeen desc so newest arrivals display first
+        this.txids.sort((a, b) => (this.firstSeen[b] || 0) - (this.firstSeen[a] || 0));
+
+        // Optional cap to avoid unbounded growth
+        const MAX_ITEMS = 200;
+        if (this.txids.length > MAX_ITEMS) this.txids.length = MAX_ITEMS;
         this.updateCount();
       }
     } catch (err) {
