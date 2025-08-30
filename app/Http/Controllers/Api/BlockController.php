@@ -60,6 +60,6 @@ class BlockController extends Controller
                 ->orderByDesc('height')
                 ->limit(10)
                 ->get()
-            )->response();
+        )->response();
     }
 }
