@@ -71,6 +71,87 @@
                 </div>
             </div>
 
+            <!-- Blocks Window Endpoint -->
+            <div class="border border-gray-200 rounded-lg p-6 bg-white">
+                <div class="flex items-center mb-4">
+                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded mr-3">GET</span>
+                    <code class="text-lg font-mono">/api/blocks[/:startHeight]</code>
+                </div>
+
+                <p class="text-gray-600 mb-4">
+                    Returns details on the past <strong>10 blocks</strong>.<br>
+                    If <code>:startHeight</code> is specified, the 10 blocks before (and including) <code>:startHeight</code> are returned.
+                </p>
+
+                <div class="mb-4">
+                    <h4 class="font-semibold mb-2">Example</h4>
+                    <div class="bg-gray-900 text-white p-3 rounded text-sm overflow-x-auto">
+                        <code>curl {{ route('api.blocks.list') }}</code>
+                    </div>
+                    <div class="bg-gray-900 text-white p-3 rounded text-sm mt-2 overflow-x-auto">
+                        <code>curl {{ route('api.blocks.list', ['startHeight' => 600069]) }}</code>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="font-semibold mb-2">Response</h4>
+                    <div class="bg-gray-50 p-3 rounded border">
+                        <p class="text-sm text-gray-600 mb-1">Content-Type: application/json</p>
+<pre class="text-xs md:text-sm overflow-x-auto"><code>[
+  {
+    "id": "0000000000000000000384f28cb3...",
+    "height": 600069,
+    "version": 536870912,
+    "timestamp": 1648829449,
+    "tx_count": 1627,
+    "size": 1210916,
+    "difficulty": 28587155.782195,
+    "nonce": 3580664066,
+    "merkle_root": "efa344bcd6c0607f93b7..."
+  },
+  {
+    "id": "0000000000000000000a1b2c3d4e...",
+    "height": 600068,
+    "version": 536870912,
+    "timestamp": 1648828850,
+    "tx_count": 1432,
+    "size": 1180421,
+    "difficulty": 28587155.782195,
+    "nonce": 1532048855,
+    "merkle_root": "ab12cd34ef56ab78cd90..."
+  },
+  ...
+]</code></pre>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="font-semibold mb-2">Response Fields</h4>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-xs md:text-sm">
+                            <thead>
+                                <tr class="border-b">
+                                    <th class="text-left py-2 font-semibold">Field</th>
+                                    <th class="text-left py-2 font-semibold">Type</th>
+                                    <th class="text-left py-2 font-semibold">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b"><td class="py-2"><code>id</code></td><td class="py-2">string</td><td class="py-2">Block hash</td></tr>
+                                <tr class="border-b"><td class="py-2"><code>height</code></td><td class="py-2">integer</td><td class="py-2">Block height</td></tr>
+                                <tr class="border-b"><td class="py-2"><code>version</code></td><td class="py-2">integer</td><td class="py-2">Block version</td></tr>
+                                <tr class="border-b"><td class="py-2"><code>timestamp</code></td><td class="py-2">integer</td><td class="py-2">Unix time the block was created</td></tr>
+                                <tr class="border-b"><td class="py-2"><code>tx_count</code></td><td class="py-2">integer</td><td class="py-2">Number of transactions in the block</td></tr>
+                                <tr class="border-b"><td class="py-2"><code>size</code></td><td class="py-2">integer</td><td class="py-2">Block size in bytes</td></tr>
+                                <tr class="border-b"><td class="py-2"><code>difficulty</code></td><td class="py-2">float</td><td class="py-2">Current difficulty value for the block</td></tr>
+                                <tr class="border-b"><td class="py-2"><code>nonce</code></td><td class="py-2">integer</td><td class="py-2">Nonce used for the block</td></tr>
+                                <tr><td class="py-2"><code>merkle_root</code></td><td class="py-2">string</td><td class="py-2">Merkle root of the block</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
             <!-- Mempool Endpoint -->
             <div class="border border-gray-200 rounded-lg p-6 bg-white">
                 <div class="flex items-center mb-4">

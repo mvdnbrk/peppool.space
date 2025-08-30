@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('throttle:60,1')->name('api.')->group(function () {
     Route::get('/blocks/tip/height', [BlockController::class, 'tipHeight'])->name('blocks.tip.height');
     Route::get('/blocks/tip/hash', [BlockController::class, 'tipHash'])->name('blocks.tip.hash');
+    Route::get('/blocks/{startHeight?}', [BlockController::class, 'list'])->name('blocks.list');
     Route::get('/prices', PricesController::class)->name('prices');
 
     Route::prefix('mempool')->name('mempool.')->group(function () {
