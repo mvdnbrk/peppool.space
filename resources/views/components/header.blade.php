@@ -20,13 +20,19 @@
                 <!-- PEPE Price -->
                 <div class="flex items-center space-x-3">
                     @if(Cache::has('pepecoin_price_usd'))
-                    <div class="flex items-center space-x-1 sm:space-x-2 bg-green-50 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-green-200">
+                    <a href="{{ route('price') }}" class="flex items-center space-x-1 sm:space-x-2 bg-green-50 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-green-200 hover:border-green-300 hover:bg-green-100 transition-colors">
                         <span class="text-green-700 font-medium text-xs sm:text-sm">PEPE</span>
                         <span class="text-gray-700 font-semibold text-xs sm:text-sm" id="pepecoin-price">
                             ${{ number_format(Cache::get('pepecoin_price_usd'), 8, '.', ',') }}
                         </span>
-                    </div>
+                    </a>
                     @endif
+
+                    <!-- Price Link -->
+                    <a href="{{ route('price') }}" class="group flex items-center space-x-1 sm:space-x-2 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition-all duration-200 border border-green-200 hover:border-green-300">
+                        <x-icon-chart class="w-3 h-3 sm:w-4 sm:h-4 text-green-600 group-hover:text-green-700" />
+                        <span class="text-green-700 group-hover:text-green-800 font-medium text-xs sm:text-sm">Price</span>
+                    </a>
 
                     <!-- API Link -->
                     <a href="{{ route('docs.api') }}" class="group flex items-center space-x-1 sm:space-x-2 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition-all duration-200 border border-green-200 hover:border-green-300">

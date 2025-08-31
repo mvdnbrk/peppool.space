@@ -10,6 +10,12 @@ export default defineConfig({
             refresh: true,
         }),
         tailwindcss(),
-        vue(),
+        vue({
+            template: {
+                compilerOptions: {
+                    isCustomElement: (tag) => ['timestamp'].includes(tag),
+                },
+            },
+        }),
     ],
 });
