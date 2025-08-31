@@ -14,6 +14,9 @@
                     <a href="{{ route('price') }}" title="Pepecoin Chart" aria-label="Pepecoin chart page" class="inline-flex items-center rounded-full bg-white text-green-800 hover:text-green-900 px-3 py-1.5 md:px-3 md:py-1.5 lg:px-2.5 lg:py-1 font-semibold shadow-sm ring-1 ring-inset ring-white/60 hover:ring-emerald-300 hover:bg-emerald-50/70 transition-colors">Chart</a>
                 </li>
                 <li>
+                    <a href="{{ route('wealth') }}" title="Wealth leaderboard" aria-label="Wealth leaderboard" class="inline-flex items-center rounded-full bg-white text-green-800 hover:text-green-900 px-3 py-1.5 md:px-3 md:py-1.5 lg:px-2.5 lg:py-1 font-semibold shadow-sm ring-1 ring-inset ring-white/60 hover:ring-emerald-300 hover:bg-emerald-50/70 transition-colors">Wealth</a>
+                </li>
+                <li>
                     <a href="{{ route('docs.api') }}" title="Pepecoin API Documentation" aria-label="Pepecoin API documentation" class="inline-flex items-center rounded-full bg-white text-green-800 hover:text-green-900 px-3 py-1.5 md:px-3 md:py-1.5 lg:px-2.5 lg:py-1 font-semibold shadow-sm ring-1 ring-inset ring-white/60 hover:ring-emerald-300 hover:bg-emerald-50/70 transition-colors">API</a>
                 </li>
             </ul>
