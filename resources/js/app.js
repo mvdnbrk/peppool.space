@@ -9,12 +9,14 @@ Alpine.start();
 
 // Initialize Vue.js
 import MempoolTransactions from './components/MempoolTransactions.vue';
+import LatestBlocks from './components/LatestBlocks.vue';
 
 // Auto-mount Vue components
 document.addEventListener('DOMContentLoaded', () => {
     // Mount individual Vue components
     const components = {
         'mempool-transactions': MempoolTransactions,
+        'latest-blocks': LatestBlocks,
     };
 
     Object.entries(components).forEach(([name, component]) => {
