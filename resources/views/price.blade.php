@@ -1,4 +1,4 @@
-<x-layout title="Price - peppool.space">
+<x-layout title="Pepecoin Price - peppool.space" og_image="pepecoin-price.png">
     <!-- Price Chart -->
     <div class="mb-8">
         @php
