@@ -7,7 +7,9 @@ use App\Models\Price;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use App\Jobs\CalculateTotalSupply;
 
 class PepecoinExplorerService
 {
@@ -153,5 +155,24 @@ class PepecoinExplorerService
                     ->get('size_on_disk', 0);
             }
         );
+    }
+
+    public function getTotalSupply(bool $refresh = false): string
+    {
+        $cacheKey = 'pepe:total_supply';
+
+        if ($refresh) {
+            // Ensure cache is populated using the single source of truth job (RPC first, DB fallback)
+            CalculateTotalSupply::dispatchSync();
+        }
+
+        $cached = Cache::get($cacheKey);
+        if ($cached !== null) {
+            return (string) $cached;
+        }
+
+        // If cache is missing, compute via the job, then return from cache
+        CalculateTotalSupply::dispatchSync();
+        return (string) (Cache::get($cacheKey) ?? '0');
     }
 }

@@ -3,11 +3,28 @@
 namespace App\Http\Controllers;
 
 use Illuminate\View\View;
+use App\Services\PepecoinExplorerService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class PriceController extends Controller
 {
-    public function __invoke(): View
+    public function __construct(private readonly PepecoinExplorerService $explorer)
     {
-        return view('price');
+    }
+
+    public function __invoke(Request $request): View
+    {
+        $currency = strtoupper($request->get('currency', 'USD'));
+        $prices = $this->explorer->getPrices();
+        $price = (float) ($prices->get($currency) ?? 0);
+        // Only show supply if it's already cached; do not compute here
+        $supply = Cache::get('pepe:total_supply');
+
+        return view('price', [
+            'currency' => $currency,
+            'price' => $price,
+            'supply' => $supply, // string|null
+        ]);
     }
 }

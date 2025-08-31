@@ -1,0 +1,9 @@
+<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <!-- Coin (top) -->
+  <ellipse cx="12" cy="6" rx="7" ry="3" stroke-width="2" />
+  <!-- Coin (middle) -->
+  <path d="M5 10c0 1.657 3.134 3 7 3s7-1.343 7-3" stroke-width="2" stroke-linecap="round"/>
+  <path d="M5 10v4c0 1.657 3.134 3 7 3s7-1.343 7-3v-4" stroke-width="2" stroke-linecap="round"/>
+  <!-- Coin (bottom) -->
+  <path d="M5 15v2c0 1.657 3.134 3 7 3s7-1.343 7-3v-2" stroke-width="2" stroke-linecap="round"/>
+</svg>

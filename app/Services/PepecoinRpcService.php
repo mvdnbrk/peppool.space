@@ -175,4 +175,9 @@ class PepecoinRpcService
     {
         return $this->call('getmempoolentry', [$txid]);
     }
+
+    public function getTxOutSetInfo(): array
+    {
+        return $this->call('gettxoutsetinfo');
+    }
 }
