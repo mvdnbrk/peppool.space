@@ -6,6 +6,7 @@ use App\Http\Controllers\DocumentationController;
 use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\PriceController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\WealthController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', HomepageController::class)->name('homepage');
 
 Route::get('/price', PriceController::class)->name('price');
+Route::get('/wealth', WealthController::class)->name('wealth');
 
 Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 Route::post('/search', [SearchController::class, 'store'])->name('search.store');
