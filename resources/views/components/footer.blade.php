@@ -7,6 +7,18 @@
         </svg>
     </div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-12">
+        <!-- Footer Navigation (top) -->
+        <nav class="pb-4 flex justify-center md:justify-end" aria-label="Footer navigation">
+            <ul class="flex flex-wrap items-center gap-x-3 sm:gap-x-6 gap-y-2">
+                <li>
+                    <a href="{{ route('price') }}" title="Pepecoin Chart" aria-label="Pepecoin chart page" class="inline-flex items-center rounded-full bg-white text-green-800 hover:text-green-900 px-3 py-1.5 md:px-3 md:py-1.5 lg:px-2.5 lg:py-1 font-semibold shadow-sm ring-1 ring-inset ring-white/60 hover:ring-emerald-300 hover:bg-emerald-50/70 transition-colors">Chart</a>
+                </li>
+                <li>
+                    <a href="{{ route('docs.api') }}" title="Pepecoin API Documentation" aria-label="Pepecoin API documentation" class="inline-flex items-center rounded-full bg-white text-green-800 hover:text-green-900 px-3 py-1.5 md:px-3 md:py-1.5 lg:px-2.5 lg:py-1 font-semibold shadow-sm ring-1 ring-inset ring-white/60 hover:ring-emerald-300 hover:bg-emerald-50/70 transition-colors">API</a>
+                </li>
+            </ul>
+        </nav>
+
         <div class="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
             <div class="flex flex-col items-center md:items-start">
                 <p class="font-medium text-white">real-time pepecoin blockchain explorer</p>
@@ -23,5 +35,7 @@
             </div>
             @endif
         </div>
+
+        
     </div>
 </footer>
