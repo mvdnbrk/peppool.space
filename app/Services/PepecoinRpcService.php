@@ -170,4 +170,9 @@ class PepecoinRpcService
     {
         return $this->call('getrawmempool', [$verbose]);
     }
+
+    public function getMempoolEntry(string $txid): array
+    {
+        return $this->call('getmempoolentry', [$txid]);
+    }
 }

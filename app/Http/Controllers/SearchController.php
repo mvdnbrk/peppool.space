@@ -55,18 +55,26 @@ class SearchController extends Controller
                 return redirect()->route('block.show', ['hashOrHeight' => $q]);
             }
 
-            // Fallback to RPC: check block hash, then transaction id
+            // Fallback to RPC: check block hash, then mempool tx, then raw transaction
             try {
                 $rpc->getBlock($q, 1);
 
                 return redirect()->route('block.show', ['hashOrHeight' => $q]);
             } catch (\Throwable $e) {
+                // Check mempool first (works without txindex)
                 try {
-                    $rpc->getRawTransaction(strtolower($q), false);
+                    $rpc->getMempoolEntry($q);
 
                     return redirect()->route('transaction.show', ['txid' => strtolower($q)]);
-                } catch (\Throwable $e2) {
-                    // fall through
+                } catch (\Throwable $eMem) {
+                    // Try verbose raw transaction (requires txindex or blockhash but may work on some nodes)
+                    try {
+                        $rpc->getRawTransaction($q, true);
+
+                        return redirect()->route('transaction.show', ['txid' => strtolower($q)]);
+                    } catch (\Throwable $eRaw) {
+                        // fall through
+                    }
                 }
             }
         }
