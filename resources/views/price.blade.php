@@ -1,6 +1,6 @@
 <x-layout title="Pepecoin Price - peppool.space" og_image="pepecoin-price.png">
     <!-- Stats Overview -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <!-- Total Supply Card (only if cached) -->
         @if(!is_null($supply))
             <x-stat-card aria-label="Current total supply" icon-bg="bg-green-700" label="Total Supply">
@@ -15,6 +15,29 @@
                     @endphp
                     {{ \Illuminate\Support\Number::format($supplyInt, maxPrecision: 0) }}
                     <span class="ml-2 text-gray-700 dark:text-gray-200 text-base font-semibold">{{ $billionsText }}</span>
+                </span>
+            </x-stat-card>
+        @endif
+
+        <!-- Market Cap Card -->
+        @if(!is_null($marketCap))
+            <x-stat-card aria-label="Current market cap" icon-bg="bg-green-700" label="Market Cap">
+                <x-slot:icon>
+                    <x-icon-chart class="w-5 h-5 text-white" />
+                </x-slot:icon>
+                <span class="text-2xl">
+                    @php
+                        $currencySymbol = $currency === 'EUR' ? '€' : '$';
+                        if ($marketCap >= 1000000) {
+                            $formatted = number_format($marketCap / 1000000, 2) . 'M';
+                        } elseif ($marketCap >= 1000) {
+                            $formatted = number_format($marketCap / 1000, 2) . 'K';
+                        } else {
+                            $formatted = number_format($marketCap, 2);
+                        }
+                    @endphp
+                    {{ $currencySymbol }}&nbsp;{{ $formatted }}
+                    <span class="ml-2 text-gray-500 text-base">{{ $currency }}</span>
                 </span>
             </x-stat-card>
         @endif

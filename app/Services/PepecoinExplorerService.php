@@ -17,6 +17,7 @@ class PepecoinExplorerService
         private readonly PepecoinRpcService $rpcService,
         private int $mempoolCacheTtl = 10,
         private int $difficultyCacheTtl = 180,
+        private int $priceCacheTtl = 300,
     ) {}
 
     private function getCacheKey(string $key): string
@@ -127,7 +128,7 @@ class PepecoinExplorerService
     {
         return Cache::remember(
             $this->getCacheKey(__FUNCTION__),
-            Carbon::now()->addMinutes(5),
+            Carbon::now()->addSeconds($this->priceCacheTtl),
             function (): Collection {
                 $prices = Price::whereIn('currency', ['EUR', 'USD'])
                     ->latest()
@@ -174,5 +175,28 @@ class PepecoinExplorerService
         // If cache is missing, compute via the job, then return from cache
         CalculateTotalSupply::dispatchSync();
         return (string) (Cache::get($cacheKey) ?? '0');
+    }
+
+    public function getMarketCap(string $currency = 'USD'): ?float
+    {
+        return Cache::remember(
+            $this->getCacheKey(__FUNCTION__.'_'.$currency),
+            Carbon::now()->addSeconds($this->priceCacheTtl),
+            function () use ($currency): ?float {
+                $prices = $this->getPrices();
+                $price = $prices->get($currency);
+                
+                if (!$price || $price <= 0) {
+                    return null;
+                }
+
+                $supply = $this->getTotalSupply();
+                if (!$supply || $supply === '0') {
+                    return null;
+                }
+
+                return (float) $supply * $price;
+            }
+        );
     }
 }
