@@ -60,6 +60,20 @@
     </div>
     <!-- Price Chart -->
     <div class="mb-8">
+        <!-- Period Selector -->
+        @php $currentPeriod = request('period', '24h'); @endphp
+        <div class="flex items-center justify-end gap-2 mb-5" aria-label="Select time range">
+            @php $periods = ['24h' => '24h', '7d' => '7D', '30d' => '30D']; @endphp
+            @foreach($periods as $key => $label)
+                <a
+                    href="{{ route('price', ['period' => $key, 'currency' => request('currency', 'USD')]) }}"
+                    class="flex items-center space-x-1 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 px-3 py-1 rounded-full transition-all duration-200 border border-green-200 hover:border-green-300 text-green-700 font-medium text-sm {{ $currentPeriod === $key ? 'ring-2 ring-green-600' : '' }}"
+                    @if($currentPeriod === $key) aria-current="true" @endif
+                >
+                    <span>{{ $label }}</span>
+                </a>
+            @endforeach
+        </div>
         @php
             $signedChartUrl = URL::signedRoute('api.chart.prices', [
                 'period' => request('period', '24h'),
