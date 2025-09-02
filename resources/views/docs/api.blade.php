@@ -1,4 +1,4 @@
-<x-layout title="Pepecoin API Documentation" og_image="pepecoin-api.png">
+<x-layout title="Pepecoin API Documentation" og_image="pepecoin-api.png" og_description="Pepecoin API documentation: endpoints for blocks, mempool, prices and more. Includes rate limits, examples and response formats.">
         <div class="mb-6 md:mb-8 text-gray-600 dark:text-gray-400">
             <h1 class="text-2xl md:text-4xl font-bold text-gray-900 dark:text-gray-300 mb-3 md:mb-4">Pepecoin API Documentation</h1>
             <p class="text-sm md:text-base">

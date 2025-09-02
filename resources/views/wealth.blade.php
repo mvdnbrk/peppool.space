@@ -1,4 +1,4 @@
-<x-layout title="PepeCoin Wealth - Top 50 Addresses - peppool.space" og_image="pepecoin-wealth.png">
+<x-layout title="PepeCoin Wealth - Top 50 Addresses - peppool.space" og_image="pepecoin-wealth.png" og_description="Top 50 Pepecoin addresses by balance with human-readable totals. Explore the largest holders on peppool.space.">
     <div class="mb-6 md:mb-8 text-gray-600 dark:text-gray-400">
         <h1 class="text-2xl md:text-4xl font-bold text-gray-900 dark:text-gray-300 mb-3 md:mb-4">PepeCoin Wealth</h1>
         <p class="text-sm md:text-base">Top 50 addresses by balance</p>

@@ -1,5 +1,6 @@
 <x-layout
     title="Transaction {{ $txid ?? 'Not Found' }} - peppool.space"
+    :og_description="(isset($txid) ? 'Details for Pepecoin transaction ' . $txid : 'Transaction not found') . ' on peppool.space: confirmations, inputs, outputs, size and block info.'"
 >
         @if(isset($error))
             <!-- Error State -->

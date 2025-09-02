@@ -1,4 +1,4 @@
-<x-layout title="Pepecoin Price - peppool.space" og_image="pepecoin-price.png">
+<x-layout title="Pepecoin Price - peppool.space" og_image="pepecoin-price.png" og_description="Live Pepecoin price chart with 24h, 7D and 30D ranges, market cap and total supply. Updated frequently on peppool.space.">
     <!-- Stats Overview -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <!-- Total Supply Card (only if cached) -->
