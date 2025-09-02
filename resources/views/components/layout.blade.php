@@ -38,10 +38,10 @@
     </main>
 
     <x-footer :network="$network" />
-    
+
     <!-- Floating Theme Toggle -->
     <x-theme-toggle />
-    
+
     <!-- Development Notice Widget -->
     <x-development-notice />
 </body>
