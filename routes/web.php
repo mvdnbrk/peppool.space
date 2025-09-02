@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomepageController::class)->name('homepage');
 
-Route::get('/price', PriceController::class)->name('price');
+Route::get('/pepecoin-price', PriceController::class)->name('price');
 Route::get('/wealth', WealthController::class)->name('wealth');
 
 Route::get('/search', [SearchController::class, 'index'])->name('search.index');
@@ -35,3 +35,6 @@ Route::get('/docs/api', DocumentationController::class)
     ->name('docs.api');
 
 Route::redirect('/api', '/docs/api', Response::HTTP_MOVED_PERMANENTLY);
+Route::redirect('/chart', '/pepecoin-price', Response::HTTP_MOVED_PERMANENTLY);
+Route::redirect('/charts', '/pepecoin-price', Response::HTTP_MOVED_PERMANENTLY);
+Route::redirect('/price', '/pepecoin-price', Response::HTTP_MOVED_PERMANENTLY);
