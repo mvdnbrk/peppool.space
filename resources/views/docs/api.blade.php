@@ -11,7 +11,9 @@
 
         <div class="mb-6 md:mb-8 p-4 md:p-6 bg-gray-50 dark:bg-white rounded-lg">
             <h2 class="text-lg md:text-xl font-semibold mb-2">Base URL</h2>
-            <code class="text-xs md:text-sm bg-white px-2 md:px-3 py-1 rounded border break-all">{{ url('/api') }}</code>
+            <div class="bg-gray-900 text-white p-2 md:p-3 rounded text-xs md:text-sm overflow-x-auto">
+                <code class="whitespace-nowrap">{{ secure_url('/api') }}</code>
+            </div>
         </div>
 
         <div class="mb-6 md:mb-8 p-4 md:p-6 bg-yellow-50 dark:bg-white border border-yellow-200 dark:border-gray-200 rounded-lg">
@@ -22,81 +24,36 @@
         <!-- Endpoints -->
         <div class="space-y-8">
             <!-- Block Hash Endpoint -->
-            <div class="border border-gray-200 rounded-lg p-4 md:p-6 bg-white">
-                <div class="flex flex-wrap items-center mb-3 md:mb-4 gap-2">
-                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">GET</span>
-                    <code class="text-base md:text-lg font-mono break-all">/blocks/tip/hash</code>
-                </div>
-
-                <p class="text-gray-600 mb-4">Returns the hash of the current tip block of the Pepecoin blockchain.</p>
-
-                <div class="mb-4">
-                    <h4 class="font-semibold mb-2">Example</h4>
-                    <div class="bg-gray-900 text-white p-2 md:p-3 rounded text-xs md:text-sm overflow-x-auto">
-                        <code class="whitespace-nowrap">curl {{ route('api.blocks.tip.hash') }}</code>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <h4 class="font-semibold mb-2">Response</h4>
-                    <div class="bg-gray-50 p-2 md:p-3 rounded border overflow-x-auto">
-                        <p class="text-xs md:text-sm text-gray-600 mb-1">Content-Type: text/plain</p>
-                        <code class="text-xs md:text-sm break-all">a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456</code>
-                    </div>
-                </div>
-            </div>
+            <x-api-section method="GET" path="/blocks/tip/hash" :description="'Returns the hash of the current tip block of the Pepecoin blockchain.'" responseContentType="text/plain">
+                <x-slot:example>
+                    <code class="whitespace-nowrap">curl {{ route('api.blocks.tip.hash') }}</code>
+                </x-slot:example>
+                <x-slot:response>
+                    <code class="text-xs md:text-sm break-all">a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456</code>
+                </x-slot:response>
+            </x-api-section>
 
             <!-- Block Height Endpoint -->
-            <div class="border border-gray-200 rounded-lg p-6 bg-white">
-                <div class="flex items-center mb-4">
-                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded mr-3">GET</span>
-                    <code class="text-lg font-mono">/blocks/tip/height</code>
-                </div>
-
-                <p class="text-gray-600 mb-4">Returns the current block height of the Pepecoin blockchain.</p>
-
-                <div class="mb-4">
-                    <h4 class="font-semibold mb-2">Example</h4>
-                    <div class="bg-gray-900 text-white p-3 rounded text-sm">
-                        <code>curl {{ route('api.blocks.tip.height') }}</code>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <h4 class="font-semibold mb-2">Response</h4>
-                    <div class="bg-gray-50 p-3 rounded border">
-                        <p class="text-sm text-gray-600 mb-1">Content-Type: text/plain</p>
-                        <code class="text-sm">672216</code>
-                    </div>
-                </div>
-            </div>
+            <x-api-section method="GET" path="/blocks/tip/height" :description="'Returns the current block height of the Pepecoin blockchain.'" responseContentType="text/plain">
+                <x-slot:example>
+                    <code>curl {{ route('api.blocks.tip.height') }}</code>
+                </x-slot:example>
+                <x-slot:response>
+                    <code class="text-sm">672216</code>
+                </x-slot:response>
+            </x-api-section>
 
             <!-- Blocks Window Endpoint -->
-            <div class="border border-gray-200 rounded-lg p-6 bg-white">
-                <div class="flex items-center mb-4">
-                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded mr-3">GET</span>
-                    <code class="text-lg font-mono">/api/blocks[/:startHeight]</code>
-                </div>
-
-                <p class="text-gray-600 mb-4">
-                    Returns details on the past <strong>10 blocks</strong>.<br>
-                    If <code>:startHeight</code> is specified, the 10 blocks before (and including) <code>:startHeight</code> are returned.
-                </p>
-
-                <div class="mb-4">
-                    <h4 class="font-semibold mb-2">Example</h4>
-                    <div class="bg-gray-900 text-white p-3 rounded text-sm overflow-x-auto">
+            <x-api-section method="GET" path="/api/blocks[/:startHeight]" :description="'Returns details on the past <strong>10 blocks</strong>.<br>If <code>:startHeight</code> is specified, the 10 blocks before (and including) <code>:startHeight</code> are returned.'" responseContentType="application/json">
+                <x-slot:example>
+                    <div class="whitespace-nowrap">
                         <code>curl {{ route('api.blocks.list') }}</code>
                     </div>
-                    <div class="bg-gray-900 text-white p-3 rounded text-sm mt-2 overflow-x-auto">
+                    <div class="mt-2 whitespace-nowrap">
                         <code>curl {{ route('api.blocks.list', ['startHeight' => 600069]) }}</code>
                     </div>
-                </div>
-
-                <div class="mb-4">
-                    <h4 class="font-semibold mb-2">Response</h4>
-                    <div class="bg-gray-50 p-3 rounded border">
-                        <p class="text-sm text-gray-600 mb-1">Content-Type: application/json</p>
+                </x-slot:example>
+                <x-slot:response>
 <pre class="text-xs md:text-sm overflow-x-auto"><code>[
   {
     "id": "0000000000000000000384f28cb3...",
@@ -122,180 +79,69 @@
   },
   ...
 ]</code></pre>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <h4 class="font-semibold mb-2">Response Fields</h4>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full text-xs md:text-sm">
-                            <thead>
-                                <tr class="border-b">
-                                    <th class="text-left py-2 font-semibold">Field</th>
-                                    <th class="text-left py-2 font-semibold">Type</th>
-                                    <th class="text-left py-2 font-semibold">Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="border-b"><td class="py-2"><code>id</code></td><td class="py-2">string</td><td class="py-2">Block hash</td></tr>
-                                <tr class="border-b"><td class="py-2"><code>height</code></td><td class="py-2">integer</td><td class="py-2">Block height</td></tr>
-                                <tr class="border-b"><td class="py-2"><code>version</code></td><td class="py-2">integer</td><td class="py-2">Block version</td></tr>
-                                <tr class="border-b"><td class="py-2"><code>timestamp</code></td><td class="py-2">integer</td><td class="py-2">Unix time the block was created</td></tr>
-                                <tr class="border-b"><td class="py-2"><code>tx_count</code></td><td class="py-2">integer</td><td class="py-2">Number of transactions in the block</td></tr>
-                                <tr class="border-b"><td class="py-2"><code>size</code></td><td class="py-2">integer</td><td class="py-2">Block size in bytes</td></tr>
-                                <tr class="border-b"><td class="py-2"><code>difficulty</code></td><td class="py-2">float</td><td class="py-2">Current difficulty value for the block</td></tr>
-                                <tr class="border-b"><td class="py-2"><code>nonce</code></td><td class="py-2">integer</td><td class="py-2">Nonce used for the block</td></tr>
-                                <tr><td class="py-2"><code>merkle_root</code></td><td class="py-2">string</td><td class="py-2">Merkle root of the block</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+                </x-slot:response>
+                <x-slot:fields>
+                    <x-api-field name="id" type="string" description="Block hash" />
+                    <x-api-field name="height" type="integer" description="Block height" />
+                    <x-api-field name="version" type="integer" description="Block version" />
+                    <x-api-field name="timestamp" type="integer" description="Unix time the block was created" />
+                    <x-api-field name="tx_count" type="integer" description="Number of transactions in the block" />
+                    <x-api-field name="size" type="integer" description="Block size in bytes" />
+                    <x-api-field name="difficulty" type="float" description="Current difficulty value for the block" />
+                    <x-api-field name="nonce" type="integer" description="Nonce used for the block" />
+                    <x-api-field name="merkle_root" type="string" description="Merkle root of the block" />
+                </x-slot:fields>
+            </x-api-section>
 
             <!-- Mempool Endpoint -->
-            <div class="border border-gray-200 rounded-lg p-6 bg-white">
-                <div class="flex items-center mb-4">
-                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded mr-3">GET</span>
-                    <code class="text-lg font-mono">/mempool</code>
-                </div>
-
-                <p class="text-gray-600 mb-4">Returns a summary of the current mempool state, including the number of transactions and total size in bytes.</p>
-
-                <div class="mb-4">
-                    <h4 class="font-semibold mb-2">Example</h4>
-                    <div class="bg-gray-900 text-white p-3 rounded text-sm">
-                        <code>curl {{ route('api.mempool.index') }}</code>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <h4 class="font-semibold mb-2">Response</h4>
-                    <div class="bg-gray-50 p-3 rounded border">
-                        <p class="text-sm text-gray-600 mb-1">Content-Type: application/json</p>
-                        <pre class="text-xs md:text-sm overflow-x-auto"><code>{
+            <x-api-section method="GET" path="/mempool" :description="'Returns a summary of the current mempool state, including the number of transactions and total size in bytes.'" responseContentType="application/json">
+                <x-slot:example>
+                    <code>curl {{ route('api.mempool.index') }}</code>
+                </x-slot:example>
+                <x-slot:response>
+                    <pre class="text-xs md:text-sm overflow-x-auto"><code>{
   "count": 1245,
   "bytes": 1234567
 }</code></pre>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <h4 class="font-semibold mb-2">Response Fields</h4>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full text-xs md:text-sm">
-                            <thead>
-                                <tr class="border-b">
-                                    <th class="text-left py-2 font-semibold">Field</th>
-                                    <th class="text-left py-2 font-semibold">Type</th>
-                                    <th class="text-left py-2 font-semibold">Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="border-b">
-                                    <td class="py-2"><code>count</code></td>
-                                    <td class="py-2">integer</td>
-                                    <td class="py-2">Number of transactions in the mempool</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2"><code>bytes</code></td>
-                                    <td class="py-2">integer</td>
-                                    <td class="py-2">Total size of all transactions in the mempool in bytes</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+                </x-slot:response>
+                <x-slot:fields>
+                    <x-api-field name="count" type="integer" description="Number of transactions in the mempool" />
+                    <x-api-field name="bytes" type="integer" description="Total size of all transactions in the mempool in bytes" />
+                </x-slot:fields>
+            </x-api-section>
 
             <!-- Mempool TXIDs Endpoint -->
-            <div class="border border-gray-200 rounded-lg p-6 bg-white">
-                <div class="flex items-center mb-4">
-                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded mr-3">GET</span>
-                    <code class="text-lg font-mono">/mempool/txids</code>
-                </div>
-
-                <p class="text-gray-600 mb-4">Returns an array of transaction IDs currently in the mempool.</p>
-
-                <div class="mb-4">
-                    <h4 class="font-semibold mb-2">Example</h4>
-                    <div class="bg-gray-900 text-white p-3 rounded text-sm">
-                        <code>curl {{ route('api.mempool.txids') }}</code>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <h4 class="font-semibold mb-2">Response</h4>
-                    <div class="bg-gray-50 p-3 rounded border">
-                        <p class="text-sm text-gray-600 mb-1">Content-Type: application/json</p>
-                        <pre class="text-xs md:text-sm overflow-x-auto"><code>[
+            <x-api-section method="GET" path="/mempool/txids" :description="'Returns an array of transaction IDs currently in the mempool.'" responseContentType="application/json">
+                <x-slot:example>
+                    <code>curl {{ route('api.mempool.txids') }}</code>
+                </x-slot:example>
+                <x-slot:response>
+                    <pre class="text-xs md:text-sm overflow-x-auto"><code>[
   "txid1...",
   "txid2...",
   "txid3..."
 ]</code></pre>
-                    </div>
-                </div>
-            </div>
+                </x-slot:response>
+            </x-api-section>
 
             <!-- Prices Endpoint -->
-            <div class="border border-gray-200 rounded-lg p-6 bg-white">
-                <div class="flex items-center mb-4">
-                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded mr-3">GET</span>
-                    <code class="text-lg font-mono">/prices</code>
-                </div>
-
-                <p class="text-gray-600 mb-4">Returns the latest Pepecoin prices.</p>
-
-                <div class="mb-4">
-                    <h4 class="font-semibold mb-2">Example</h4>
-                    <div class="bg-gray-900 text-white p-3 rounded text-sm">
-                        <code>curl {{ route('api.prices') }}</code>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <h4 class="font-semibold mb-2">Response</h4>
-                    <div class="bg-gray-50 p-3 rounded border">
-                        <p class="text-sm text-gray-600 mb-1">Content-Type: application/json</p>
-                        <pre class="text-xs md:text-sm overflow-x-auto"><code>{
+            <x-api-section method="GET" path="/prices" :description="'Returns the latest Pepecoin prices.'" responseContentType="application/json">
+                <x-slot:example>
+                    <code>curl {{ route('api.prices') }}</code>
+                </x-slot:example>
+                <x-slot:response>
+                    <pre class="text-xs md:text-sm overflow-x-auto"><code>{
   "time": 1724263564,
   "EUR": 0.00000123,
   "USD": 0.00000134
 }</code></pre>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <h4 class="font-semibold mb-2">Response Fields</h4>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full text-xs md:text-sm">
-                            <thead>
-                                <tr class="border-b">
-                                    <th class="text-left py-2 font-semibold">Field</th>
-                                    <th class="text-left py-2 font-semibold">Type</th>
-                                    <th class="text-left py-2 font-semibold">Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="border-b">
-                                    <td class="py-2"><code>time</code></td>
-                                    <td class="py-2">integer</td>
-                                    <td class="py-2">Unix timestamp indicating when the price data was last refreshed</td>
-                                </tr>
-                                <tr class="border-b">
-                                    <td class="py-2"><code>EUR</code></td>
-                                    <td class="py-2">float</td>
-                                    <td class="py-2">Latest price in Euro</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2"><code>USD</code></td>
-                                    <td class="py-2">float</td>
-                                    <td class="py-2">Latest price in US Dollar</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+                </x-slot:response>
+                <x-slot:fields>
+                    <x-api-field name="time" type="integer" description="Unix timestamp indicating when the price data was last refreshed" />
+                    <x-api-field name="EUR" type="float" description="Latest price in Euro" />
+                    <x-api-field name="USD" type="float" description="Latest price in US Dollar" />
+                </x-slot:fields>
+            </x-api-section>
         </div>
 
         <!-- Error Responses -->
