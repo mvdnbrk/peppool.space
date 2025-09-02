@@ -38,7 +38,7 @@ const getTheme = () => {
         seriesColor: '#15803d', // green-700
       }
     : {
-        background: '#ffffff',
+        background: '#f9fafb',
         textColor: '#111827',   // gray-900
         gridColor: '#e5e7eb',   // gray-200
         seriesColor: '#15803d', // green-700
