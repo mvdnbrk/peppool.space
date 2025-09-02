@@ -53,4 +53,18 @@ return [
         'mempool_refresh_interval' => 5, // seconds
         'fee_estimation_blocks' => [1, 3, 6, 12], // target confirmation blocks
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | CDN Configuration
+    |--------------------------------------------------------------------------
+    |
+    | CDN base URL used by the cdn_asset() helper. When null, the helper will
+    | derive the base as https://cdn.<host>[/basePath] from app.url/request.
+    |
+    */
+
+    'cdn' => [
+        'url' => env('CDN_URL'),
+    ],
 ];
