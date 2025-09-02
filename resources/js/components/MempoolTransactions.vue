@@ -175,7 +175,8 @@ onMounted(() => {
   for (let i = 0; i < txids.value.length; i++) {
     const id = txids.value[i]
     if (!firstSeen.value[id]) {
-      firstSeen.value[id] = now - (txids.value.length - i)
+      // Assign larger timestamps to earlier items to preserve current visual order
+      firstSeen.value[id] = now + (txids.value.length - i)
     }
   }
   

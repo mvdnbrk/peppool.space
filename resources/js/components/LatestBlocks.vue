@@ -3,7 +3,7 @@
     <TransitionGroup name="blocks" tag="div" class="blocks-list">
       <a
         v-for="block in blocks"
-        :key="block.id || block.hash || block.height"
+        :key="Number(block.height)"
         :href="`/block/${block.height}`"
         class="block px-6 py-4 border-b border-gray-100 dark:border-gray-700 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
       >
@@ -128,6 +128,16 @@ const stopPolling = () => {
 }
 
 onMounted(async () => {
+  // Normalize initial list to match fetch ordering (height desc) to avoid initial flip
+  if (Array.isArray(blocks.value) && blocks.value.length > 0) {
+    const seen = new Set()
+    const sorted = [...blocks.value]
+      .filter(Boolean)
+      .sort((a, b) => Number(b.height) - Number(a.height))
+      .filter(b => (seen.has(Number(b.height)) ? false : (seen.add(Number(b.height)), true)))
+      .slice(0, 10)
+    blocks.value = sorted
+  }
   updateHeightCard()
   await initAlpine()
   startPolling()
