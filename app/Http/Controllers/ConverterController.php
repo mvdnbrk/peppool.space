@@ -22,6 +22,7 @@ class ConverterController extends Controller
             ],
             'title' => 'PEPE Currency Converter - Convert PEPE to USD/EUR',
             'description' => 'Convert Pepecoin (PEPE) to USD, EUR and other currencies with real-time exchange rates.',
+            'og_image' => 'pepecoin-converter.png',
         ]);
     }
 }
