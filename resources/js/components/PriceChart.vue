@@ -13,19 +13,20 @@
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 
-const props = withDefaults(defineProps({
+const props = defineProps({
   apiUrl: { type: String, required: true },
   // Optional: override refresh using seconds. If > 0, it takes precedence over refreshMs.
   refreshSeconds: { type: Number, default: 0 },
   // Refresh cadence in ms (default 5 minutes) used when refreshSeconds <= 0
   refreshMs: { type: Number, default: 5 * 60 * 1000 },
-}), {})
+})
 
 let chart
 let series
 const chartContainer = ref(null)
 
 const isLoading = ref(false)
+const firstLoad = ref(true)
 const error = ref(null)
 let intervalId = null
 
@@ -129,7 +130,8 @@ const resizeHandler = () => {
 const fetchSeries = async () => {
   if (!props.apiUrl) return
   try {
-    isLoading.value = true
+    // Only show loading overlay on the first load to prevent flicker
+    if (firstLoad.value) isLoading.value = true
     const res = await fetch(props.apiUrl, { headers: { 'Accept': 'application/json' } })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const json = await res.json()
@@ -140,13 +142,17 @@ const fetchSeries = async () => {
       value: Number(p.value),
     }))
     series.setData(normalized)
-    if (chart && typeof chart.timeScale === 'function') {
+    // Fit content only once to avoid jumpy chart on subsequent refreshes
+    if (firstLoad.value && chart && typeof chart.timeScale === 'function') {
       chart.timeScale().fitContent()
     }
   } catch (e) {
     error.value = e.message
   } finally {
-    isLoading.value = false
+    if (firstLoad.value) {
+      isLoading.value = false
+      firstLoad.value = false
+    }
   }
 }
 
