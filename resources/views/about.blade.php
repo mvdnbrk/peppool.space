@@ -1,7 +1,7 @@
 <x-layout title="About Pepecoin - peppool.space" og_image="about-pepecoin.png" og_description="About the Pepecoin (PEP) network and community.">
     <div class="mb-6 md:mb-8 text-gray-600 dark:text-gray-300">
         <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-200 mb-2">About Pepecoin</h1>
-        <p class="text-sm md:text-base">Overview of the Pepecoin (PEP) network, technology and community.</p>
+        <p class="text-sm md:text-base text-gray-500">Overview of the Pepecoin (PEP) network, technology and community.</p>
     </div>
 
     <div class="max-w-none space-y-4 md:space-y-6">
@@ -24,7 +24,9 @@
 
     <!-- About the Creator Section -->
     <div class="mt-8 md:mt-12 pt-6 md:pt-8 border-t border-gray-200 dark:border-gray-700">
-        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-200 mb-4">About the Creator</h2>
+        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-200 mb-4">
+            About the creator of peppool.space
+        </h2>
         <p class="text-base md:text-lg leading-7 md:leading-8 text-gray-600 dark:text-gray-300 mb-4">
             Peppool.space was created by Mark (<a href="https://x.com/mvdnbrk" target="_blank" rel="noopener" class="text-green-700 hover:text-green-800 dark:text-green-600 dark:hover:text-green-400 underline">@mvdnbrk on X</a>), a seasoned developer with 30 years of experience, dedicated to fostering the Pepecoin Network's decentralized, community-driven vision through an efficient and trusted Pepecoin blockchain explorer.
         </p>
