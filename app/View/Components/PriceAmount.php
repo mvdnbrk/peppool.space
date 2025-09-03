@@ -70,7 +70,7 @@ class PriceAmount extends Component
         }
 
         // Accessible label: currency symbol + full fixed number + optional code
-        $this->ariaLabel = trim($this->currencySymbol . ' ' . $fixed . ($this->currencyCode ? ' ' . $this->currencyCode : ''));
+        $this->ariaLabel = trim($this->currencySymbol.' '.$fixed.($this->currencyCode ? ' '.$this->currencyCode : ''));
     }
 
     // Note: Blade view should use $hasSignificantDecimals boolean variable directly
