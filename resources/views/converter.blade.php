@@ -6,9 +6,9 @@
 
     <!-- Main Converter Card -->
     <div class="max-w-2xl lg:max-w-none mx-auto">
-        <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-xl border border-green-100 dark:border-gray-700 p-6 md:p-8" 
+        <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-xl border border-green-100 dark:border-gray-700 p-6 md:p-8"
              x-data="converter({{ $price->usd ?? 0 }}, {{ $price->eur ?? 0 }})">
-            
+
             <!-- From Section -->
             <div class="space-y-4">
                 <div class="bg-white dark:bg-gray-800 rounded-xl p-4 md:p-6 shadow-sm border border-gray-200 dark:border-gray-600">
@@ -18,8 +18,8 @@
                             <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-sm" x-text="isPepeToFiat ? '₱' : currencySymbol(selectedCurrency)"></div>
                             <span class="font-semibold text-green-700 dark:text-green-300" x-text="isPepeToFiat ? 'PEPE' : selectedCurrency.toUpperCase()"></span>
                         </div>
-                        <input 
-                            type="text" 
+                        <input
+                            type="text"
                             x-model="baseDisplay"
                             @input="onBaseInput($event)"
                             :placeholder="isPepeToFiat ? 'Enter PEPE amount' : 'Enter amount'"
@@ -33,7 +33,7 @@
 
                 <!-- Swap Button -->
                 <div class="flex justify-center">
-                    <button 
+                    <button
                         @click="swapCurrencies()"
                         class="p-3 bg-green-600 hover:bg-green-700 text-white rounded-full shadow-lg transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-4 focus:ring-green-200 dark:focus:ring-green-800"
                     >
@@ -51,7 +51,7 @@
                             <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-sm">₱</div>
                             <span class="font-semibold text-green-700 dark:text-green-300">PEPE</span>
                         </div>
-                        <select 
+                        <select
                             x-show="isPepeToFiat"
                             x-model="selectedCurrency"
                             @change="updateConversion()"
@@ -85,7 +85,7 @@
                 <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Quick amounts:</p>
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
                     <template x-for="amount in quickAmounts" :key="amount">
-                        <button 
+                        <button
                             @click="setQuickAmount(amount)"
                             class="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors text-sm font-medium"
                             x-text="formatNumber(amount) + ' PEPE'"
@@ -122,30 +122,30 @@
                     eur: eurRate
                 },
                 quickAmounts: [100, 1000, 100000, 500000, 1000000, 10000000],
-                
+
                 init() {
                     this.updateConversion();
                     this.baseDisplay = this.formatPepeDisplay(this.pepeAmount);
                 },
-                
+
                 updateConversion() {
                     const rate = this.getCurrentRate();
                     this.convertedAmount = this.isPepeToFiat
                         ? (this.pepeAmount * rate)
                         : (rate > 0 ? this.fiatAmount / rate : 0);
                 },
-                
+
                 getCurrentRate() {
                     return this.rates[this.selectedCurrency] || 0;
                 },
-                
+
                 swapCurrencies() {
                     // Store the current input value (what user actually entered)
                     const currentInputValue = this.isPepeToFiat ? this.pepeAmount : this.fiatAmount;
-                    
+
                     // Toggle conversion direction between PEPE <-> Fiat
                     this.isPepeToFiat = !this.isPepeToFiat;
-                    
+
                     // Set the current input value as the new input for the swapped direction
                     if (this.isPepeToFiat) {
                         // Now converting PEPE to fiat, keep the same input value as PEPE
@@ -156,17 +156,17 @@
                         this.fiatAmount = currentInputValue;
                         this.baseDisplay = this.formatPepeDisplay(this.fiatAmount);
                     }
-                    
+
                     this.updateConversion();
                 },
-                
+
                 setQuickAmount(amount) {
                     // Only applicable when PEPE is the base
                     this.pepeAmount = amount;
                     this.baseDisplay = this.formatPepeDisplay(this.pepeAmount);
                     this.updateConversion();
                 },
-                
+
                 onBaseInput(event) {
                     const raw = (event.target.value || '').toString();
                     const cleaned = raw.replace(/,/g, '');
@@ -201,7 +201,7 @@
                     });
                     return formatter.format(amount);
                 },
-                
+
                 formatNumber(number) {
                     return new Intl.NumberFormat('en-US').format(number);
                 },
