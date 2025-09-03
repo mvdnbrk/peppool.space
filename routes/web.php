@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\BlockController;
 use App\Http\Controllers\DocumentationController;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', HomepageController::class)->name('homepage');
 
 Route::get('/pepecoin-price', PriceController::class)->name('price');
+Route::get('/about-pepecoin', AboutController::class)->name('about');
 Route::get('/wealth', WealthController::class)->name('wealth');
 
 Route::get('/search', [SearchController::class, 'index'])->name('search.index');

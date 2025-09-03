@@ -11,6 +11,9 @@
         <nav class="pb-4 mb-4 md:mb-0 flex justify-center md:justify-end" aria-label="Footer navigation">
             <ul class="flex flex-wrap items-center gap-x-3 sm:gap-x-6 gap-y-2">
                 <li>
+                    <a href="{{ route('about') }}" title="About Pepecoin" aria-label="About Pepecoin" class="inline-flex items-center rounded-full bg-white text-green-800 hover:text-green-900 px-3 py-1.5 md:px-3 md:py-1.5 lg:px-2.5 lg:py-1 font-semibold shadow-sm ring-1 ring-inset ring-white/60 hover:ring-emerald-300 hover:bg-emerald-50/70 transition-colors">About PEPE</a>
+                </li>
+                <li>
                     <a href="{{ route('price') }}" title="PEPE Price Chart" aria-label="PEPE price chart page" class="inline-flex items-center rounded-full bg-white text-green-800 hover:text-green-900 px-3 py-1.5 md:px-3 md:py-1.5 lg:px-2.5 lg:py-1 font-semibold shadow-sm ring-1 ring-inset ring-white/60 hover:ring-emerald-300 hover:bg-emerald-50/70 transition-colors">PEPE Price Chart</a>
                 </li>
                 <li>

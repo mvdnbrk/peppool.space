@@ -67,4 +67,25 @@ return [
     'cdn' => [
         'url' => env('CDN_URL'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Social Media Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Social media handles and links for the Pepecoin community.
+    |
+    */
+
+    'socials' => [
+        'twitter_handle' => 'PepecoinNetwork',
+        'telegram_handle' => 'PepecoinGroup',
+        'discord_handle' => '6NXJt25q2J',
+        'youtube_handle' => 'pepecoin',
+        'reddit_handle' => 'r/pepecoin',
+        'facebook_handle' => 'people/Pepecoin/61559208990076',
+        'tiktok_handle' => '@pepecoin_',
+        'instagram_handle' => 'pepecoin_pepe',
+        'github_handle' => 'pepecoinppc/pepecoin',
+    ],
 ];
