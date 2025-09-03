@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\View\View;
 use App\Services\PepecoinExplorerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\View\View;
 
 class PriceController extends Controller
 {
-    public function __construct(private readonly PepecoinExplorerService $explorer)
-    {
-    }
+    public function __construct(private readonly PepecoinExplorerService $explorer) {}
 
     public function __invoke(Request $request): View
     {

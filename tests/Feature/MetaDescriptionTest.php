@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class MetaDescriptionTest extends TestCase
 {
@@ -16,9 +16,9 @@ class MetaDescriptionTest extends TestCase
 
         $this->get(route('docs.api'))
             ->assertOk()
-            ->assertSee('<meta name="description" content="' . $expected . '">', false)
-            ->assertSee('<meta property="og:description" content="' . $expected . '">', false)
-            ->assertSee('<meta property="twitter:description" content="' . $expected . '">', false);
+            ->assertSee('<meta name="description" content="'.$expected.'">', false)
+            ->assertSee('<meta property="og:description" content="'.$expected.'">', false)
+            ->assertSee('<meta property="twitter:description" content="'.$expected.'">', false);
     }
 
     #[Test]
@@ -28,8 +28,8 @@ class MetaDescriptionTest extends TestCase
 
         $this->get(route('search.index'))
             ->assertOk()
-            ->assertSee('<meta name="description" content="' . $expected . '">', false)
-            ->assertSee('<meta property="og:description" content="' . $expected . '">', false)
-            ->assertSee('<meta property="twitter:description" content="' . $expected . '">', false);
+            ->assertSee('<meta name="description" content="'.$expected.'">', false)
+            ->assertSee('<meta property="og:description" content="'.$expected.'">', false)
+            ->assertSee('<meta property="twitter:description" content="'.$expected.'">', false);
     }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use Illuminate\Support\Number;
 use App\Jobs\CalculateTotalSupply;
 use App\Services\PepecoinExplorerService;
+use Illuminate\Console\Command;
+use Illuminate\Support\Number;
 
 class PepeSupplyCommand extends Command
 {
@@ -34,8 +34,8 @@ class PepeSupplyCommand extends Command
 
         $this->line('Total PEPE supply');
         $this->line('-------------------');
-        $this->line('Full:   ' . Number::format($sumInt, maxPrecision: 0));
-        $this->line('Approx: ' . $human);
+        $this->line('Full:   '.Number::format($sumInt, maxPrecision: 0));
+        $this->line('Approx: '.$human);
 
         return self::SUCCESS;
     }

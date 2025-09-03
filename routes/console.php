@@ -1,8 +1,8 @@
 <?php
 
+use App\Jobs\CalculateTotalSupply;
 use App\Jobs\FetchPepePrice;
 use App\Jobs\StorePepePrice;
-use App\Jobs\CalculateTotalSupply;
 use Illuminate\Support\Facades\Schedule;
 
 Schedule::job(FetchPepePrice::class)->everyFifteenMinutes();

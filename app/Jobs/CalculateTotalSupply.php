@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Services\PepecoinRpcService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -10,7 +11,6 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Services\PepecoinRpcService;
 
 class CalculateTotalSupply implements ShouldQueue
 {
@@ -30,6 +30,7 @@ class CalculateTotalSupply implements ShouldQueue
             if (is_array($info) && array_key_exists('total_amount', $info)) {
                 $total = (string) $info['total_amount'];
                 Cache::put($cacheKey, $total, now()->addHours(1));
+
                 return;
             }
         } catch (\Throwable $e) {

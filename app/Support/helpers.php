@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Number;
+use Illuminate\Support\Str;
 
 if (! function_exists('format_hashrate')) {
     function format_hashrate(float $hashrate): string

@@ -2,14 +2,15 @@
 
 namespace App\View\Components;
 
-use Illuminate\View\View;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\View\Component;
-use Illuminate\Support\Collection;
+use Illuminate\View\View;
 
 class ApiSection extends Component
 {
     public string $badgeClasses;
+
     public string $sectionId;
 
     public function __construct(
