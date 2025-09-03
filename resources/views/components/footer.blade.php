@@ -25,20 +25,48 @@
         <div class="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
             <div class="flex flex-col items-center md:items-start">
                 <p class="font-medium text-white">real-time pepecoin blockchain explorer</p>
-                <p class="text-sm text-green-100 mt-1">© {{ date('Y') }} peppool.space, all rights reserved</p>
-            </div>
-
-            @if(isset($network))
-            <div class="flex flex-col items-center md:items-end text-xs text-green-100">
-                <span>{{ $network['subversion'] ?? 'Unknown' }}</span>
-                <div class="mt-2 flex items-center space-x-2">
+                @if(isset($network))
+                <div class="mt-1 flex items-center gap-2 text-xs text-green-100">
                     <div class="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
+                    @if(!empty($network['subversion']))
+                        <span>{{ $network['subversion'] }}</span>
+                    @endif
                     <span>{{ $network['connections'] ?? 0 }} peers</span>
                 </div>
+                @endif
             </div>
-            @endif
         </div>
 
-        
+        <!-- Bottom row: Copyright (left) and Hosting & Analytics (right) -->
+        <div class="mt-6 flex flex-col md:flex-row items-center md:items-center justify-between gap-4">
+            <p class="text-sm text-green-100">© {{ date('Y') }} peppool.space, all rights reserved</p>
+
+            <div class="flex items-center gap-6">
+                <div class="flex items-center space-x-2 text-xs text-green-100 leading-5">
+                    <p>Proudly hosted with</p>
+                    <a
+                        href="https://m.do.co/c/7a24c68b1e6d"
+                        class="hover:text-white transition-colors"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        <span class="sr-only">Digital Ocean</span>
+                        <x-icon-digitalocean class="h-6" />
+                    </a>
+                </div>
+                <div class="flex items-center space-x-2 text-xs text-green-100 leading-5">
+                    <p>privacy-first insights with</p>
+                    <a
+                        href="https://usefathom.com/ref/FI15PB"
+                        class="hover:text-white transition-colors"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        <span class="sr-only">Fathom Analytics</span>
+                        <x-icon-fathom class="h-6" />
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </footer>
