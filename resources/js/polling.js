@@ -12,7 +12,8 @@ function formatNumber(num) { return num.toLocaleString('en-US'); }
 
 function updatePepecoinPrice(price) {
   const el = document.getElementById('pepecoin-price');
-  if (el) el.innerText = `$${parseFloat(price).toFixed(8)}`;
+  if (!el) return;
+  el.innerText = `$${price}`;
 }
 
 function updateBlockHeight(height) {
