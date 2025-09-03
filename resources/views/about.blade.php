@@ -84,7 +84,7 @@
         <p class="text-base md:text-lg leading-7 md:leading-8 text-gray-600 dark:text-gray-300 mb-4">
             If you find <span class="text-green-800 dark:text-green-600">peppool.space</span> useful and would like to support its development and maintenance, you can make a donation using Pepecoin.
         </p>
-        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg">
+        <div class="bg-gray-300 dark:bg-gray-800 p-4 rounded-lg">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-200 mb-3">
                 Donation Address
             </h3>
