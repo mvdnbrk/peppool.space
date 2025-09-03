@@ -77,4 +77,29 @@
             </a>
         </div>
     </div>
+
+    <!-- Support Section -->
+    <div class="mt-8 md:mt-12 pt-6 md:pt-8 border-t border-gray-200 dark:border-gray-700">
+        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-200 mb-4">Support the Project</h2>
+        <p class="text-base md:text-lg leading-7 md:leading-8 text-gray-600 dark:text-gray-300 mb-4">
+            If you find <span class="text-green-800 dark:text-green-600">peppool.space</span> useful and would like to support its development and maintenance, you can make a donation using Pepecoin.
+        </p>
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-200 mb-3">
+                Donation Address
+            </h3>
+            <div class="flex flex-row flex-nowrap items-center gap-3 w-full" x-data="{ copied: false, copy() { navigator.clipboard.writeText('PbvihBLgz6cFJnhYscevB4n3o85faXPG7D'); this.copied = true; setTimeout(() => this.copied = false, 1500); } }">
+                <code class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded px-3 py-2 text-sm font-mono text-gray-800 dark:text-gray-200 whitespace-nowrap overflow-x-auto flex-1 min-w-0">
+                    PbvihBLgz6cFJnhYscevB4n3o85faXPG7D
+                </code>
+                <button type="button" @click="copy()" class="relative inline-flex shrink-0 cursor-pointer items-center px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg transition-colors text-sm font-medium whitespace-nowrap">
+                    <span class="opacity-0">Copy Address</span>
+                    <span class="absolute inset-0 flex items-center justify-center" x-text="copied ? 'Copied!' : 'Copy Address'"></span>
+                </button>
+            </div>
+            <p class="text-base text-gray-500 dark:text-gray-400 mt-3">
+                Your support helps keep this blockchain explorer running and continuously improving. Thank you!
+            </p>
+        </div>
+    </div>
 </x-layout>
