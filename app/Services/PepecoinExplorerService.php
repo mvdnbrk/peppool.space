@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\CalculateTotalSupply;
 use App\Models\Block;
 use App\Models\Price;
 use Illuminate\Support\Carbon;
@@ -9,7 +10,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use App\Jobs\CalculateTotalSupply;
 
 class PepecoinExplorerService
 {
@@ -174,6 +174,7 @@ class PepecoinExplorerService
 
         // If cache is missing, compute via the job, then return from cache
         CalculateTotalSupply::dispatchSync();
+
         return (string) (Cache::get($cacheKey) ?? '0');
     }
 
@@ -185,13 +186,13 @@ class PepecoinExplorerService
             function () use ($currency): ?float {
                 $prices = $this->getPrices();
                 $price = $prices->get($currency);
-                
-                if (!$price || $price <= 0) {
+
+                if (! $price || $price <= 0) {
                     return null;
                 }
 
                 $supply = $this->getTotalSupply();
-                if (!$supply || $supply === '0') {
+                if (! $supply || $supply === '0') {
                     return null;
                 }
 
