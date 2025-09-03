@@ -47,15 +47,15 @@
             <x-slot:icon>
                 <x-icon-pep-currency-sign class="w-5 h-5 text-white" />
             </x-slot:icon>
-            <span class="text-2xl">
-                @php
-                    $currencySymbol = $currency === 'EUR' ? '€' : '$';
-                    // Format up to 6 decimals, strip trailing zeros and a dangling decimal point
-                    $formattedPrice = rtrim(rtrim(number_format($price, 6, '.', ''), '0'), '.');
-                @endphp
-                {{ $currencySymbol }}&nbsp;{{ $formattedPrice }}
-                <span class="ml-2 text-gray-500 text-base">{{ $currency }}</span>
-            </span>
+            <x-price-amount
+                class="text-2xl"
+                :value="$price"
+                :currency-symbol="$currency === 'EUR' ? '€' : '$'"
+                :currency-code="$currency"
+                precision="8"
+                dim-class="text-gray-700 dark:text-gray-500"
+                dim-size-class="text-xl"
+            />
         </x-stat-card>
     </div>
     <!-- Price Chart -->
