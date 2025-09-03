@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Services\PepecoinExplorerService;
-use Illuminate\Http\Request;
 
 class ConverterController extends Controller
 {
@@ -14,7 +13,7 @@ class ConverterController extends Controller
     public function index()
     {
         $prices = $this->explorer->getPrices();
-        
+
         return view('converter', [
             'price' => (object) [
                 'usd' => $prices->get('USD', 0),
