@@ -24,13 +24,13 @@
 
         <div class="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
             <div class="flex flex-col items-center md:items-start">
-                <p class="font-medium text-white">real-time pepecoin blockchain explorer</p>
+                <p class="text-lg font-medium text-white">real-time pepecoin blockchain explorer</p>
                 @if(isset($network))
-                <div class="mt-1 flex items-center gap-2 text-xs text-green-100">
-                    <div class="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
+                <div class="mt-1 flex items-center gap-2 text-sm text-green-100">
                     @if(!empty($network['subversion']))
                         <span>{{ $network['subversion'] }}</span>
                     @endif
+                    <div class="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
                     <span>{{ $network['connections'] ?? 0 }} peers</span>
                 </div>
                 @endif
@@ -38,8 +38,8 @@
         </div>
 
         <!-- Bottom row: Copyright (left) and Hosting & Analytics (right) -->
-        <div class="mt-1 md:mt-0 flex flex-col md:flex-row items-center md:items-center justify-between gap-4">
-            <p class="text-sm text-green-100">© {{ date('Y') }} peppool.space, all rights reserved</p>
+        <div class="mt-1 md:mt-4 flex flex-col md:flex-row items-center md:items-center justify-between gap-4">
+            <p class="mt-4 md:mt-0 text-sm text-green-100">© {{ date('Y') }} peppool.space, all rights reserved</p>
 
             <div class="mt-5 md:mt-0 flex flex-col md:flex-row items-center gap-6">
                 <div class="flex flex-col items-center md:flex-row md:items-center md:space-x-2 space-y-1 md:space-y-0 text-xs text-green-100 leading-5">
