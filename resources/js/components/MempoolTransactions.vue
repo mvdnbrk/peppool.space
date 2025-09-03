@@ -38,13 +38,13 @@
       </div>
     </a>
   </TransitionGroup>
-  <div v-if="sortedTxids.length === 0" class="px-6 py-8 text-center">
+  <div v-if="showEmpty" class="px-6 py-8 text-center">
     <p class="text-gray-500 dark:text-gray-400">no transactions in mempool</p>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 
 const props = defineProps({
   initialTxids: {
@@ -66,6 +66,8 @@ const txids = ref([...props.initialTxids])
 const confirmed = ref({})
 const firstSeen = ref({})
 const lastCount = ref(props.initialTxids.length)
+// empty state flag is delayed to avoid overlapping with leave transitions
+const showEmpty = ref(txids.value.length === 0)
 
 // Computed
 const sortedTxids = computed(() => {
@@ -76,6 +78,7 @@ const sortedTxids = computed(() => {
 let timer = null
 let inFlight = false
 let controller = null
+let emptyMessageTimer = null
 
 // Methods
 const updateCount = () => {
@@ -168,6 +171,23 @@ const handleVisibilityChange = () => {
   }
 }
 
+// Watch for when the list becomes empty and delay the empty message
+// to allow leave transitions (1.5s) to complete.
+watch(sortedTxids, (list) => {
+  if (list.length === 0) {
+    if (emptyMessageTimer) clearTimeout(emptyMessageTimer)
+    emptyMessageTimer = setTimeout(() => {
+      showEmpty.value = true
+    }, 1600) // a bit longer than .mempool-leave-active (1.5s)
+  } else {
+    showEmpty.value = false
+    if (emptyMessageTimer) {
+      clearTimeout(emptyMessageTimer)
+      emptyMessageTimer = null
+    }
+  }
+}, { immediate: true })
+
 // Lifecycle
 onMounted(() => {
   // Initialize firstSeen for initial txids
@@ -190,6 +210,10 @@ onUnmounted(() => {
   document.removeEventListener('visibilitychange', handleVisibilityChange)
   if (controller) {
     try { controller.abort() } catch (_) {}
+  }
+  if (emptyMessageTimer) {
+    clearTimeout(emptyMessageTimer)
+    emptyMessageTimer = null
   }
 })
 </script>
