@@ -8,7 +8,7 @@
     </div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-12">
         <!-- Footer Navigation (top) -->
-        <nav class="pb-4 flex justify-center md:justify-end" aria-label="Footer navigation">
+        <nav class="pb-4 mb-4 md:mb-0 flex justify-center md:justify-end" aria-label="Footer navigation">
             <ul class="flex flex-wrap items-center gap-x-3 sm:gap-x-6 gap-y-2">
                 <li>
                     <a href="{{ route('price') }}" title="PEPE Price Chart" aria-label="PEPE price chart page" class="inline-flex items-center rounded-full bg-white text-green-800 hover:text-green-900 px-3 py-1.5 md:px-3 md:py-1.5 lg:px-2.5 lg:py-1 font-semibold shadow-sm ring-1 ring-inset ring-white/60 hover:ring-emerald-300 hover:bg-emerald-50/70 transition-colors">PEPE Price Chart</a>
@@ -38,11 +38,11 @@
         </div>
 
         <!-- Bottom row: Copyright (left) and Hosting & Analytics (right) -->
-        <div class="mt-6 flex flex-col md:flex-row items-center md:items-center justify-between gap-4">
+        <div class="mt-1 md:mt-0 flex flex-col md:flex-row items-center md:items-center justify-between gap-4">
             <p class="text-sm text-green-100">© {{ date('Y') }} peppool.space, all rights reserved</p>
 
-            <div class="flex items-center gap-6">
-                <div class="flex items-center space-x-2 text-xs text-green-100 leading-5">
+            <div class="mt-5 md:mt-0 flex flex-col md:flex-row items-center gap-6">
+                <div class="flex flex-col items-center md:flex-row md:items-center md:space-x-2 space-y-1 md:space-y-0 text-xs text-green-100 leading-5">
                     <p>Proudly hosted with</p>
                     <a
                         href="https://m.do.co/c/7a24c68b1e6d"
@@ -54,7 +54,7 @@
                         <x-icon-digitalocean class="h-6" />
                     </a>
                 </div>
-                <div class="flex items-center space-x-2 text-xs text-green-100 leading-5">
+                <div class="flex flex-col items-center md:flex-row md:items-center md:space-x-2 space-y-1 md:space-y-0 text-xs text-green-100 leading-5">
                     <p>privacy-first insights with</p>
                     <a
                         href="https://usefathom.com/ref/FI15PB"
