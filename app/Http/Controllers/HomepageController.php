@@ -18,7 +18,10 @@ class HomepageController extends Controller
             return view('homepage', [
                 'blockchain' => $rpc->getBlockchainInfo(),
                 'mempool' => $explorer->getMempoolInfo(),
-                'network' => $rpc->getNetworkInfo(),
+                'network' => [
+                    'subversion' => $explorer->getNetworkSubversion(),
+                    'connections' => $explorer->getNetworkConnections(),
+                ],
                 'latestBlocks' => Block::getLatestBlocks(),
                 'mempoolTransactions' => $explorer->getMempoolTxIds()->take(10),
                 'chainSize' => Number::fileSize($explorer->getChainSize(), precision: 1),

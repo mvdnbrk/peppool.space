@@ -200,4 +200,28 @@ class PepecoinExplorerService
             }
         );
     }
+
+    public function getNetworkSubversion(): ?string
+    {
+        return Cache::remember(
+            $this->getCacheKey(__FUNCTION__),
+            Carbon::now()->addDay(),
+            function (): ?string {
+                return new Collection($this->rpcService->getNetworkInfo())
+                    ->get('subversion');
+            }
+        );
+    }
+
+    public function getNetworkConnections(): int
+    {
+        return Cache::remember(
+            $this->getCacheKey(__FUNCTION__),
+            Carbon::now()->addMinutes(5),
+            function (): int {
+                return new Collection($this->rpcService->getNetworkInfo())
+                    ->get('connections', 0);
+            }
+        );
+    }
 }

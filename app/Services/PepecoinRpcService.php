@@ -3,8 +3,6 @@
 namespace App\Services;
 
 use Exception;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -139,11 +137,7 @@ class PepecoinRpcService
 
     public function getNetworkInfo(): array
     {
-        return Cache::remember(
-            'network_info',
-            Carbon::now()->addMinutes(15),
-            fn (): array => $this->call('getnetworkinfo')
-        );
+        return $this->call('getnetworkinfo');
     }
 
     public function getBlockCount(): int
