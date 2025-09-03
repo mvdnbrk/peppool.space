@@ -1,4 +1,4 @@
-<x-layout title="About Pepecoin - peppool.space" og_image="default-card-large.png" og_description="About the Pepecoin (PEP) network and community.">
+<x-layout title="About Pepecoin - peppool.space" og_image="about-pepecoin.png" og_description="About the Pepecoin (PEP) network and community.">
     <div class="mb-6 md:mb-8 text-gray-600 dark:text-gray-300">
         <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-200 mb-2">About Pepecoin</h1>
         <p class="text-sm md:text-base">Overview of the Pepecoin (PEP) network, technology and community.</p>
