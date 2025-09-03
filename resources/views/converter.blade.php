@@ -140,17 +140,20 @@
                 },
                 
                 swapCurrencies() {
+                    // Store the current input value (what user actually entered)
+                    const currentInputValue = this.isPepeToFiat ? this.pepeAmount : this.fiatAmount;
+                    
                     // Toggle conversion direction between PEPE <-> Fiat
                     this.isPepeToFiat = !this.isPepeToFiat;
                     
-                    // Carry over the converted amount as the new input
+                    // Set the current input value as the new input for the swapped direction
                     if (this.isPepeToFiat) {
-                        // Now converting PEPE to fiat, use previous output as PEPE input
-                        this.pepeAmount = this.convertedAmount;
+                        // Now converting PEPE to fiat, keep the same input value as PEPE
+                        this.pepeAmount = currentInputValue;
                         this.baseDisplay = this.formatPepeDisplay(this.pepeAmount);
                     } else {
-                        // Now converting fiat to PEPE, use previous output as fiat input
-                        this.fiatAmount = this.convertedAmount;
+                        // Now converting fiat to PEPE, keep the same input value as fiat
+                        this.fiatAmount = currentInputValue;
                         this.baseDisplay = this.formatPepeDisplay(this.fiatAmount);
                     }
                     
