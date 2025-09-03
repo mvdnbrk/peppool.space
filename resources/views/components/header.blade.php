@@ -1,3 +1,7 @@
+@props([
+    'showPepePrice' => true,
+])
+
 <header class="bg-white dark:bg-green-100 relative">
     <div class="w-full h-6 overflow-hidden -mt-px text-green-700">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none" class="w-full h-full">
@@ -19,7 +23,7 @@
 
                 <!-- PEPE Price -->
                 <div class="flex items-center space-x-3">
-                    @if(Cache::has('pepecoin_price_usd'))
+                    @if($showPepePrice && Cache::has('pepecoin_price_usd'))
                     <a href="{{ route('price') }}" class="flex items-center space-x-1 sm:space-x-2 bg-green-50 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-green-200 hover:border-green-300 hover:bg-green-100 transition-colors">
                         <span class="text-green-700 font-medium text-xs sm:text-sm">PEPE</span>
                         <span class="text-gray-700 font-semibold text-xs sm:text-sm" id="pepecoin-price">

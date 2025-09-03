@@ -3,6 +3,7 @@
     'network' => null,
     'og_image' => 'default-card-large.png',
     'og_description' => 'Real-time Pepecoin blockchain explorer. View blocks, transactions, addresses, and more on the Pepecoin network.',
+    'showPepePrice' => true,
 ])
 <!DOCTYPE html>
 <html lang="en">
@@ -34,7 +35,7 @@
     @endif
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 min-h-screen">
-    <x-header />
+    <x-header :showPepePrice="$showPepePrice" />
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {{ $slot }}
