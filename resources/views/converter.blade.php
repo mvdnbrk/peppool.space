@@ -15,18 +15,18 @@
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">From</label>
                     <div class="flex items-center space-x-3">
                         <div class="flex items-center space-x-2 bg-green-100 dark:bg-green-900/30 px-3 py-2 rounded-lg">
-                            <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                                🐸
-                            </div>
-                            <span class="font-semibold text-green-800 dark:text-green-300">PEPE</span>
+                            <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-sm" x-text="isPepeToFiat ? '₱' : currencySymbol(selectedCurrency)"></div>
+                            <span class="font-semibold text-green-700 dark:text-green-300" x-text="isPepeToFiat ? 'PEPE' : selectedCurrency.toUpperCase()"></span>
                         </div>
                         <input 
-                            type="number" 
-                            x-model="pepeAmount"
-                            @input="updateFromPepe()"
-                            placeholder="Enter PEPE amount"
+                            type="text" 
+                            x-model="baseDisplay"
+                            @input="onBaseInput($event)"
+                            :placeholder="isPepeToFiat ? 'Enter PEPE amount' : 'Enter amount'"
                             class="flex-1 text-2xl md:text-3xl font-bold bg-transparent border-none outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400"
-                            step="any"
+                            inputmode="decimal"
+                            autocomplete="off"
+                            spellcheck="false"
                         >
                     </div>
                 </div>
@@ -47,15 +47,20 @@
                 <div class="bg-white dark:bg-gray-800 rounded-xl p-4 md:p-6 shadow-sm border border-gray-200 dark:border-gray-600">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">To</label>
                     <div class="flex items-center space-x-3">
+                        <div class="flex items-center space-x-2 bg-green-100 dark:bg-green-900/30 px-3 py-2 rounded-lg" x-show="!isPepeToFiat">
+                            <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-sm">₱</div>
+                            <span class="font-semibold text-green-700 dark:text-green-300">PEPE</span>
+                        </div>
                         <select 
+                            x-show="isPepeToFiat"
                             x-model="selectedCurrency"
-                            @change="updateFromPepe()"
+                            @change="updateConversion()"
                             class="bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-gray-900 dark:text-gray-100 font-semibold focus:outline-none focus:ring-2 focus:ring-green-500"
                         >
                             <option value="usd">🇺🇸 USD</option>
                             <option value="eur">🇪🇺 EUR</option>
                         </select>
-                        <div class="flex-1 text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100" x-text="formatCurrency(convertedAmount, selectedCurrency)">
+                        <div class="flex-1 text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100" x-text="getOutputText()">
                             $0.00
                         </div>
                     </div>
@@ -66,7 +71,7 @@
             <div class="mt-6 p-4 bg-green-100 dark:bg-green-900/20 rounded-lg">
                 <div class="text-center">
                     <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Current Rate</p>
-                    <p class="text-lg font-semibold text-green-800 dark:text-green-300">
+                    <p class="text-lg font-semibold text-green-700 dark:text-green-300">
                         1 PEPE = <span x-text="formatCurrency(getCurrentRate(), selectedCurrency)"></span>
                     </p>
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -76,7 +81,7 @@
             </div>
 
             <!-- Quick Amount Buttons -->
-            <div class="mt-6">
+            <div class="mt-6" x-show="isPepeToFiat">
                 <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Quick amounts:</p>
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
                     <template x-for="amount in quickAmounts" :key="amount">
@@ -94,11 +99,11 @@
         <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">USD Price</h3>
-                <p class="text-2xl font-bold text-green-600">${{ number_format($price->usd ?? 0, 8) }}</p>
+                <p class="text-2xl font-bold text-green-700">${{ number_format($price->usd ?? 0, 8) }}</p>
             </div>
             <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">EUR Price</h3>
-                <p class="text-2xl font-bold text-green-600">€{{ number_format($price->eur ?? 0, 8) }}</p>
+                <p class="text-2xl font-bold text-green-700">€{{ number_format($price->eur ?? 0, 8) }}</p>
             </div>
         </div>
     </div>
@@ -106,7 +111,10 @@
     <script>
         function converter(usdRate, eurRate) {
             return {
+                isPepeToFiat: true,
                 pepeAmount: 1000000,
+                fiatAmount: 0,
+                baseDisplay: '',
                 selectedCurrency: 'usd',
                 convertedAmount: 0,
                 rates: {
@@ -116,12 +124,15 @@
                 quickAmounts: [100, 1000, 100000, 500000, 1000000, 10000000],
                 
                 init() {
-                    this.updateFromPepe();
+                    this.updateConversion();
+                    this.baseDisplay = this.formatPepeDisplay(this.pepeAmount);
                 },
                 
-                updateFromPepe() {
+                updateConversion() {
                     const rate = this.getCurrentRate();
-                    this.convertedAmount = this.pepeAmount * rate;
+                    this.convertedAmount = this.isPepeToFiat
+                        ? (this.pepeAmount * rate)
+                        : (rate > 0 ? this.fiatAmount / rate : 0);
                 },
                 
                 getCurrentRate() {
@@ -129,16 +140,55 @@
                 },
                 
                 swapCurrencies() {
-                    // For now, just switch between USD and EUR
-                    this.selectedCurrency = this.selectedCurrency === 'usd' ? 'eur' : 'usd';
-                    this.updateFromPepe();
+                    // Toggle conversion direction between PEPE <-> Fiat
+                    this.isPepeToFiat = !this.isPepeToFiat;
+                    
+                    // Carry over the converted amount as the new input
+                    if (this.isPepeToFiat) {
+                        // Now converting PEPE to fiat, use previous output as PEPE input
+                        this.pepeAmount = this.convertedAmount;
+                        this.baseDisplay = this.formatPepeDisplay(this.pepeAmount);
+                    } else {
+                        // Now converting fiat to PEPE, use previous output as fiat input
+                        this.fiatAmount = this.convertedAmount;
+                        this.baseDisplay = this.formatPepeDisplay(this.fiatAmount);
+                    }
+                    
+                    this.updateConversion();
                 },
                 
                 setQuickAmount(amount) {
+                    // Only applicable when PEPE is the base
                     this.pepeAmount = amount;
-                    this.updateFromPepe();
+                    this.baseDisplay = this.formatPepeDisplay(this.pepeAmount);
+                    this.updateConversion();
                 },
                 
+                onBaseInput(event) {
+                    const raw = (event.target.value || '').toString();
+                    const cleaned = raw.replace(/,/g, '');
+                    const parts = cleaned.split('.');
+                    const normalized = parts.length > 1 ? parts[0] + '.' + parts.slice(1).join('') : cleaned;
+                    const numeric = Number(normalized);
+                    if (this.isPepeToFiat) {
+                        this.pepeAmount = isNaN(numeric) ? 0 : numeric;
+                    } else {
+                        this.fiatAmount = isNaN(numeric) ? 0 : numeric;
+                    }
+                    this.baseDisplay = this.formatPepeDisplay(normalized);
+                    this.updateConversion();
+                },
+
+                formatPepeDisplay(value) {
+                    // Keep decimals but add thousand separators to integer part
+                    const str = (value ?? '').toString();
+                    if (str === '') return '';
+                    const [intPart, decPart] = str.split('.');
+                    const intNum = intPart.replace(/\D/g, '');
+                    const withSep = intNum === '' ? '0' : intNum.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                    return decPart !== undefined && decPart !== '' ? `${withSep}.${decPart.replace(/\D/g, '')}` : withSep;
+                },
+
                 formatCurrency(amount, currency) {
                     const formatter = new Intl.NumberFormat('en-US', {
                         style: 'currency',
@@ -151,6 +201,21 @@
                 
                 formatNumber(number) {
                     return new Intl.NumberFormat('en-US').format(number);
+                },
+
+                currencySymbol(code) {
+                    switch ((code || '').toLowerCase()) {
+                        case 'usd': return '$';
+                        case 'eur': return '€';
+                        default: return code ? code.toUpperCase().slice(0,1) : '?';
+                    }
+                },
+
+                getOutputText() {
+                    if (this.isPepeToFiat) {
+                        return this.formatCurrency(this.convertedAmount, this.selectedCurrency);
+                    }
+                    return this.formatNumber(this.convertedAmount) + ' PEPE';
                 }
             }
         }
