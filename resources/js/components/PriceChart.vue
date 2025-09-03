@@ -13,9 +13,13 @@
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 
-const props = defineProps({
+const props = withDefaults(defineProps({
   apiUrl: { type: String, required: true },
-})
+  // Optional: override refresh using seconds. If > 0, it takes precedence over refreshMs.
+  refreshSeconds: { type: Number, default: 0 },
+  // Refresh cadence in ms (default 5 minutes) used when refreshSeconds <= 0
+  refreshMs: { type: Number, default: 5 * 60 * 1000 },
+}), {})
 
 let chart
 let series
@@ -159,7 +163,10 @@ const applyThemeToChart = () => {
 onMounted(async () => {
   await initChart()
   await fetchSeries()
-  intervalId = setInterval(fetchSeries, 30000)
+  const intervalMs = (typeof props.refreshSeconds === 'number' && props.refreshSeconds > 0)
+    ? props.refreshSeconds * 1000
+    : props.refreshMs
+  intervalId = setInterval(fetchSeries, intervalMs)
   window.addEventListener('resize', resizeHandler)
 
   // Theme listeners
@@ -173,7 +180,7 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
-  if (intervalId) clearInterval(intervalId)
+  if (intervalId) { clearInterval(intervalId); intervalId = null }
   if (chart) { chart.remove(); chart = null }
   series = null
   window.removeEventListener('resize', resizeHandler)
