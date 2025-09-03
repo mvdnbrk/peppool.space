@@ -36,6 +36,7 @@ Route::get('/address/{address}', [AddressController::class, 'show'])
 Route::get('/docs/api', DocumentationController::class)
     ->name('docs.api');
 
+Route::redirect('/about', '/about-pepecoin', Response::HTTP_MOVED_PERMANENTLY);
 Route::redirect('/api', '/docs/api', Response::HTTP_MOVED_PERMANENTLY);
 Route::redirect('/chart', '/pepecoin-price', Response::HTTP_MOVED_PERMANENTLY);
 Route::redirect('/charts', '/pepecoin-price', Response::HTTP_MOVED_PERMANENTLY);

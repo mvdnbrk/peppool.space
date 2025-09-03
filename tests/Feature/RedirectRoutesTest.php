@@ -39,4 +39,12 @@ class RedirectRoutesTest extends TestCase
             ->assertStatus(Response::HTTP_MOVED_PERMANENTLY)
             ->assertRedirect('/pepecoin-price');
     }
+
+    #[Test]
+    public function about_redirects_to_about_pepecoin(): void
+    {
+        $this->get('/about')
+            ->assertStatus(Response::HTTP_MOVED_PERMANENTLY)
+            ->assertRedirect('/about-pepecoin');
+    }
 }
