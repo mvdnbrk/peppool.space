@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Block;
+use App\Data\Rpc\TxOutSetInfoData;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -153,6 +154,13 @@ class PepecoinExplorerService
                 return (int) (new Collection($this->rpcService->getNetworkInfo()))
                     ->get('connections', 0);
             }
+        );
+    }
+
+    public function getTxOutSetInfoData(): TxOutSetInfoData
+    {
+        return TxOutSetInfoData::fromRpc(
+            $this->rpcService->getTxOutSetInfo()
         );
     }
 
