@@ -6,9 +6,12 @@ use App\Contracts\RpcClientInterface;
 use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class PepecoinRpcService implements RpcClientInterface
 {
+    private readonly string $url;
+
     private readonly string $host;
 
     private readonly string $port;
@@ -19,16 +22,25 @@ class PepecoinRpcService implements RpcClientInterface
 
     private readonly int $timeout;
 
-    private readonly string $url;
+    public function __construct(
+        ?string $host = null,
+        ?string $port = null,
+        ?string $username = null,
+        ?string $password = null,
+        ?int $timeout = null,
+    ) {
+        $this->host = $host ?? config('pepecoin.rpc.host', '127.0.0.1');
+        $this->port = $port ?? config('pepecoin.rpc.port', '3873');
+        $this->username = $username ?? config('pepecoin.rpc.username', '');
+        $this->password = $password ?? config('pepecoin.rpc.password', '');
+        $this->timeout = $timeout ?? config('pepecoin.rpc.timeout', 30);
 
-    public function __construct()
-    {
-        $this->host = config('pepecoin.rpc.host', '127.0.0.1');
-        $this->port = config('pepecoin.rpc.port', '3873');
-        $this->username = config('pepecoin.rpc.username', '');
-        $this->password = config('pepecoin.rpc.password', '');
-        $this->timeout = config('pepecoin.rpc.timeout', 30);
-        $this->url = "http://{$this->host}:{$this->port}/";
+        $this->url = Str::of('http://')
+            ->append($this->host)
+            ->append(':')
+            ->append($this->port)
+            ->append('/')
+            ->toString();
     }
 
     public function call(string $method, array $params = []): mixed
