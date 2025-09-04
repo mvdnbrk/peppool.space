@@ -10,7 +10,7 @@ class PepecoinRpcService
 {
     private readonly string $host;
 
-    private readonly int $port;
+    private readonly string $port;
 
     private readonly string $username;
 
@@ -23,7 +23,7 @@ class PepecoinRpcService
     public function __construct()
     {
         $this->host = config('pepecoin.rpc.host', '127.0.0.1');
-        $this->port = config('pepecoin.rpc.port', 33873);
+        $this->port = config('pepecoin.rpc.port', '3873');
         $this->username = config('pepecoin.rpc.username', '');
         $this->password = config('pepecoin.rpc.password', '');
         $this->timeout = config('pepecoin.rpc.timeout', 30);
