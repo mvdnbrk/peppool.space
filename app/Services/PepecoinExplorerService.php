@@ -219,7 +219,7 @@ class PepecoinExplorerService
             $this->getCacheKey(__FUNCTION__),
             Carbon::now()->addMinutes(5),
             function (): int {
-                return new Collection($this->rpcService->getNetworkInfo())
+                return (int) (new Collection($this->rpcService->getNetworkInfo()))
                     ->get('connections', 0);
             }
         );
