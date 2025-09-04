@@ -178,22 +178,22 @@ class PepecoinExplorerService
         return (float) (Cache::get($cacheKey) ?? 0.0);
     }
 
-    public function getMarketCap(string $currency = 'USD'): ?float
+    public function getMarketCap(string $currency = 'USD'): float
     {
         return Cache::remember(
             $this->getCacheKey(__FUNCTION__.'_'.$currency),
             Carbon::now()->addSeconds($this->priceCacheTtl),
-            function () use ($currency): ?float {
+            function () use ($currency): float {
                 $prices = $this->getPrices();
                 $price = $prices->get($currency);
 
                 if (! $price || $price <= 0) {
-                    return null;
+                    return 0.0;
                 }
 
                 $supply = $this->getTotalSupply();
-                if (! $supply || $supply === '0') {
-                    return null;
+                if (! $supply || $supply === 0.0) {
+                    return 0.0;
                 }
 
                 return (float) $supply * $price;
