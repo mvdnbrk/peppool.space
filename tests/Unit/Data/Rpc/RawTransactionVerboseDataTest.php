@@ -7,13 +7,13 @@ namespace Tests\Unit\Data\Rpc;
 use App\Data\Rpc\RawTransactionVerboseData;
 use App\Data\Rpc\RawVinData;
 use App\Data\Rpc\RawVoutData;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 final class RawTransactionVerboseDataTest extends TestCase
 {
     public function test_from_rpc_maps_fields_with_nested_vin_vout(): void
     {
-        $dto = RawTransactionVerboseData::fromRpc([
+        $dto = RawTransactionVerboseData::from([
             'hex' => '001122',
             'txid' => 'abcd',
             'hash' => 'efgh',
@@ -67,7 +67,7 @@ final class RawTransactionVerboseDataTest extends TestCase
 
     public function test_from_rpc_defaults_when_missing(): void
     {
-        $dto = RawTransactionVerboseData::fromRpc(['size' => 99]);
+        $dto = RawTransactionVerboseData::from(['size' => 99]);
 
         $this->assertSame('', $dto->hex);
         $this->assertSame('', $dto->txid);

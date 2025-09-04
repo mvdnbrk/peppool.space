@@ -6,13 +6,13 @@ namespace Tests\Unit\Data\Rpc;
 
 use App\Data\Rpc\RawVinData;
 use App\Data\Rpc\ScriptSigData;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 final class RawVinDataTest extends TestCase
 {
     public function test_from_rpc_maps_fields_with_script_sig(): void
     {
-        $dto = RawVinData::fromRpc([
+        $dto = RawVinData::from([
             'txid' => 'abcd',
             'vout' => 1,
             'scriptSig' => [
@@ -34,7 +34,7 @@ final class RawVinDataTest extends TestCase
 
     public function test_from_rpc_defaults_when_missing(): void
     {
-        $dto = RawVinData::fromRpc([]);
+        $dto = RawVinData::from([]);
 
         $this->assertNull($dto->txid);
         $this->assertNull($dto->vout);

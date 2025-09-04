@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Data\Rpc;
 
-final readonly class TransactionData
+use Spatie\LaravelData\Data;
+
+final class TransactionData extends Data
 {
     public function __construct(
         public string $txid,

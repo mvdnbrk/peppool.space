@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Data\Rpc;
 
-final readonly class RawTransactionVerboseData
+use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Attributes\DataCollectionOf;
+
+final class RawTransactionVerboseData extends Data
 {
-    /** @param RawVinData[] $vin */
-    /** @param RawVoutData[] $vout */
     public function __construct(
         public string $hex,
         public string $txid,
@@ -16,7 +17,9 @@ final readonly class RawTransactionVerboseData
         public int $vsize,
         public int $version,
         public int $locktime,
+        #[DataCollectionOf(RawVinData::class)]
         public array $vin,
+        #[DataCollectionOf(RawVoutData::class)]
         public array $vout,
         public ?string $blockhash,
         public ?int $confirmations,
@@ -30,7 +33,7 @@ final readonly class RawTransactionVerboseData
         if (isset($payload['vin']) && is_array($payload['vin'])) {
             foreach ($payload['vin'] as $in) {
                 if (is_array($in)) {
-                    $vin[] = RawVinData::fromRpc($in);
+                    $vin[] = RawVinData::from($in);
                 }
             }
         }
@@ -39,7 +42,7 @@ final readonly class RawTransactionVerboseData
         if (isset($payload['vout']) && is_array($payload['vout'])) {
             foreach ($payload['vout'] as $out) {
                 if (is_array($out)) {
-                    $vout[] = RawVoutData::fromRpc($out);
+                    $vout[] = RawVoutData::from($out);
                 }
             }
         }

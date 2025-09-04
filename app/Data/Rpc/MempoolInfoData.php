@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 namespace App\Data\Rpc;
 
-final readonly class MempoolInfoData
+use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Attributes\MapInputName;
+
+final class MempoolInfoData extends Data
 {
     public function __construct(
         public int $size,
         public int $bytes,
         public int $usage,
+        #[MapInputName('maxmempool')]
         public int $maxMempool,
+        #[MapInputName('mempoolminfee')]
         public float $mempoolMinFee,
     ) {}
 

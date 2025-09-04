@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Tests\Unit\Data\Rpc;
 
 use App\Data\Rpc\NetworkInfoNetworkData;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 final class NetworkInfoNetworkDataTest extends TestCase
 {
     public function test_from_rpc_maps_fields(): void
     {
-        $dto = NetworkInfoNetworkData::fromRpc([
+        $dto = NetworkInfoNetworkData::from([
             'name' => 'ipv4',
             'limited' => false,
             'reachable' => true,
@@ -28,7 +28,7 @@ final class NetworkInfoNetworkDataTest extends TestCase
 
     public function test_from_rpc_defaults_when_missing(): void
     {
-        $dto = NetworkInfoNetworkData::fromRpc([]);
+        $dto = NetworkInfoNetworkData::from([]);
 
         $this->assertSame('', $dto->name);
         $this->assertFalse($dto->limited);

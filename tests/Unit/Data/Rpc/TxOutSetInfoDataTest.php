@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Tests\Unit\Data\Rpc;
 
 use App\Data\Rpc\TxOutSetInfoData;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 final class TxOutSetInfoDataTest extends TestCase
 {
     public function test_from_rpc_maps_fields(): void
     {
-        $dto = TxOutSetInfoData::fromRpc([
+        $dto = TxOutSetInfoData::from([
             'height' => 1,
             'bestblock' => 'abcd',
             'transactions' => 10,
@@ -32,7 +32,7 @@ final class TxOutSetInfoDataTest extends TestCase
 
     public function test_from_rpc_defaults_when_missing(): void
     {
-        $dto = TxOutSetInfoData::fromRpc([]);
+        $dto = TxOutSetInfoData::from([]);
 
         $this->assertSame(0, $dto->height);
         $this->assertSame('', $dto->bestblock);

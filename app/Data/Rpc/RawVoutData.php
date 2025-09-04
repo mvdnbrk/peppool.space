@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Data\Rpc;
 
-final readonly class RawVoutData
+use Spatie\LaravelData\Data;
+
+final class RawVoutData extends Data
 {
     public function __construct(
         public float $value,
@@ -16,7 +18,7 @@ final readonly class RawVoutData
     {
         $spk = null;
         if (isset($payload['scriptPubKey']) && is_array($payload['scriptPubKey'])) {
-            $spk = ScriptPubKeyData::fromRpc($payload['scriptPubKey']);
+            $spk = ScriptPubKeyData::from($payload['scriptPubKey']);
         }
 
         return new self(

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Data\Rpc;
 
-final readonly class ScriptPubKeyData
+use Spatie\LaravelData\Data;
+
+final class ScriptPubKeyData extends Data
 {
     /** @param string[] $addresses */
     public function __construct(

@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Tests\Unit\Data\Rpc;
 
 use App\Data\Rpc\ScriptSigData;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 final class ScriptSigDataTest extends TestCase
 {
     public function test_from_rpc_maps_fields(): void
     {
-        $dto = ScriptSigData::fromRpc([
+        $dto = ScriptSigData::from([
             'asm' => 'asm-data',
             'hex' => 'hex-data',
         ]);
@@ -22,7 +22,7 @@ final class ScriptSigDataTest extends TestCase
 
     public function test_from_rpc_defaults_when_missing(): void
     {
-        $dto = ScriptSigData::fromRpc([]);
+        $dto = ScriptSigData::from([]);
 
         $this->assertSame('', $dto->asm);
         $this->assertSame('', $dto->hex);

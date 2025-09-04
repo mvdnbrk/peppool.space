@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Tests\Unit\Data\Rpc;
 
 use App\Data\Rpc\UnspentOutputData;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 final class UnspentOutputDataTest extends TestCase
 {
     public function test_from_rpc_maps_fields(): void
     {
-        $dto = UnspentOutputData::fromRpc([
+        $dto = UnspentOutputData::from([
             'txid' => 'abcd',
             'vout' => 1,
             'address' => 'Pxyz',
@@ -32,7 +32,7 @@ final class UnspentOutputDataTest extends TestCase
 
     public function test_from_rpc_defaults_when_missing(): void
     {
-        $dto = UnspentOutputData::fromRpc([]);
+        $dto = UnspentOutputData::from([]);
 
         $this->assertSame('', $dto->txid);
         $this->assertSame(0, $dto->vout);

@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace App\Data\Rpc;
 
-final readonly class ValidateAddressData
+use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Attributes\MapInputName;
+
+final class ValidateAddressData extends Data
 {
     public function __construct(
+        #[MapInputName('isvalid')]
         public bool $isValid,
+        #[MapInputName('ismine')]
         public bool $isMine,
         public ?string $address,
         public ?string $scriptPubKey,

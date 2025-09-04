@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Tests\Unit\Data\Rpc;
 
 use App\Data\Rpc\ValidateAddressData;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 final class ValidateAddressDataTest extends TestCase
 {
     public function test_from_rpc_maps_fields(): void
     {
-        $dto = ValidateAddressData::fromRpc([
+        $dto = ValidateAddressData::from([
             'isvalid' => true,
             'ismine' => false,
             'address' => 'Pabc',
@@ -26,7 +26,7 @@ final class ValidateAddressDataTest extends TestCase
 
     public function test_from_rpc_defaults_when_missing(): void
     {
-        $dto = ValidateAddressData::fromRpc([]);
+        $dto = ValidateAddressData::from([]);
 
         $this->assertFalse($dto->isValid);
         $this->assertFalse($dto->isMine);

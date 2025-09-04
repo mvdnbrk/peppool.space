@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Data\Rpc;
 
-final readonly class RawVinData
+use Spatie\LaravelData\Data;
+
+final class RawVinData extends Data
 {
     public function __construct(
         public ?string $txid,
@@ -18,7 +20,7 @@ final readonly class RawVinData
     {
         $scriptSig = null;
         if (isset($payload['scriptSig']) && is_array($payload['scriptSig'])) {
-            $scriptSig = ScriptSigData::fromRpc($payload['scriptSig']);
+            $scriptSig = ScriptSigData::from($payload['scriptSig']);
         }
 
         return new self(

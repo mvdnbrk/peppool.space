@@ -4,24 +4,40 @@ declare(strict_types=1);
 
 namespace App\Data\Rpc;
 
-final readonly class NetworkInfoData
+use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Attributes\MapInputName;
+use Spatie\LaravelData\Attributes\DataCollectionOf;
+
+final class NetworkInfoData extends Data
 {
     /** @param NetworkInfoNetworkData[] $networks */
     /** @param NetworkInfoLocalAddressData[] $localAddresses */
     public function __construct(
         public int $version,
         public string $subversion,
+        #[MapInputName('protocolversion')]
         public int $protocolVersion,
+        #[MapInputName('localservices')]
         public string $localServices,
+        #[MapInputName('localrelay')]
         public bool $localRelay,
+        #[MapInputName('timeoffset')]
         public int $timeOffset,
+        #[MapInputName('networkactive')]
         public bool $networkActive,
         public int $connections,
+        #[DataCollectionOf(NetworkInfoNetworkData::class)]
         public array $networks,
+        #[MapInputName('relayfee')]
         public float $relayFee,
+        #[MapInputName('incrementalfee')]
         public float $incrementalFee,
+        #[MapInputName('softdustlimit')]
         public float $softDustLimit,
+        #[MapInputName('harddustlimit')]
         public float $hardDustLimit,
+        #[MapInputName('localaddresses')]
+        #[DataCollectionOf(NetworkInfoLocalAddressData::class)]
         public array $localAddresses,
         public string $warnings,
     ) {}
@@ -32,7 +48,7 @@ final readonly class NetworkInfoData
         if (isset($payload['networks']) && is_array($payload['networks'])) {
             foreach ($payload['networks'] as $n) {
                 if (is_array($n)) {
-                    $networks[] = NetworkInfoNetworkData::fromRpc($n);
+                    $networks[] = NetworkInfoNetworkData::from($n);
                 }
             }
         }
@@ -41,7 +57,7 @@ final readonly class NetworkInfoData
         if (isset($payload['localaddresses']) && is_array($payload['localaddresses'])) {
             foreach ($payload['localaddresses'] as $la) {
                 if (is_array($la)) {
-                    $localAddresses[] = NetworkInfoLocalAddressData::fromRpc($la);
+                    $localAddresses[] = NetworkInfoLocalAddressData::from($la);
                 }
             }
         }

@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Tests\Unit\Data\Rpc;
 
 use App\Data\Rpc\MempoolEntryData;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 final class MempoolEntryDataTest extends TestCase
 {
     public function test_from_rpc_maps_fields(): void
     {
-        $dto = MempoolEntryData::fromRpc([
+        $dto = MempoolEntryData::from([
             'size' => 123,
             'fee' => 0.42,
             'modifiedfee' => 0.43,
@@ -46,7 +46,7 @@ final class MempoolEntryDataTest extends TestCase
 
     public function test_from_rpc_defaults_when_missing(): void
     {
-        $dto = MempoolEntryData::fromRpc([]);
+        $dto = MempoolEntryData::from([]);
 
         $this->assertSame(0, $dto->size);
         $this->assertSame(0.0, $dto->fee);

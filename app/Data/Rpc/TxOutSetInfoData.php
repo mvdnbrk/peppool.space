@@ -4,15 +4,21 @@ declare(strict_types=1);
 
 namespace App\Data\Rpc;
 
-final readonly class TxOutSetInfoData
+use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Attributes\MapInputName;
+
+final class TxOutSetInfoData extends Data
 {
     public function __construct(
         public int $height,
         public string $bestblock,
         public int $transactions,
         public int $txouts,
+        #[MapInputName('bytes_serialized')]
         public int $bytesSerialized,
+        #[MapInputName('hash_serialized')]
         public string $hashSerialized,
+        #[MapInputName('total_amount')]
         public float $totalAmount,
     ) {}
 

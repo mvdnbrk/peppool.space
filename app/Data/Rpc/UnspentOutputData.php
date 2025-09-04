@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Data\Rpc;
 
-final readonly class UnspentOutputData
+use Spatie\LaravelData\Data;
+
+final class UnspentOutputData extends Data
 {
     public function __construct(
         public string $txid,

@@ -159,7 +159,7 @@ class PepecoinExplorerService
 
     public function getTxOutSetInfoData(): TxOutSetInfoData
     {
-        return TxOutSetInfoData::fromRpc(
+        return TxOutSetInfoData::from(
             $this->rpcService->getTxOutSetInfo()
         );
     }

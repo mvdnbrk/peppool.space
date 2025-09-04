@@ -7,13 +7,13 @@ namespace Tests\Unit\Data\Rpc;
 use App\Data\Rpc\NetworkInfoData;
 use App\Data\Rpc\NetworkInfoLocalAddressData;
 use App\Data\Rpc\NetworkInfoNetworkData;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 final class NetworkInfoDataTest extends TestCase
 {
     public function test_from_rpc_maps_fields_with_nested_arrays(): void
     {
-        $dto = NetworkInfoData::fromRpc([
+        $dto = NetworkInfoData::from([
             'version' => 170000,
             'subversion' => '/pepetoshi:1.1.0/',
             'protocolversion' => 70016,
@@ -56,7 +56,7 @@ final class NetworkInfoDataTest extends TestCase
 
     public function test_from_rpc_defaults_when_missing(): void
     {
-        $dto = NetworkInfoData::fromRpc([]);
+        $dto = NetworkInfoData::from([]);
 
         $this->assertSame(0, $dto->version);
         $this->assertSame('', $dto->subversion);

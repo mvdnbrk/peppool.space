@@ -4,22 +4,34 @@ declare(strict_types=1);
 
 namespace App\Data\Rpc;
 
-final readonly class MempoolEntryData
+use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Attributes\MapInputName;
+
+final class MempoolEntryData extends Data
 {
     /** @param string[] $depends */
     public function __construct(
         public int $size,
         public float $fee,
+        #[MapInputName('modifiedfee')]
         public float $modifiedFee,
         public int $time,
         public int $height,
+        #[MapInputName('startingpriority')]
         public float $startingPriority,
+        #[MapInputName('currentpriority')]
         public float $currentPriority,
+        #[MapInputName('descendantcount')]
         public int $descendantCount,
+        #[MapInputName('descendantsize')]
         public int $descendantSize,
+        #[MapInputName('descendantfees')]
         public int $descendantFees,
+        #[MapInputName('ancestorcount')]
         public int $ancestorCount,
+        #[MapInputName('ancestorsize')]
         public int $ancestorSize,
+        #[MapInputName('ancestorfees')]
         public int $ancestorFees,
         public array $depends,
     ) {}

@@ -6,13 +6,13 @@ namespace Tests\Unit\Data\Rpc;
 
 use App\Data\Rpc\RawVoutData;
 use App\Data\Rpc\ScriptPubKeyData;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 final class RawVoutDataTest extends TestCase
 {
     public function test_from_rpc_maps_fields_with_script_pub_key(): void
     {
-        $dto = RawVoutData::fromRpc([
+        $dto = RawVoutData::from([
             'value' => 12.5,
             'n' => 0,
             'scriptPubKey' => [
@@ -36,7 +36,7 @@ final class RawVoutDataTest extends TestCase
 
     public function test_from_rpc_defaults_when_missing(): void
     {
-        $dto = RawVoutData::fromRpc([]);
+        $dto = RawVoutData::from([]);
 
         $this->assertSame(0.0, $dto->value);
         $this->assertSame(0, $dto->n);
