@@ -6,7 +6,6 @@ use App\Models\AddressBalance;
 use App\Models\Transaction;
 use App\Models\TransactionOutput;
 use App\Services\PepecoinExplorerService;
-use App\Services\PepecoinRpcService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -16,7 +15,6 @@ class AddressController extends Controller
 {
     public function __construct(
         private readonly PepecoinExplorerService $explorer,
-        private readonly PepecoinRpcService $rpc
     ) {}
 
     public function show(Request $request, string $address): View
@@ -49,29 +47,28 @@ class AddressController extends Controller
                 ]);
             }
 
-            // Address not in database - validate via Explorer service (cached)
             $addressInfo = $this->explorer->validateAddress($address);
 
-            if (! ($addressInfo['isvalid'] ?? false)) {
+            if (! $addressInfo->get('isvalid')) {
                 throw new \Exception('Invalid Pepecoin address');
             }
 
-            $isMine = $addressInfo['ismine'] ?? false;
+            $isMine = (bool) $addressInfo->get('ismine');
 
             if ($isMine) {
                 // For wallet addresses, get balance using listunspent
                 try {
-                    $unspent = $this->rpc->call('listunspent', [0, 9999999, [$address]]);
-                    $balance = array_sum(array_column($unspent, 'amount'));
+                    $unspent = $this->explorer->listUnspentData($address, 0, 9_999_999);
+                    $balance = array_sum(array_map(static fn ($u) => $u->amount, $unspent));
 
                     // Build transaction list from unspent outputs
                     $txs = [];
                     foreach ($unspent as $utxo) {
-                        $txs[$utxo['txid']] = [
-                            'txid' => $utxo['txid'],
+                        $txs[$utxo->txid] = [
+                            'txid' => $utxo->txid,
                             'time' => null,
-                            'confirmations' => $utxo['confirmations'],
-                            'amount' => $utxo['amount'],
+                            'confirmations' => $utxo->confirmations,
+                            'amount' => $utxo->amount,
                             'is_incoming' => true,
                             'is_coinbase' => false,
                         ];
