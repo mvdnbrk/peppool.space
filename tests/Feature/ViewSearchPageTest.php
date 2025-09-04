@@ -8,8 +8,9 @@ class ViewSearchPageTest extends TestCase
 {
     public function test_search_page_can_be_viewed(): void
     {
-        $this->get('/search')
+        $this->get(route('search.index'))
             ->assertStatus(200)
+            ->assertViewIs('search.index')
             ->assertSee('Search the Pepecoin blockchain')
             ->assertSee('Search block height/hash, transaction ID, or address');
     }

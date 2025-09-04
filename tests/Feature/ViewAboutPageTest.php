@@ -8,8 +8,9 @@ class ViewAboutPageTest extends TestCase
 {
     public function test_about_page_can_be_viewed(): void
     {
-        $this->get('/about-pepecoin')
+        $this->get(route('about'))
             ->assertStatus(200)
+            ->assertViewIs('about')
             ->assertSee('About Pepecoin')
             ->assertSee('About the Creator')
             ->assertSee('Connect with the Community');
@@ -17,7 +18,7 @@ class ViewAboutPageTest extends TestCase
 
     public function test_about_page_contains_social_media_links(): void
     {
-        $this->get('/about-pepecoin')
+        $this->get(route('about'))
             ->assertStatus(200)
             ->assertSee('Follow on X')
             ->assertSee('Join Telegram')
