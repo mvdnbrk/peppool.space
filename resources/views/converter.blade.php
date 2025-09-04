@@ -180,45 +180,53 @@
 
                 onBaseInput(event) {
                     const raw = (event.target.value || '').toString();
-                    const cleaned = raw.replace(/,/g, '');
+                    // Remove commas and keep only digits, decimal point
+                    const cleaned = raw.replace(/[^0-9.]/g, '');
                     const parts = cleaned.split('.');
                     const normalized = parts.length > 1 ? parts[0] + '.' + parts.slice(1).join('') : cleaned;
                     const numeric = Number(normalized);
-                    if (this.isPepeToFiat) {
-                        this.pepeAmount = isNaN(numeric) ? 0 : numeric;
-                    } else {
-                        this.fiatAmount = isNaN(numeric) ? 0 : numeric;
+                    
+                    // Only update if we have a valid number or empty string
+                    if (normalized === '' || !isNaN(numeric)) {
+                        if (this.isPepeToFiat) {
+                            this.pepeAmount = normalized === '' ? 0 : numeric;
+                        } else {
+                            this.fiatAmount = normalized === '' ? 0 : numeric;
+                        }
+                        this.baseDisplay = this.formatPepeDisplay(normalized);
+                        this.updateConversion();
                     }
-                    this.baseDisplay = this.formatPepeDisplay(normalized);
-                    this.updateConversion();
                 },
 
                 onTargetInput(event) {
                     const raw = (event.target.value || '').toString();
-                    // Remove currency symbols and PEPE text for parsing
-                    const cleaned = raw.replace(/[$€,]/g, '').replace(' PEPE', '').replace(/,/g, '');
+                    // Remove currency symbols and PEPE text, keep only digits and decimal point
+                    const cleaned = raw.replace(/[^0-9.]/g, '');
                     const parts = cleaned.split('.');
                     const normalized = parts.length > 1 ? parts[0] + '.' + parts.slice(1).join('') : cleaned;
                     const numeric = Number(normalized);
 
-                    if (this.isPepeToFiat) {
-                        // Target is fiat, so convert back to PEPE
-                        this.fiatAmount = isNaN(numeric) ? 0 : numeric;
-                        const rate = this.getCurrentRate();
-                        this.pepeAmount = rate > 0 ? this.fiatAmount / rate : 0;
-                        this.baseDisplay = this.formatPepeDisplay(this.pepeAmount);
-                    } else {
-                        // Target is PEPE, so convert back to fiat
-                        this.pepeAmount = isNaN(numeric) ? 0 : numeric;
-                        const rate = this.getCurrentRate();
-                        this.fiatAmount = this.pepeAmount * rate;
-                        this.baseDisplay = this.formatPepeDisplay(this.fiatAmount);
-                    }
+                    // Only update if we have a valid number or empty string
+                    if (normalized === '' || !isNaN(numeric)) {
+                        if (this.isPepeToFiat) {
+                            // Target is fiat, so convert back to PEPE
+                            this.fiatAmount = normalized === '' ? 0 : numeric;
+                            const rate = this.getCurrentRate();
+                            this.pepeAmount = rate > 0 ? this.fiatAmount / rate : 0;
+                            this.baseDisplay = this.formatPepeDisplay(this.pepeAmount);
+                        } else {
+                            // Target is PEPE, so convert back to fiat
+                            this.pepeAmount = normalized === '' ? 0 : numeric;
+                            const rate = this.getCurrentRate();
+                            this.fiatAmount = this.pepeAmount * rate;
+                            this.baseDisplay = this.formatPepeDisplay(this.fiatAmount);
+                        }
 
-                    // Update target display to show formatted version
-                    this.targetDisplay = this.isPepeToFiat
-                        ? this.formatCurrency(this.fiatAmount, this.selectedCurrency)
-                        : this.formatNumber(this.pepeAmount) + ' PEPE';
+                        // Update target display to show formatted version
+                        this.targetDisplay = this.isPepeToFiat
+                            ? this.formatCurrency(this.fiatAmount, this.selectedCurrency)
+                            : this.formatNumber(this.pepeAmount) + ' PEPE';
+                    }
                 },
 
                 formatPepeDisplay(value) {
