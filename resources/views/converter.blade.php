@@ -7,7 +7,7 @@
     <!-- Main Converter Card -->
     <div class="max-w-2xl lg:max-w-none mx-auto"
          x-data="converter({{ $price->usd ?? 0 }}, {{ $price->eur ?? 0 }})">
-        
+
         <!-- Quick Amount Buttons -->
         <div class="mb-6" x-show="isPepeToFiat">
             <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Quick amounts:</p>
@@ -97,17 +97,6 @@
 
         </div>
 
-        <!-- Market Info -->
-        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">USD Price</h3>
-                <p class="text-2xl font-bold text-green-700">${{ number_format($price->usd ?? 0, 8) }}</p>
-            </div>
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">EUR Price</h3>
-                <p class="text-2xl font-bold text-green-700">€{{ number_format($price->eur ?? 0, 8) }}</p>
-            </div>
-        </div>
     </div>
 
     <script>
