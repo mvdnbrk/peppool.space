@@ -9,25 +9,12 @@ use Spatie\LaravelData\Data;
 final class UnspentOutputData extends Data
 {
     public function __construct(
-        public string $txid,
-        public int $vout,
-        public ?string $address,
-        public ?string $scriptPubKey,
-        public float $amount,
-        public int $confirmations,
-        public bool $spendable,
+        public string $txid = '',
+        public int $vout = 0,
+        public ?string $address = null,
+        public ?string $scriptPubKey = null,
+        public float $amount = 0.0,
+        public int $confirmations = 0,
+        public bool $spendable = false,
     ) {}
-
-    public static function fromRpc(array $payload): self
-    {
-        return new self(
-            txid: (string) ($payload['txid'] ?? ''),
-            vout: (int) ($payload['vout'] ?? 0),
-            address: isset($payload['address']) && is_string($payload['address']) ? $payload['address'] : null,
-            scriptPubKey: isset($payload['scriptPubKey']) && is_string($payload['scriptPubKey']) ? $payload['scriptPubKey'] : null,
-            amount: (float) ($payload['amount'] ?? 0.0),
-            confirmations: (int) ($payload['confirmations'] ?? 0),
-            spendable: (bool) ($payload['spendable'] ?? false),
-        );
-    }
 }

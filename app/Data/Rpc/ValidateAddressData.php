@@ -11,20 +11,10 @@ final class ValidateAddressData extends Data
 {
     public function __construct(
         #[MapInputName('isvalid')]
-        public bool $isValid,
+        public bool $isValid = false,
         #[MapInputName('ismine')]
-        public bool $isMine,
-        public ?string $address,
-        public ?string $scriptPubKey,
+        public bool $isMine = false,
+        public ?string $address = null,
+        public ?string $scriptPubKey = null,
     ) {}
-
-    public static function fromRpc(array $payload): self
-    {
-        return new self(
-            isValid: (bool) ($payload['isvalid'] ?? false),
-            isMine: (bool) ($payload['ismine'] ?? false),
-            address: isset($payload['address']) && is_string($payload['address']) ? $payload['address'] : null,
-            scriptPubKey: isset($payload['scriptPubKey']) && is_string($payload['scriptPubKey']) ? $payload['scriptPubKey'] : null,
-        );
-    }
 }

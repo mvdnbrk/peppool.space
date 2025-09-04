@@ -11,57 +11,28 @@ final class MempoolEntryData extends Data
 {
     /** @param string[] $depends */
     public function __construct(
-        public int $size,
-        public float $fee,
+        public int $size = 0,
+        public float $fee = 0.0,
         #[MapInputName('modifiedfee')]
-        public float $modifiedFee,
-        public int $time,
-        public int $height,
+        public float $modifiedFee = 0.0,
+        public int $time = 0,
+        public int $height = 0,
         #[MapInputName('startingpriority')]
-        public float $startingPriority,
+        public float $startingPriority = 0.0,
         #[MapInputName('currentpriority')]
-        public float $currentPriority,
+        public float $currentPriority = 0.0,
         #[MapInputName('descendantcount')]
-        public int $descendantCount,
+        public int $descendantCount = 0,
         #[MapInputName('descendantsize')]
-        public int $descendantSize,
+        public int $descendantSize = 0,
         #[MapInputName('descendantfees')]
-        public int $descendantFees,
+        public int $descendantFees = 0,
         #[MapInputName('ancestorcount')]
-        public int $ancestorCount,
+        public int $ancestorCount = 0,
         #[MapInputName('ancestorsize')]
-        public int $ancestorSize,
+        public int $ancestorSize = 0,
         #[MapInputName('ancestorfees')]
-        public int $ancestorFees,
-        public array $depends,
+        public int $ancestorFees = 0,
+        public array $depends = [],
     ) {}
-
-    public static function fromRpc(array $payload): self
-    {
-        $depends = [];
-        if (isset($payload['depends']) && is_array($payload['depends'])) {
-            foreach ($payload['depends'] as $dep) {
-                if (is_string($dep)) {
-                    $depends[] = $dep;
-                }
-            }
-        }
-
-        return new self(
-            size: (int) ($payload['size'] ?? 0),
-            fee: (float) ($payload['fee'] ?? 0.0),
-            modifiedFee: (float) ($payload['modifiedfee'] ?? 0.0),
-            time: (int) ($payload['time'] ?? 0),
-            height: (int) ($payload['height'] ?? 0),
-            startingPriority: (float) ($payload['startingpriority'] ?? 0.0),
-            currentPriority: (float) ($payload['currentpriority'] ?? 0.0),
-            descendantCount: (int) ($payload['descendantcount'] ?? 0),
-            descendantSize: (int) ($payload['descendantsize'] ?? 0),
-            descendantFees: (int) ($payload['descendantfees'] ?? 0),
-            ancestorCount: (int) ($payload['ancestorcount'] ?? 0),
-            ancestorSize: (int) ($payload['ancestorsize'] ?? 0),
-            ancestorFees: (int) ($payload['ancestorfees'] ?? 0),
-            depends: $depends,
-        );
-    }
 }

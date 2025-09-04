@@ -10,23 +10,12 @@ use Spatie\LaravelData\Attributes\MapInputName;
 final class MempoolInfoData extends Data
 {
     public function __construct(
-        public int $size,
-        public int $bytes,
-        public int $usage,
+        public int $size = 0,
+        public int $bytes = 0,
+        public int $usage = 0,
         #[MapInputName('maxmempool')]
-        public int $maxMempool,
+        public int $maxMempool = 0,
         #[MapInputName('mempoolminfee')]
-        public float $mempoolMinFee,
+        public float $mempoolMinFee = 0.0,
     ) {}
-
-    public static function fromRpc(array $payload): self
-    {
-        return new self(
-            size: (int) ($payload['size'] ?? 0),
-            bytes: (int) ($payload['bytes'] ?? 0),
-            usage: (int) ($payload['usage'] ?? 0),
-            maxMempool: (int) ($payload['maxmempool'] ?? 0),
-            mempoolMinFee: (float) ($payload['mempoolminfee'] ?? 0.0),
-        );
-    }
 }

@@ -10,57 +10,32 @@ use Spatie\LaravelData\Attributes\DataCollectionOf;
 final class RawTransactionVerboseData extends Data
 {
     public function __construct(
-        public string $hex,
-        public string $txid,
-        public string $hash,
-        public int $size,
-        public int $vsize,
-        public int $version,
-        public int $locktime,
+        public string $hex = '',
+        public string $txid = '',
+        public string $hash = '',
+        public int $size = 0,
+        public int $vsize = 0,
+        public int $version = 0,
+        public int $locktime = 0,
         #[DataCollectionOf(RawVinData::class)]
-        public array $vin,
+        public array $vin = [],
         #[DataCollectionOf(RawVoutData::class)]
-        public array $vout,
-        public ?string $blockhash,
-        public ?int $confirmations,
-        public ?int $time,
-        public ?int $blocktime,
+        public array $vout = [],
+        public ?string $blockhash = null,
+        public ?int $confirmations = null,
+        public ?int $time = null,
+        public ?int $blocktime = null,
     ) {}
 
-    public static function fromRpc(array $payload): self
+    public static function from(mixed ...$payloads): static
     {
-        $vin = [];
-        if (isset($payload['vin']) && is_array($payload['vin'])) {
-            foreach ($payload['vin'] as $in) {
-                if (is_array($in)) {
-                    $vin[] = RawVinData::from($in);
-                }
-            }
+        $payload = $payloads[0] ?? [];
+        
+        // Handle vsize fallback to size
+        if (is_array($payload) && !isset($payload['vsize']) && isset($payload['size'])) {
+            $payload['vsize'] = $payload['size'];
         }
-
-        $vout = [];
-        if (isset($payload['vout']) && is_array($payload['vout'])) {
-            foreach ($payload['vout'] as $out) {
-                if (is_array($out)) {
-                    $vout[] = RawVoutData::from($out);
-                }
-            }
-        }
-
-        return new self(
-            hex: (string) ($payload['hex'] ?? ''),
-            txid: (string) ($payload['txid'] ?? ''),
-            hash: (string) ($payload['hash'] ?? ''),
-            size: (int) ($payload['size'] ?? 0),
-            vsize: (int) ($payload['vsize'] ?? ($payload['size'] ?? 0)),
-            version: (int) ($payload['version'] ?? 0),
-            locktime: (int) ($payload['locktime'] ?? 0),
-            vin: $vin,
-            vout: $vout,
-            blockhash: isset($payload['blockhash']) ? (string) $payload['blockhash'] : null,
-            confirmations: isset($payload['confirmations']) ? (int) $payload['confirmations'] : null,
-            time: isset($payload['time']) ? (int) $payload['time'] : null,
-            blocktime: isset($payload['blocktime']) ? (int) $payload['blocktime'] : null,
-        );
+        
+        return parent::from($payload);
     }
 }
