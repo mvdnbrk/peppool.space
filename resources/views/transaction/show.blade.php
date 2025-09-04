@@ -171,12 +171,16 @@
                                             @endif
                                             @if(isset($input['address']))
                                                 <div class="mt-2 text-xs font-mono bg-gray-100 dark:bg-gray-800 dark:text-gray-100 p-2 rounded break-all">
-                                                    {{ $input['address'] }}
+                                                    <a href="{{ route('address.show', $input['address']) }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                                                        {{ $input['address'] }}
+                                                    </a>
                                                 </div>
                                             @elseif(isset($input['scriptPubKey']) && isset($input['scriptPubKey']['addresses']))
                                                 @foreach($input['scriptPubKey']['addresses'] as $address)
                                                     <div class="mt-2 text-xs font-mono bg-gray-100 dark:bg-gray-800 dark:text-gray-100 p-2 rounded break-all">
-                                                        {{ $address }}
+                                                        <a href="{{ route('address.show', $address) }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                                                            {{ $address }}
+                                                        </a>
                                                     </div>
                                                 @endforeach
                                             @endif
@@ -225,7 +229,9 @@
                                             <div class="mt-2">
                                                 @foreach($output['scriptPubKey']['addresses'] as $address)
                                                     <div class="text-xs font-mono bg-gray-100 dark:bg-gray-800 dark:text-gray-100 p-2 rounded break-all">
-                                                        {{ $address }}
+                                                        <a href="{{ route('address.show', $address) }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                                                            {{ $address }}
+                                                        </a>
                                                     </div>
                                                 @endforeach
                                             </div>

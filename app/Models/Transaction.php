@@ -29,12 +29,22 @@ class Transaction extends Model
     // Accessor for backward compatibility
     public function getTxidAttribute(): string
     {
-        return $this->tx_id;
+        return $this->getKey();
     }
 
     protected $casts = [
         'is_coinbase' => 'boolean',
         'fee' => 'decimal:8',
+    ];
+
+    protected $visible = [
+        'tx_id',
+        'block_height',
+        'size',
+        'fee',
+        'version',
+        'locktime',
+        'is_coinbase',
     ];
 
     public function block(): BelongsTo

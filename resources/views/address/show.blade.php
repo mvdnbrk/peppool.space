@@ -5,43 +5,61 @@
 >
 <div class="space-y-6">
     <!-- Address Header -->
-    <div class="bg-white dark:bg-gray-900 shadow rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
-        <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                    <h1 class="text-2xl font-semibold text-gray-900 dark:text-white break-all">{{ $address }}</h1>
-                    @if($isMine ?? false)
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 mt-2">
-                            Your Address
-                        </span>
-                    @endif
-                </div>
-                <div class="mt-4 sm:mt-0">
-                    <div class="flex flex-wrap gap-4">
-                        <div class="text-center">
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Balance</p>
-                            <p class="text-lg font-semibold text-gray-900 dark:text-white">
-                                @if($balance !== null)
-                                    {{ number_format($balance, 8) }} <span class="text-sm text-gray-500 dark:text-gray-400">PEPE</span>
-                                @else
-                                    <span class="text-sm text-gray-400 dark:text-gray-500">Unknown</span>
-                                @endif
-                            </p>
-                        </div>
-                        <div class="text-center">
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Received</p>
-                            <p class="text-lg font-semibold text-gray-900 dark:text-white">
-                                @if($totalReceived !== null)
-                                    {{ number_format($totalReceived, 8) }} <span class="text-sm text-gray-500 dark:text-gray-400">PEPE</span>
-                                @else
-                                    <span class="text-sm text-gray-400 dark:text-gray-500">Unknown</span>
-                                @endif
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="bg-white dark:bg-gray-900 shadow rounded-lg p-6 mb-6 border border-gray-200 dark:border-gray-700">
+        <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+            Pepe Wallet address
+        </h3>
+        <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-4 break-all">
+            {{ $address }}
+        </h1>
+        @if($isMine ?? false)
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                Your Address
+            </span>
+        @endif
+    </div>
+
+    <!-- Address Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <x-stat-card icon-bg="bg-blue-500" label="Transactions">
+            <x-slot:icon>
+                <x-icon-document-text class="w-5 h-5 text-white" />
+            </x-slot:icon>
+            {{ number_format($txCount ?? 0) }}
+        </x-stat-card>
+
+        <x-stat-card icon-bg="bg-green-500" label="Total PEPE Received">
+            <x-slot:icon>
+                <x-icon-arrow-down class="w-5 h-5 text-white" />
+            </x-slot:icon>
+            @if($totalReceived !== null)
+                <span class="text-green-600">{{ number_format($totalReceived, 2) }}</span>
+            @else
+                <span class="text-sm text-gray-400 dark:text-gray-500">Unknown</span>
+            @endif
+        </x-stat-card>
+
+        <x-stat-card icon-bg="bg-red-500" label="Total PEPE Sent">
+            <x-slot:icon>
+                <x-icon-arrow-up class="w-5 h-5 text-white" />
+            </x-slot:icon>
+            @if(isset($totalSent) && $totalSent !== null)
+                {{ number_format($totalSent, 2) }}
+            @else
+                <span class="text-sm text-gray-400 dark:text-gray-500">Unknown</span>
+            @endif
+        </x-stat-card>
+
+        <x-stat-card icon-bg="bg-green-500" label="PEPE Balance">
+            <x-slot:icon>
+                <x-icon-pep-currency-sign class="w-5 h-5 text-white" />
+            </x-slot:icon>
+            @if($balance !== null)
+                {{ number_format($balance, 2) }}
+            @else
+                <span class="text-sm text-gray-400 dark:text-gray-500">Unknown</span>
+            @endif
+        </x-stat-card>
     </div>
 
     @if(isset($showComingSoon) && $showComingSoon)
@@ -58,59 +76,30 @@
     @endif
 
     <!-- Transactions -->
+    @if(isset($transactions))
+
+    <script type="application/json" id="address-transactions-data">
+        {!! json_encode([
+            'address' => $address,
+            'transactions' => $transactions->items(),
+            'currentPage' => $transactions->currentPage(),
+            'perPage' => $transactions->perPage(),
+            'total' => $transactions->total(),
+            'lastPage' => $transactions->lastPage()
+        ]) !!}
+    </script>
+
+    <div id="address-transactions" data-vue="address-transactions">
+    </div>
+    @else
     <div class="bg-white dark:bg-gray-900 shadow rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
         <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Transactions</h2>
         </div>
-        <div class="divide-y divide-gray-200 dark:divide-gray-700">
-            @php
-                $transactions = collect($txs ?? [])->sortByDesc('time');
-            @endphp
-            @forelse($transactions as $tx)
-                <div class="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-800">
-                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                        <div class="flex-1 min-w-0">
-                            <a href="{{ route('transaction.show', $tx['txid']) }}" class="font-mono text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 break-all">
-                                {{ $tx['txid'] }}
-                            </a>
-                            <div class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                                @if($tx['time'] ?? $tx['timereceived'] ?? false)
-                                    @php $ts = \Carbon\Carbon::createFromTimestamp($tx['timereceived'] ?? $tx['time']); @endphp
-                                    <timestamp
-                                        x-data="timestamp"
-                                        datetime="{{ $ts->toAtomString() }}"
-                                        x-text="relativeTime"
-                                        title="{{ $ts->format('Y-m-d H:i:s') }}"></timestamp>
-                                @else
-                                    Unconfirmed
-                                @endif
-                                @if(isset($tx['confirmations']))
-                                    <span class="ml-2">
-                                        {{ $tx['confirmations'] }} confirmation{{ $tx['confirmations'] != 1 ? 's' : '' }}
-                                    </span>
-                                @endif
-                                @if($tx['is_coinbase'] ?? false)
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 ml-2">
-                                        Coinbase
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="mt-2 sm:mt-0 text-sm font-medium text-right">
-                            @if($tx['is_incoming'])
-                                <span class="text-green-600">+{{ number_format($tx['amount'], 8) }} PEPE</span>
-                            @else
-                                <span class="text-red-600">-{{ number_format($tx['amount'], 8) }} PEPE</span>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            @empty
-                <div class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
-                    No transactions found for this address
-                </div>
-            @endforelse
+        <div class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+            No transactions available.
         </div>
     </div>
+    @endif
 </div>
 </x-layout>

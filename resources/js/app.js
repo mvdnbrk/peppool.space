@@ -11,6 +11,7 @@ Alpine.start();
 import MempoolTransactions from './components/MempoolTransactions.vue';
 import LatestBlocks from './components/LatestBlocks.vue';
 import PriceChart from './components/PriceChart.vue';
+import AddressTransactions from './components/AddressTransactions.vue';
 
 // Auto-mount Vue components
 document.addEventListener('DOMContentLoaded', () => {
@@ -19,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'mempool-transactions': MempoolTransactions,
         'latest-blocks': LatestBlocks,
         'price-chart': PriceChart,
+        'address-transactions': AddressTransactions,
     };
 
     Object.entries(components).forEach(([name, component]) => {
