@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Jobs\CalculateTotalSupply;
-use App\Services\PepecoinExplorerService;
+use App\Services\PepecoinPriceService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Number;
 
@@ -13,7 +13,7 @@ class PepeSupplyCommand extends Command
 
     protected $description = 'Calculate and display total PEPE supply (sum of coinbase outputs) and cache the value.';
 
-    public function __construct(private readonly PepecoinExplorerService $explorer)
+    public function __construct(private readonly PepecoinPriceService $prices)
     {
         parent::__construct();
     }
@@ -26,8 +26,8 @@ class PepeSupplyCommand extends Command
             CalculateTotalSupply::dispatchSync();
         }
 
-        // Read via service (will use cache, or compute and cache if missing)
-        $sumStr = $this->explorer->getTotalSupply(false);
+        // Read via price service (will use cache, or compute and cache if missing)
+        $sumStr = $this->prices->getTotalSupply(false);
         $sumInt = (int) $sumStr;
 
         $human = Number::abbreviate($sumInt, maxPrecision: 0);

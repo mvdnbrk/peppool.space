@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\PepecoinExplorerService;
+use App\Services\PepecoinPriceService;
 
 class ConverterController extends Controller
 {
     public function __construct(
-        private readonly PepecoinExplorerService $explorer
+        private readonly PepecoinPriceService $prices
     ) {}
 
     public function index()
     {
-        $prices = $this->explorer->getPrices();
+        $prices = $this->prices->getPrices();
 
         return view('converter', [
             'price' => (object) [

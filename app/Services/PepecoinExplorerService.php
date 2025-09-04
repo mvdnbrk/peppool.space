@@ -2,9 +2,7 @@
 
 namespace App\Services;
 
-use App\Jobs\CalculateTotalSupply;
 use App\Models\Block;
-use App\Models\Price;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -16,7 +14,6 @@ class PepecoinExplorerService
         private readonly PepecoinRpcService $rpcService,
         private int $mempoolCacheTtl = 10,
         private int $difficultyCacheTtl = 180,
-        private int $priceCacheTtl = 300,
     ) {}
 
     private function getCacheKey(string $key): string
@@ -123,79 +120,14 @@ class PepecoinExplorerService
         );
     }
 
-    public function getPrices(): Collection
-    {
-        return Cache::remember(
-            $this->getCacheKey(__FUNCTION__),
-            Carbon::now()->addSeconds($this->priceCacheTtl),
-            function (): Collection {
-                $prices = Price::whereIn('currency', ['EUR', 'USD'])
-                    ->latest()
-                    ->take(2)
-                    ->get();
-
-                $result = $prices->isNotEmpty()
-                    ? $prices->pluck('price', 'currency')
-                        ->merge(['timestamp' => $prices->first()->created_at->timestamp])
-                        ->toArray()
-                    : ['EUR' => 0, 'USD' => 0, 'timestamp' => time()];
-
-                return new Collection($result);
-            }
-        );
-    }
-
     public function getChainSize(): int
     {
         return Cache::remember(
             $this->getCacheKey(__FUNCTION__),
             Carbon::now()->addHours(4),
             function (): int {
-                 return (int) (new Collection($this->rpcService->getBlockchainInfo()))
+                return (int) (new Collection($this->rpcService->getBlockchainInfo()))
                     ->get('size_on_disk', 0);
-            }
-        );
-    }
-
-    public function getTotalSupply(bool $refresh = false): float
-    {
-        $cacheKey = 'pepe:total_supply';
-
-        if ($refresh) {
-            // Ensure cache is populated using the single source of truth job (RPC first, DB fallback)
-            CalculateTotalSupply::dispatchSync();
-        }
-
-        $cached = Cache::get($cacheKey);
-        if ($cached !== null) {
-            return (float) $cached;
-        }
-
-        // If cache is missing, compute via the job, then return from cache
-        CalculateTotalSupply::dispatchSync();
-
-        return (float) (Cache::get($cacheKey) ?? 0.0);
-    }
-
-    public function getMarketCap(string $currency = 'USD'): float
-    {
-        return Cache::remember(
-            $this->getCacheKey(__FUNCTION__.'_'.$currency),
-            Carbon::now()->addSeconds($this->priceCacheTtl),
-            function () use ($currency): float {
-                $prices = $this->getPrices();
-                $price = $prices->get($currency);
-
-                if (! $price || $price <= 0) {
-                    return 0.0;
-                }
-
-                $supply = $this->getTotalSupply();
-                if (! $supply || $supply === 0.0) {
-                    return 0.0;
-                }
-
-                return (float) $supply * $price;
             }
         );
     }
