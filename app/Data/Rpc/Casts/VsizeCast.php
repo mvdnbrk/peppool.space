@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Data\Rpc\Casts;
 
 use Spatie\LaravelData\Casts\Cast;
-use Spatie\LaravelData\Support\DataProperty;
 use Spatie\LaravelData\Support\Creation\CreationContext;
+use Spatie\LaravelData\Support\DataProperty;
 
 final class VsizeCast implements Cast
 {
     /**
-     * @param array<string,mixed> $properties
+     * @param  array<string,mixed>  $properties
      */
     public function cast(DataProperty $property, mixed $value, array $properties, CreationContext $context): mixed
     {

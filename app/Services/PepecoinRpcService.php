@@ -2,19 +2,24 @@
 
 namespace App\Services;
 
-use Exception;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
 use App\Contracts\RpcClientInterface;
+use Exception;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class PepecoinRpcService implements RpcClientInterface
 {
     private readonly string $url;
+
     private readonly string $host;
+
     private readonly string $port;
+
     private readonly string $username;
+
     private readonly string $password;
+
     private readonly int $timeout;
 
     public function __construct(

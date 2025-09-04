@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Data\Rpc;
 
-use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Attributes\MapInputName;
+use Spatie\LaravelData\Data;
 
 final class ValidateAddressData extends Data
 {

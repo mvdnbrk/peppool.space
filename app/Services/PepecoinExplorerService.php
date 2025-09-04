@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Block;
 use App\Data\Rpc\TxOutSetInfoData;
+use App\Models\Block;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;

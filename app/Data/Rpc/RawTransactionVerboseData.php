@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Data\Rpc;
 
-use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
+use Spatie\LaravelData\Data;
 
 final class RawTransactionVerboseData extends Data
 {
@@ -30,12 +30,12 @@ final class RawTransactionVerboseData extends Data
     public static function from(mixed ...$payloads): static
     {
         $payload = $payloads[0] ?? [];
-        
+
         // Handle vsize fallback to size
-        if (is_array($payload) && !isset($payload['vsize']) && isset($payload['size'])) {
+        if (is_array($payload) && ! isset($payload['vsize']) && isset($payload['size'])) {
             $payload['vsize'] = $payload['size'];
         }
-        
+
         return parent::from($payload);
     }
 }
