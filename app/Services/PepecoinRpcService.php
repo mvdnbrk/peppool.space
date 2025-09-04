@@ -2,11 +2,12 @@
 
 namespace App\Services;
 
+use App\Contracts\RpcClientInterface;
 use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class PepecoinRpcService
+class PepecoinRpcService implements RpcClientInterface
 {
     private readonly string $host;
 
