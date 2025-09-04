@@ -22,7 +22,7 @@
             </div>
         </div>
 
-        <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-xl border border-green-100 dark:border-gray-700 p-6 md:p-8">
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 md:p-8">
 
             <!-- From Section -->
             <div class="space-y-4">
@@ -38,7 +38,7 @@
                             x-model="baseDisplay"
                             @input="onBaseInput($event)"
                             :placeholder="isPepeToFiat ? 'Enter PEPE amount' : 'Enter amount'"
-                            class="flex-1 text-2xl md:text-3xl font-bold bg-transparent border-none outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400"
+                            class="flex-1 text-2xl md:text-3xl font-bold bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-lg px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:border-green-500 focus:ring-2 focus:ring-green-200 dark:focus:ring-green-800 transition-all duration-200"
                             inputmode="decimal"
                             autocomplete="off"
                             spellcheck="false"
@@ -50,7 +50,7 @@
                 <div class="flex justify-center">
                     <button
                         @click="swapCurrencies()"
-                        class="p-3 bg-green-600 hover:bg-green-700 text-white rounded-full shadow-lg transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-4 focus:ring-green-200 dark:focus:ring-green-800"
+                        class="p-3 bg-green-600 hover:bg-green-700 text-white rounded-full shadow-sm transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-4 focus:ring-green-200 dark:focus:ring-green-800"
                     >
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
@@ -75,9 +75,16 @@
                             <option value="usd">🇺🇸 USD</option>
                             <option value="eur">🇪🇺 EUR</option>
                         </select>
-                        <div class="flex-1 text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100" x-text="getOutputText()">
-                            $0.00
-                        </div>
+                        <input
+                            type="text"
+                            x-model="targetDisplay"
+                            @input="onTargetInput($event)"
+                            :placeholder="isPepeToFiat ? 'Converted amount' : 'Enter PEPE amount'"
+                            class="flex-1 text-2xl md:text-3xl font-bold bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-lg px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:border-green-500 focus:ring-2 focus:ring-green-200 dark:focus:ring-green-800 transition-all duration-200"
+                            inputmode="decimal"
+                            autocomplete="off"
+                            spellcheck="false"
+                        >
                     </div>
                 </div>
             </div>
@@ -86,7 +93,7 @@
             <div class="mt-6 p-4 bg-green-100 dark:bg-green-900/20 rounded-lg">
                 <div class="text-center">
                     <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Current Rate</p>
-                    <p class="text-lg font-semibold text-green-700 dark:text-green-300">
+                    <p class="text-lg font-semibold text-green-700 dark:text-green-500">
                         1 PEPE = <span x-text="formatCurrency(getCurrentRate(), selectedCurrency)"></span>
                     </p>
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -106,6 +113,7 @@
                 pepeAmount: 1000000,
                 fiatAmount: 0,
                 baseDisplay: '',
+                targetDisplay: '',
                 selectedCurrency: 'usd',
                 convertedAmount: 0,
                 rates: {
@@ -117,6 +125,7 @@
                 init() {
                     this.updateConversion();
                     this.baseDisplay = this.formatPepeDisplay(this.pepeAmount);
+                    this.updateTargetDisplay();
                 },
 
                 updateConversion() {
@@ -124,6 +133,15 @@
                     this.convertedAmount = this.isPepeToFiat
                         ? (this.pepeAmount * rate)
                         : (rate > 0 ? this.fiatAmount / rate : 0);
+                    this.updateTargetDisplay();
+                },
+
+                updateTargetDisplay() {
+                    if (this.isPepeToFiat) {
+                        this.targetDisplay = this.formatCurrency(this.convertedAmount, this.selectedCurrency);
+                    } else {
+                        this.targetDisplay = this.formatNumber(this.convertedAmount) + ' PEPE';
+                    }
                 },
 
                 getCurrentRate() {
@@ -131,20 +149,22 @@
                 },
 
                 swapCurrencies() {
-                    // Store the current input value (what user actually entered)
-                    const currentInputValue = this.isPepeToFiat ? this.pepeAmount : this.fiatAmount;
-
                     // Toggle conversion direction between PEPE <-> Fiat
                     this.isPepeToFiat = !this.isPepeToFiat;
 
-                    // Set the current input value as the new input for the swapped direction
+                    // Swap the display values
+                    const tempDisplay = this.baseDisplay;
+                    this.baseDisplay = this.targetDisplay.replace(/[$€,]/g, '').replace(' PEPE', '');
+                    this.targetDisplay = tempDisplay;
+
+                    // Update the underlying amounts based on the new base input
                     if (this.isPepeToFiat) {
-                        // Now converting PEPE to fiat, keep the same input value as PEPE
-                        this.pepeAmount = currentInputValue;
+                        const cleaned = this.baseDisplay.replace(/,/g, '');
+                        this.pepeAmount = Number(cleaned) || 0;
                         this.baseDisplay = this.formatPepeDisplay(this.pepeAmount);
                     } else {
-                        // Now converting fiat to PEPE, keep the same input value as fiat
-                        this.fiatAmount = currentInputValue;
+                        const cleaned = this.baseDisplay.replace(/,/g, '');
+                        this.fiatAmount = Number(cleaned) || 0;
                         this.baseDisplay = this.formatPepeDisplay(this.fiatAmount);
                     }
 
@@ -171,6 +191,34 @@
                     }
                     this.baseDisplay = this.formatPepeDisplay(normalized);
                     this.updateConversion();
+                },
+
+                onTargetInput(event) {
+                    const raw = (event.target.value || '').toString();
+                    // Remove currency symbols and PEPE text for parsing
+                    const cleaned = raw.replace(/[$€,]/g, '').replace(' PEPE', '').replace(/,/g, '');
+                    const parts = cleaned.split('.');
+                    const normalized = parts.length > 1 ? parts[0] + '.' + parts.slice(1).join('') : cleaned;
+                    const numeric = Number(normalized);
+
+                    if (this.isPepeToFiat) {
+                        // Target is fiat, so convert back to PEPE
+                        this.fiatAmount = isNaN(numeric) ? 0 : numeric;
+                        const rate = this.getCurrentRate();
+                        this.pepeAmount = rate > 0 ? this.fiatAmount / rate : 0;
+                        this.baseDisplay = this.formatPepeDisplay(this.pepeAmount);
+                    } else {
+                        // Target is PEPE, so convert back to fiat
+                        this.pepeAmount = isNaN(numeric) ? 0 : numeric;
+                        const rate = this.getCurrentRate();
+                        this.fiatAmount = this.pepeAmount * rate;
+                        this.baseDisplay = this.formatPepeDisplay(this.fiatAmount);
+                    }
+
+                    // Update target display to show formatted version
+                    this.targetDisplay = this.isPepeToFiat
+                        ? this.formatCurrency(this.fiatAmount, this.selectedCurrency)
+                        : this.formatNumber(this.pepeAmount) + ' PEPE';
                 },
 
                 formatPepeDisplay(value) {
