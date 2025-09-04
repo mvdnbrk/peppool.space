@@ -12,6 +12,7 @@ import MempoolTransactions from './components/MempoolTransactions.vue';
 import LatestBlocks from './components/LatestBlocks.vue';
 import PriceChart from './components/PriceChart.vue';
 import AddressTransactions from './components/AddressTransactions.vue';
+import CurrencyConverter from './components/CurrencyConverter.vue';
 
 // Auto-mount Vue components
 document.addEventListener('DOMContentLoaded', () => {
@@ -21,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'latest-blocks': LatestBlocks,
         'price-chart': PriceChart,
         'address-transactions': AddressTransactions,
+        'currency-converter': CurrencyConverter,
     };
 
     Object.entries(components).forEach(([name, component]) => {
