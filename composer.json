@@ -13,7 +13,7 @@
     "require": {
         "php": "^8.4",
         "blade-ui-kit/blade-icons": "^1.8",
-        "laravel/framework": "^12.27",
+        "laravel/framework": "^12.28",
         "laravel/tinker": "^2.10"
     },
     "require-dev": {
