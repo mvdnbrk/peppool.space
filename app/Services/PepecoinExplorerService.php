@@ -158,7 +158,7 @@ class PepecoinExplorerService
         );
     }
 
-    public function getTotalSupply(bool $refresh = false): string
+    public function getTotalSupply(bool $refresh = false): float
     {
         $cacheKey = 'pepe:total_supply';
 
@@ -169,13 +169,13 @@ class PepecoinExplorerService
 
         $cached = Cache::get($cacheKey);
         if ($cached !== null) {
-            return (string) $cached;
+            return (float) $cached;
         }
 
         // If cache is missing, compute via the job, then return from cache
         CalculateTotalSupply::dispatchSync();
 
-        return (string) (Cache::get($cacheKey) ?? '0');
+        return (float) (Cache::get($cacheKey) ?? 0.0);
     }
 
     public function getMarketCap(string $currency = 'USD'): ?float
