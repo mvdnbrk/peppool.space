@@ -1,4 +1,8 @@
-<x-layout title="Block {{ number_format($blockHeight) }} - peppool.space" :og_description="'Details for Pepecoin block ' . number_format($blockHeight) . ': hash, transactions, size, time and more on peppool.space.'">
+<x-layout
+    title="Block {{ number_format($blockHeight) }} - peppool.space"
+    :og_description="'Details for Pepecoin block ' . number_format($blockHeight) . ': hash, transactions, size, time and more on peppool.space.'"
+    og_image="pepecoin-block.png"
+>
     @if(isset($error))
         <!-- Error State -->
         <div class="bg-red-50 border border-red-200 rounded-lg p-6">
