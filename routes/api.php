@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\BlockController;
 use App\Http\Controllers\Api\ChartPricesController;
 use App\Http\Controllers\Api\MempoolController;
@@ -11,6 +12,9 @@ Route::middleware('throttle:60,1')->name('api.')->group(function () {
     Route::get('/blocks/tip/hash', [BlockController::class, 'tipHash'])->name('blocks.tip.hash');
     Route::get('/blocks/{startHeight?}', [BlockController::class, 'list'])->name('blocks.list');
     Route::get('/prices', PricesController::class)->name('prices');
+
+    Route::get('/validate-address/{address}', [AddressController::class, 'validate'])
+        ->name('validate.address');
 
     // Internal-only signed endpoint for chart time series
     Route::get('/chart', ChartPricesController::class)

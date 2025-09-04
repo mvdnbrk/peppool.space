@@ -142,6 +142,27 @@
                     <x-api-field name="USD" type="float" description="Latest price in US Dollar" />
                 </x-slot:fields>
             </x-api-section>
+
+            <!-- Address Validation Endpoint -->
+            <x-api-section method="GET" path="/validate-address/:address" :description="'Validates a Pepecoin address and returns metadata.'" responseContentType="application/json">
+                <x-slot:example>
+                    <code>curl {{ route('api.validate.address', ['address' => 'PbvihBLgz6cFJnhYscevB4n3o85faXPG7D']) }}</code>
+                </x-slot:example>
+                <x-slot:response>
+                    <pre class="text-xs md:text-sm overflow-x-auto"><code>{
+  "isvalid": true,
+  "address": "PbvihBLgz6cFJnhYscevB4n3o85faXPG7D",
+  "scriptPubKey": "76a914c825a1ecf2a6830c4401620c3a16f1995057c2ab88ac",
+  "isscript": false
+}</code></pre>
+                </x-slot:response>
+                <x-slot:fields>
+                    <x-api-field name="isvalid" type="boolean" description="Whether the address is valid" />
+                    <x-api-field name="address" type="string" description="The normalized address" />
+                    <x-api-field name="scriptPubKey" type="string|null" description="The scriptPubKey for the address, if available" />
+                    <x-api-field name="isscript" type="boolean" description="True if the address is a script address" />
+                </x-slot:fields>
+            </x-api-section>
         </div>
 
         <!-- Error Responses -->
