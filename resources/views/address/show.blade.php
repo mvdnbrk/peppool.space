@@ -1,4 +1,8 @@
-<x-layout :title="'Address ' . $address" :og_description="'Details for Pepecoin address ' . $address . ': balance, totals and recent transactions on peppool.space.'">
+<x-layout
+    :title="'Address ' . $address"
+    :og_description="'Details for Pepecoin address ' . $address . ': balance, totals and recent transactions on peppool.space.'"
+    og_image="pepecoin-address.png"
+>
 <div class="space-y-6">
     <!-- Address Header -->
     <div class="bg-white dark:bg-gray-900 shadow rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
