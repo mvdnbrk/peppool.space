@@ -5,9 +5,24 @@
     </div>
 
     <!-- Main Converter Card -->
-    <div class="max-w-2xl lg:max-w-none mx-auto">
-        <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-xl border border-green-100 dark:border-gray-700 p-6 md:p-8"
-             x-data="converter({{ $price->usd ?? 0 }}, {{ $price->eur ?? 0 }})">
+    <div class="max-w-2xl lg:max-w-none mx-auto"
+         x-data="converter({{ $price->usd ?? 0 }}, {{ $price->eur ?? 0 }})">
+        
+        <!-- Quick Amount Buttons -->
+        <div class="mb-6" x-show="isPepeToFiat">
+            <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Quick amounts:</p>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+                <template x-for="amount in quickAmounts" :key="amount">
+                    <button
+                        @click="setQuickAmount(amount)"
+                        class="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors text-sm font-medium"
+                        x-text="formatNumber(amount) + ' PEPE'"
+                    ></button>
+                </template>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-xl border border-green-100 dark:border-gray-700 p-6 md:p-8">
 
             <!-- From Section -->
             <div class="space-y-4">
@@ -80,19 +95,6 @@
                 </div>
             </div>
 
-            <!-- Quick Amount Buttons -->
-            <div class="mt-6" x-show="isPepeToFiat">
-                <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Quick amounts:</p>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
-                    <template x-for="amount in quickAmounts" :key="amount">
-                        <button
-                            @click="setQuickAmount(amount)"
-                            class="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors text-sm font-medium"
-                            x-text="formatNumber(amount) + ' PEPE'"
-                        ></button>
-                    </template>
-                </div>
-            </div>
         </div>
 
         <!-- Market Info -->
