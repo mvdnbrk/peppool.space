@@ -14,7 +14,8 @@
         "php": "^8.4",
         "blade-ui-kit/blade-icons": "^1.8",
         "laravel/framework": "^12.28",
-        "laravel/tinker": "^2.10"
+        "laravel/tinker": "^2.10",
+        "spatie/laravel-data": "^4.17"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
