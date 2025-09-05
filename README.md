@@ -21,8 +21,8 @@ This project is currently in an early alpha phase and under active development. 
 
 If you find this project useful and want to support its development:
 
-- GitHub Sponsors: https://github.com/sponsors/mvdnbrk
-- thanks.dev: https://thanks.dev/u/gh/mvdnbrk
+- GitHub Sponsors: [link][link-sponsors]
+- thanks.dev: [link][link-thanks]
 - Pepecoin: `PbvihBLgz6cFJnhYscevB4n3o85faXPG7D`
 
 ## Security Vulnerabilities
@@ -41,3 +41,5 @@ Please review [our security policy](../../security/policy) on how to report secu
 [link-alpine]: https://alpinejs.dev
 [link-lightweight-charts]: https://www.tradingview.com/lightweight-charts/
 [link-pepecoin-core]: https://github.com/pepecoinppc/pepecoin
+[link-sponsors]: https://github.com/sponsors/mvdnbrk
+[link-thanks]: https://thanks.dev/u/gh/mvdnbrk
