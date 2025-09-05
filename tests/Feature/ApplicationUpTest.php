@@ -12,7 +12,7 @@ class ApplicationUpTest extends TestCase
     public function the_application_returns_a_successful_response(): void
     {
         $this->get('/up')
-            ->assertStatus(Response::HTTP_OK)
+            ->assertOk()
             ->assertSee('Application up');
     }
 }
