@@ -2,7 +2,7 @@
 
 <p align="center"><a href="https://peppool.space" target="_blank"><img src="https://cdn.peppool.space/opengraph/default-card-large.png" width="800" height="418" alt="peppool.space"></p>
 
-This is the source of the [peppool.sapce][link-website] website.
+This is the source of the [peppool.space][link-website] website.
 
 ## Security Vulnerabilities
 
