@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Api;
 
-use Mockery;
-use Tests\TestCase;
-use PHPUnit\Framework\Attributes\Test;
 use App\Services\PepecoinExplorerService;
+use Mockery;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class ValidateAddressTest extends TestCase
 {
