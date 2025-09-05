@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 class Block extends Model
 {
+    use HasFactory;
+
     protected $primaryKey = 'height';
 
     public $incrementing = false;
