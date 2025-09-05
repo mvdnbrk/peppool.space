@@ -8,6 +8,14 @@ This is the source of the [peppool.space][link-website] website.
 
 This project is currently in an early alpha phase and under active development. Features may change frequently, and breaking changes can occur without notice. Expect rapid iterations, incomplete features, and occasional instability while we build out the best real-time Pepecoin explorer experience.
 
+## Sponsor the project
+
+If you find this project useful and want to support its development:
+
+- GitHub Sponsors: https://github.com/sponsors/mvdnbrk
+- thanks.dev: https://thanks.dev/u/gh/mvdnbrk
+- Pepecoin: `PbvihBLgz6cFJnhYscevB4n3o85faXPG7D`
+
 ## Security Vulnerabilities
 
 Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
