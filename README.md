@@ -21,8 +21,8 @@ This project is currently in an early alpha phase and under active development. 
 
 If you find this project useful and want to support its development:
 
-- GitHub Sponsors: [link][link-sponsors]
-- thanks.dev: [link][link-thanks]
+- GitHub Sponsors: [link][link-sponsor-github-mvdnrk]
+- thanks.dev: [link][link-sponsor-thanks-dev-mvdnrk]
 - Pepecoin: `PbvihBLgz6cFJnhYscevB4n3o85faXPG7D`
 
 ## Security Vulnerabilities
