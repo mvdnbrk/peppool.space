@@ -2,11 +2,13 @@
 
 namespace Tests\Feature;
 
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ViewAboutPageTest extends TestCase
 {
-    public function test_about_page_can_be_viewed(): void
+    #[Test]
+    public function about_page_can_be_viewed(): void
     {
         $this->get(route('about'))
             ->assertStatus(200)
@@ -16,7 +18,8 @@ class ViewAboutPageTest extends TestCase
             ->assertSee('Connect with the Community');
     }
 
-    public function test_about_page_contains_social_media_links(): void
+    #[Test]
+    public function about_page_contains_social_media_links(): void
     {
         $this->get(route('about'))
             ->assertStatus(200)

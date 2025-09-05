@@ -2,11 +2,13 @@
 
 namespace Tests\Feature;
 
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ViewApiDocsPageTest extends TestCase
 {
-    public function test_api_docs_page_can_be_viewed(): void
+    #[Test]
+    public function api_docs_page_can_be_viewed(): void
     {
         $this->get(route('docs.api'))
             ->assertStatus(200)
@@ -16,7 +18,8 @@ class ViewApiDocsPageTest extends TestCase
             ->assertSee('Rate Limiting');
     }
 
-    public function test_api_docs_page_lists_key_endpoints(): void
+    #[Test]
+    public function api_docs_page_lists_key_endpoints(): void
     {
         $this->get(route('docs.api'))
             ->assertStatus(200)

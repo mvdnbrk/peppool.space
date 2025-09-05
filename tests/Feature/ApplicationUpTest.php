@@ -2,9 +2,8 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use Illuminate\Http\Response;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class ApplicationUpTest extends TestCase
 {

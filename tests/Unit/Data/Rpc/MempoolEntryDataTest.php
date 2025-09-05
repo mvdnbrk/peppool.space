@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Tests\Unit\Data\Rpc;
 
 use App\Data\Rpc\MempoolEntryData;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 final class MempoolEntryDataTest extends TestCase
 {
-    public function test_from_rpc_maps_fields(): void
+    #[Test]
+    public function from_rpc_maps_fields(): void
     {
         $dto = MempoolEntryData::from([
             'size' => 123,
@@ -44,7 +46,8 @@ final class MempoolEntryDataTest extends TestCase
         $this->assertSame(['tx1', 'tx2'], $dto->depends);
     }
 
-    public function test_from_rpc_defaults_when_missing(): void
+    #[Test]
+    public function from_rpc_defaults_when_missing(): void
     {
         $dto = MempoolEntryData::from([]);
 
