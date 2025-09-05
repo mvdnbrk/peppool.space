@@ -37,16 +37,17 @@ jobs:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
         APP_ENV: testing
-        APP_DEBUG: true
+        APP_DEBUG: false
         LOG_CHANNEL: stderr
         CACHE_DRIVER: array
         SESSION_DRIVER: array
         QUEUE_CONNECTION: sync
         BROADCAST_DRIVER: log
+        REDIS_HOST: 127.0.0.1
+        REDIS_PASSWORD: null
+        REDIS_PORT: 6379
         CI: true
       run: |
-        php artisan config:clear
-        php artisan cache:clear
         php artisan migrate --force
         php -d display_errors=1 artisan test --stop-on-failure
     - name: Deploy
