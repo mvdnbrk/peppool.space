@@ -35,4 +35,14 @@ jobs:
       run: php artisan test
     - name: Deploy
       if: github.ref == 'refs/heads/main'
-      run: curl -X POST ${{ secrets.DEPLOYMENT_HOOK_URL }}
+      env:
+        DEPLOYMENT_HOOK_URL: ${{ secrets.DEPLOYMENT_HOOK_URL }}
+      run: |
+        if [ -z "$DEPLOYMENT_HOOK_URL" ]; then
+          echo "No deployment hook configured; skipping deploy."
+          exit 0
+        fi
+        # Attempt deploy; do not fail workflow if hook is down
+        if ! curl -sS -X POST "$DEPLOYMENT_HOOK_URL"; then
+          echo "Deployment hook request failed; skipping without failing the workflow."
+        fi
