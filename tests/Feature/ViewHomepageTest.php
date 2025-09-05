@@ -13,6 +13,7 @@ use Tests\TestCase;
 class ViewHomepageTest extends TestCase
 {
     use RefreshDatabase;
+
     #[Test]
     public function homepage_can_be_viewed(): void
     {
