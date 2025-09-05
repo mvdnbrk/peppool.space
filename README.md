@@ -10,9 +10,10 @@ This project is currently in an early alpha phase and under active development. 
 
 ## Development Stack
 
+- [Pepecoin Core][link-pepecoin-core]
 - [Laravel][link-laravel]
-- [Vue 3][link-vue] + [Vite][link-vite]
 - [Tailwind CSS][link-tailwind]
+- [Vue.js][link-vue]
 - [Alpine.js][link-alpine]
 - [Lightweight Charts][link-lightweight-charts]
 
@@ -36,7 +37,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 [link-website]: https://peppool.space
 [link-laravel]: https://laravel.com
 [link-vue]: https://vuejs.org
-[link-vite]: https://vitejs.dev
 [link-tailwind]: https://tailwindcss.com
 [link-alpine]: https://alpinejs.dev
-[link-lightweight-charts]: https://www.tradingview.com/lightweight-charts
+[link-lightweight-charts]: https://www.tradingview.com/lightweight-charts/
+[link-pepecoin-core]: https://github.com/pepecoinppc/pepecoin
