@@ -17,7 +17,7 @@ This project is currently in an early alpha phase and under active development. 
 - [Alpine.js][link-alpine]
 - [Lightweight Charts][link-lightweight-charts]
 
-## Sponsor the project
+## Support the project
 
 If you find this project useful and want to support its development:
 
