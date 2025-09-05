@@ -8,6 +8,14 @@ This is the source of the [peppool.space][link-website] website.
 
 This project is currently in an early alpha phase and under active development. Features may change frequently, and breaking changes can occur without notice. Expect rapid iterations, incomplete features, and occasional instability while we build out the best real-time Pepecoin explorer experience.
 
+## Development Stack
+
+- [Laravel][link-laravel]
+- [Vue 3][link-vue] + [Vite][link-vite]
+- [Tailwind CSS][link-tailwind]
+- [Alpine.js][link-alpine]
+- [Lightweight Charts][link-lightweight-charts]
+
 ## Sponsor the project
 
 If you find this project useful and want to support its development:
@@ -26,3 +34,9 @@ Please review [our security policy](../../security/policy) on how to report secu
 - [All Contributors](../../contributors)
 
 [link-website]: https://peppool.space
+[link-laravel]: https://laravel.com
+[link-vue]: https://vuejs.org
+[link-vite]: https://vitejs.dev
+[link-tailwind]: https://tailwindcss.com
+[link-alpine]: https://alpinejs.dev
+[link-lightweight-charts]: https://www.tradingview.com/lightweight-charts
