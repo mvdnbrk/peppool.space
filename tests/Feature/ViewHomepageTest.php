@@ -33,7 +33,7 @@ class ViewHomepageTest extends TestCase
         $explorerMock = Mockery::mock(PepecoinExplorerService::class);
         $explorerMock->shouldReceive('getMempoolInfo')->andReturn(collect(['size' => 10, 'bytes' => 1000]));
         $explorerMock->shouldReceive('getNetworkSubversion')->andReturn('/pepetoshi:1.1.0/');
-        $explorerMock->shouldReceive('getNetworkConnections')->andReturn(8);
+        $explorerMock->shouldReceive('getNetworkConnectionsCount')->andReturn(8);
         $explorerMock->shouldReceive('getMempoolTxIds')->andReturn(collect(['tx1', 'tx2']));
         $explorerMock->shouldReceive('getChainSize')->andReturn(1000000000);
         $explorerMock->shouldReceive('getBlockTipHeight')->andReturn(655982);

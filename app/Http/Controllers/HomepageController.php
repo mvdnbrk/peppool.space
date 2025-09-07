@@ -20,7 +20,7 @@ class HomepageController extends Controller
                 'mempool' => $explorer->getMempoolInfo(),
                 'network' => [
                     'subversion' => $explorer->getNetworkSubversion(),
-                    'connections' => $explorer->getNetworkConnections(),
+                    'connectionCount' => $explorer->getNetworkConnectionsCount(),
                 ],
                 'latestBlocks' => Block::getLatestBlocks(),
                 'mempoolTransactions' => $explorer->getMempoolTxIds()->take(10),

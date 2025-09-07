@@ -40,7 +40,7 @@
                         <span>{{ $network['subversion'] }}</span>
                     @endif
                     <div class="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
-                    <span>{{ $network['connections'] ?? 0 }} peers</span>
+                    <span>{{ $network['connectionCount'] ?? 0 }} peers</span>
                 </div>
                 @endif
             </div>

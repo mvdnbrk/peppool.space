@@ -35,7 +35,7 @@ final class PepecoinExplorerServiceTest extends TestCase
 
         $service = new PepecoinExplorerService($rpc);
 
-        $this->assertSame(7, $service->getNetworkConnections());
+        $this->assertSame(7, $service->getNetworkConnectionsCount());
     }
 
     public function test_get_network_subversion_reads_from_dto(): void

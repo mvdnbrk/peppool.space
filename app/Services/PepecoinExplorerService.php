@@ -145,7 +145,7 @@ class PepecoinExplorerService
         );
     }
 
-    public function getNetworkConnections(): int
+    public function getNetworkConnectionsCount(): int
     {
         return Cache::remember(
             $this->getCacheKey(__FUNCTION__),
