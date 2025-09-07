@@ -6,6 +6,7 @@ namespace Tests\Unit\Services;
 
 use App\Data\Rpc\NetworkInfoData;
 use App\Data\Rpc\ValidateAddressData;
+use App\Data\Rpc\TxOutSetInfoData;
 use App\Services\PepecoinExplorerService;
 use App\Services\PepecoinRpcService;
 use Illuminate\Support\Facades\Cache;
@@ -107,5 +108,36 @@ final class PepecoinExplorerServiceTest extends TestCase
         $this->assertSame($first->address, $second->address);
         $this->assertTrue($first->isValid);
         $this->assertTrue($second->isValid);
+    }
+
+    public function test_get_txoutsetinfo_returns_dto(): void
+    {
+        Cache::flush();
+
+        $rpc = Mockery::mock(PepecoinRpcService::class);
+        $rpc->shouldReceive('getTxOutSetInfo')
+            ->once()
+            ->andReturn([
+                'height' => 123,
+                'bestblock' => '0000abc',
+                'transactions' => 456,
+                'txouts' => 789,
+                'bytes_serialized' => 1024,
+                'hash_serialized' => 'deadbeef',
+                'total_amount' => 123.45,
+            ]);
+
+        $service = new PepecoinExplorerService($rpc);
+
+        $dto = $service->getTxOutSetInfoData();
+
+        $this->assertInstanceOf(TxOutSetInfoData::class, $dto);
+        $this->assertSame(123, $dto->height);
+        $this->assertSame('0000abc', $dto->bestblock);
+        $this->assertSame(456, $dto->transactions);
+        $this->assertSame(789, $dto->txouts);
+        $this->assertSame(1024, $dto->bytesSerialized);
+        $this->assertSame('deadbeef', $dto->hashSerialized);
+        $this->assertSame(123.45, $dto->totalAmount);
     }
 }
