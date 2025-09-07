@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Data\Rpc\TxOutSetInfoData;
+use App\Data\Rpc\ValidateAddressData;
 use App\Models\Block;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -164,35 +165,15 @@ class PepecoinExplorerService
         );
     }
 
-    public function validateAddress(string $address): Collection
+    public function validateAddress(string $address): ValidateAddressData
     {
         return Cache::remember(
             $this->getCacheKey(__FUNCTION__.'_'.hash('sha256', $address)),
             Carbon::now()->addHours(24), // Cache for 24 hours since address validity doesn't change
-            function () use ($address): Collection {
-                try {
-                    $result = $this->rpcService->call('validateaddress', [$address]);
-
-                    return new Collection([
-                        'isvalid' => $result['isvalid'] ?? false,
-                        'ismine' => $result['ismine'] ?? false,
-                        'iswatchonly' => $result['iswatchonly'] ?? false,
-                        'isscript' => $result['isscript'] ?? false,
-                        'pubkey' => $result['pubkey'] ?? null,
-                        'scriptPubKey' => $result['scriptPubKey'] ?? null,
-                        'address' => $result['address'] ?? $address,
-                    ]);
-                } catch (\Exception $e) {
-                    return new Collection([
-                        'isvalid' => false,
-                        'ismine' => false,
-                        'iswatchonly' => false,
-                        'isscript' => false,
-                        'pubkey' => null,
-                        'address' => $address,
-                        'error' => $e->getMessage(),
-                    ]);
-                }
+            function () use ($address): ValidateAddressData {
+                return ValidateAddressData::from(
+                    $this->rpcService->call('validateaddress', [$address])
+                );
             }
         );
     }
