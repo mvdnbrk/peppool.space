@@ -134,14 +134,13 @@ class PepecoinExplorerService
         );
     }
 
-    public function getNetworkSubversion(): ?string
+    public function getNetworkSubversion(): string
     {
         return Cache::remember(
             $this->getCacheKey(__FUNCTION__),
             Carbon::now()->addDay(),
             function (): ?string {
-                return new Collection($this->rpcService->getNetworkInfo())
-                    ->get('subversion');
+                return $this->rpcService->getNetworkInfo()->subversion;
             }
         );
     }
@@ -152,8 +151,7 @@ class PepecoinExplorerService
             $this->getCacheKey(__FUNCTION__),
             Carbon::now()->addMinutes(5),
             function (): int {
-                return (int) (new Collection($this->rpcService->getNetworkInfo()))
-                    ->get('connections', 0);
+                return $this->rpcService->getNetworkInfo()->connections;
             }
         );
     }

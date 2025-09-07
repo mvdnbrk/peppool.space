@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Contracts\RpcClientInterface;
 use App\Exceptions\RpcResponseException;
+use App\Data\Rpc\NetworkInfoData;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
@@ -174,9 +175,11 @@ class PepecoinRpcService implements RpcClientInterface
         return $this->call('getmempoolinfo');
     }
 
-    public function getNetworkInfo(): array
+    public function getNetworkInfo(): NetworkInfoData
     {
-        return $this->call('getnetworkinfo');
+        return NetworkInfoData::from(
+            $this->call('getnetworkinfo')
+        );
     }
 
     public function getBlockCount(): int
