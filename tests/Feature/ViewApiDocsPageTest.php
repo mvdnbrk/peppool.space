@@ -11,7 +11,7 @@ class ViewApiDocsPageTest extends TestCase
     public function api_docs_page_can_be_viewed(): void
     {
         $this->get(route('docs.api'))
-            ->assertStatus(200)
+            ->assertOk()
             ->assertViewIs('docs.api')
             ->assertSee('Pepecoin API Documentation')
             ->assertSee('Base URL')
@@ -22,7 +22,7 @@ class ViewApiDocsPageTest extends TestCase
     public function api_docs_page_lists_key_endpoints(): void
     {
         $this->get(route('docs.api'))
-            ->assertStatus(200)
+            ->assertOk()
             ->assertSee('/blocks/tip/hash')
             ->assertSee('/blocks/tip/height')
             ->assertSee('/mempool')
