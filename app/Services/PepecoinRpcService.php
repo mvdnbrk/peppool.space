@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Contracts\RpcClientInterface;
 use App\Exceptions\RpcResponseException;
+use App\Data\Rpc\BlockchainInfoData;
 use App\Data\Rpc\NetworkInfoData;
 use Exception;
 use Illuminate\Support\Collection;
@@ -165,9 +166,11 @@ class PepecoinRpcService implements RpcClientInterface
         }
     }
 
-    public function getBlockchainInfo(): array
+    public function getBlockchainInfo(): BlockchainInfoData
     {
-        return $this->call('getblockchaininfo');
+        return BlockchainInfoData::from(
+            $this->call('getblockchaininfo')
+        );
     }
 
     public function getMempoolInfo(): array

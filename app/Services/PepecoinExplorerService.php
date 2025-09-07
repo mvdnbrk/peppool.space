@@ -83,7 +83,7 @@ class PepecoinExplorerService
             $this->getCacheKey(__FUNCTION__),
             Carbon::now()->addSeconds($this->difficultyCacheTtl),
             function (): float {
-                return (new Collection($this->rpcService->getBlockchainInfo()))->get('difficulty', 0.0);
+                return $this->rpcService->getBlockchainInfo()->difficulty;
             }
         );
     }

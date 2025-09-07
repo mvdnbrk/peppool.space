@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Data\Rpc\BlockchainInfoData;
 use App\Models\Block;
 use App\Services\PepecoinExplorerService;
 use App\Services\PepecoinRpcService;
@@ -22,11 +23,11 @@ class ViewHomepageTest extends TestCase
 
         // Mock RPC service
         $rpcMock = Mockery::mock(PepecoinRpcService::class);
-        $rpcMock->shouldReceive('getBlockchainInfo')->andReturn([
+        $rpcMock->shouldReceive('getBlockchainInfo')->andReturn(BlockchainInfoData::from([
             'chain' => 'main',
             'blocks' => 655982,
             'difficulty' => 1234.56,
-        ]);
+        ]));
         $this->app->instance(PepecoinRpcService::class, $rpcMock);
 
         // Mock Explorer service
