@@ -139,7 +139,7 @@ class PepecoinExplorerService
         return Cache::remember(
             $this->getCacheKey(__FUNCTION__),
             Carbon::now()->addDay(),
-            function (): ?string {
+            function (): string {
                 return $this->rpcService->getNetworkInfo()->subversion;
             }
         );
