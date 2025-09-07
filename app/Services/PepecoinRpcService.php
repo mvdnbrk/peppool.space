@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Contracts\RpcClientInterface;
+use App\Exceptions\RpcResponseException;
 use Exception;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -45,84 +47,108 @@ class PepecoinRpcService implements RpcClientInterface
 
     public function call(string $method, array $params = []): mixed
     {
-        $payload = [
+        $response = $this->makeRequest($this->buildPayload($method, $params));
+
+        return $this->handleResponse($response, $method);
+    }
+
+    public function batchCall(array $calls): array
+    {
+        $payload = collect($calls)->map(fn ($call) => $this->buildPayload(
+            $call['method'],
+            $call['params'] ?? []
+        ))->toArray();
+
+        $response = $this->makeRequest($payload);
+        $data = $response->collect();
+
+        $this->validateBatchResponse($data, $calls, $response);
+
+        return $data
+            ->map(fn ($item) => $this->extractResult($item, $response))
+            ->toArray();
+    }
+
+    private function buildPayload(string $method, array $params = []): array
+    {
+        return [
             'jsonrpc' => '2.0',
             'id' => uniqid(),
             'method' => $method,
             'params' => $params,
         ];
+    }
 
-        try {
-            $response = Http::withBasicAuth($this->username, $this->password)
+    private function makeRequest(array $payload)
+    {
+        return rescue(
+            fn () => Http::withBasicAuth($this->username, $this->password)
                 ->timeout($this->timeout)
-                ->post($this->url, $payload);
+                ->throw()
+                ->post($this->url, $payload),
+            fn ($e) => $this->handleHttpException($e, $payload),
+            false
+        );
+    }
 
-            if (! $response->successful()) {
-                throw new Exception("RPC request failed with status: {$response->status()}");
-            }
+    private function handleResponse($response, string $method): mixed
+    {
+        $data = $response->json();
 
-            $data = $response->json();
+        if (isset($data['error']) && $data['error'] !== null) {
+            $this->throwRpcError($data['error'], $method, $response);
+        }
 
-            if (isset($data['error']) && $data['error'] !== null) {
-                throw new Exception("RPC error: {$data['error']['message']} (code: {$data['error']['code']})");
-            }
+        return $data['result'] ?? [];
+    }
 
-            return $data['result'] ?? [];
-
-        } catch (Exception $e) {
-            Log::error('Pepecoin RPC call failed', [
-                'method' => $method,
-                'params' => $params,
-                'error' => $e->getMessage(),
-            ]);
-            throw $e;
+    private function validateBatchResponse(Collection $data, array $calls, $response): void
+    {
+        if ($data->count() !== count($calls)) {
+            throw new RpcResponseException(
+                method: 'batch',
+                httpStatus: $response->status(),
+                rpcCode: null,
+                message: 'Invalid batch response format',
+                response: $response,
+            );
         }
     }
 
-    public function batchCall(array $calls): array
+    private function extractResult(array $item, $response): mixed
     {
-        $payload = [];
-        foreach ($calls as $call) {
-            $payload[] = [
-                'jsonrpc' => '2.0',
-                'id' => uniqid(),
-                'method' => $call['method'],
-                'params' => $call['params'] ?? [],
-            ];
+        if (isset($item['error']) && $item['error'] !== null) {
+            $this->throwRpcError($item['error'], 'batch-item', $response);
         }
 
-        try {
-            $response = Http::withBasicAuth($this->username, $this->password)
-                ->timeout($this->timeout)
-                ->post($this->url, $payload);
+        return $item['result'] ?? [];
+    }
 
-            if (! $response->successful()) {
-                throw new Exception("Batch RPC request failed with status: {$response->status()}");
-            }
+    private function throwRpcError(array $error, string $method, $response): never
+    {
+        $rpcCode = $error['code'] ?? null;
+        $rpcMessage = $error['message'] ?? 'Unknown RPC error';
 
-            $data = $response->json();
+        throw new RpcResponseException(
+            method: $method,
+            httpStatus: $response->status(),
+            rpcCode: $rpcCode,
+            message: "RPC error: {$rpcMessage} (code: {$rpcCode})",
+            response: $response,
+        );
+    }
 
-            if (! is_array($data) || count($data) !== count($calls)) {
-                throw new Exception('Invalid batch response format');
-            }
+    private function handleHttpException($exception, array $payload): never
+    {
+        $method = is_array($payload) && isset($payload[0]) ? 'batch' : ($payload['method'] ?? 'unknown');
 
-            $results = [];
-            foreach ($data as $item) {
-                if (isset($item['error']) && $item['error'] !== null) {
-                    throw new Exception("Batch RPC error: {$item['error']['message']} (code: {$item['error']['code']})");
-                }
-                $results[] = $item['result'] ?? [];
-            }
+        Log::error('Pepecoin RPC call failed', [
+            'method' => $method,
+            'payload' => $payload,
+            'error' => $exception->getMessage(),
+        ]);
 
-            return $results;
-
-        } catch (Exception $e) {
-            Log::error('Pepecoin batch RPC call failed', [
-                'calls' => $calls,
-                'error' => $e->getMessage(),
-            ]);
-            throw $e;
-        }
+        throw $exception;
     }
 
     public function testConnection(): bool
