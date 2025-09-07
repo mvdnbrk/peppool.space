@@ -14,6 +14,10 @@ final class ValidateAddressData extends Data
         public bool $isValid = false,
         #[MapInputName('ismine')]
         public bool $isMine = false,
+        #[MapInputName('isscript')]
+        public bool $isScript = false,
+        #[MapInputName('iswatchonly')]
+        public bool $isWatchOnly = false,
         public ?string $address = null,
         public ?string $scriptPubKey = null,
     ) {}
