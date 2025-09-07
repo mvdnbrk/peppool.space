@@ -7,6 +7,7 @@ namespace Tests\Unit\Services;
 use App\Data\Rpc\NetworkInfoData;
 use App\Data\Rpc\ValidateAddressData;
 use App\Data\Rpc\TxOutSetInfoData;
+use App\Data\Rpc\BlockchainInfoData;
 use App\Services\PepecoinExplorerService;
 use App\Services\PepecoinRpcService;
 use Illuminate\Support\Facades\Cache;
@@ -139,5 +140,21 @@ final class PepecoinExplorerServiceTest extends TestCase
         $this->assertSame(1024, $dto->bytesSerialized);
         $this->assertSame('deadbeef', $dto->hashSerialized);
         $this->assertSame(123.45, $dto->totalAmount);
+    }
+
+    public function test_get_chain_size_uses_blockchain_info_dto(): void
+    {
+        Cache::flush();
+
+        $rpc = Mockery::mock(PepecoinRpcService::class);
+        $rpc->shouldReceive('getBlockchainInfo')
+            ->once()
+            ->andReturn(BlockchainInfoData::from([
+                'size_on_disk' => 987654321,
+            ]));
+
+        $service = new PepecoinExplorerService($rpc);
+
+        $this->assertSame(987654321, $service->getChainSize());
     }
 }
