@@ -3,9 +3,9 @@
 namespace App\Services;
 
 use App\Contracts\RpcClientInterface;
-use App\Exceptions\RpcResponseException;
 use App\Data\Rpc\BlockchainInfoData;
 use App\Data\Rpc\NetworkInfoData;
+use App\Exceptions\RpcResponseException;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;

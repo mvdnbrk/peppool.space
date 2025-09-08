@@ -27,7 +27,7 @@ final class BlockchainInfoDataTest extends TestCase
                 [
                     'id' => 'bip34',
                     'version' => 2,
-                    'reject' => [ 'status' => true ],
+                    'reject' => ['status' => true],
                 ],
             ],
             'bip9_softforks' => [

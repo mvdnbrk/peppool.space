@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Services;
 
-use App\Data\Rpc\NetworkInfoData;
-use App\Data\Rpc\ValidateAddressData;
-use App\Data\Rpc\TxOutSetInfoData;
 use App\Data\Rpc\BlockchainInfoData;
+use App\Data\Rpc\NetworkInfoData;
+use App\Data\Rpc\TxOutSetInfoData;
+use App\Data\Rpc\ValidateAddressData;
 use App\Services\PepecoinExplorerService;
 use App\Services\PepecoinRpcService;
 use Illuminate\Support\Facades\Cache;
