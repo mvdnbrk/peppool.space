@@ -49,11 +49,11 @@ class AddressController extends Controller
 
             $addressInfo = $this->explorer->validateAddress($address);
 
-            if (! $addressInfo->get('isvalid')) {
+            if (! $addressInfo->isValid) {
                 throw new \Exception('Invalid Pepecoin address');
             }
 
-            $isMine = (bool) $addressInfo->get('ismine');
+            $isMine = (bool) $addressInfo->isMine;
 
             if ($isMine) {
                 // For wallet addresses, get balance using listunspent
