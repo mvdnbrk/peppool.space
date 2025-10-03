@@ -6,26 +6,17 @@ use Illuminate\Support\Str;
 
 class Socials
 {
-    public string $twitter_url;
-
-    public string $telegram_url;
-
-    public string $discord_url;
-
-    public string $youtube_url;
-
-    public string $reddit_url;
-
-    public string $facebook_url;
-
-    public string $tiktok_url;
-
-    public string $instagram_url;
-
-    public string $github_url;
-
-    public function __construct()
-    {
+    public function __construct(
+        public string $twitter_url = '',
+        public string $telegram_url = '',
+        public string $discord_url = '',
+        public string $youtube_url = '',
+        public string $reddit_url = '',
+        public string $facebook_url = '',
+        public string $tiktok_url = '',
+        public string $instagram_url = '',
+        public string $github_url = ''
+    ) {
         $this->twitter_url = Str::of('https://x.com/')->append(
             config('pepecoin.socials.twitter_handle')
         );
