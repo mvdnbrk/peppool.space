@@ -15,17 +15,26 @@ class ViewAddressPageTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Test]
-    public function invalid_address_returns_400(): void
+    protected function tearDown(): void
     {
-        $this->get(route('address.show', ['address' => 'PTooShort']))
-            ->assertStatus(Response::HTTP_BAD_REQUEST);
+        parent::tearDown();
+        Mockery::close();
+    }
+
+    #[Test]
+    public function invalid_address_returns_404(): void
+    {
+        // Test with an invalid character (contains '0' which is not allowed by route regex)
+        // Route returns 404 when address doesn't match the pattern
+        $this->get('/address/PEPEaddress1234567890ABCDEFGHIJ')
+            ->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
     #[Test]
     public function valid_address_not_in_db_and_not_ours_shows_coming_soon(): void
     {
-        $address = 'PValidAddress1234567890ABCDE'; // 26 chars, matches route pattern
+        // Valid address matching the route's regex pattern (no 0, O, I, l)
+        $address = 'PEPEaddress123456789ABCDEFGHiJ'; // 30 chars, valid format
 
         $explorer = Mockery::mock(PepecoinExplorerService::class);
         $explorer->shouldReceive('validateAddress')
@@ -46,7 +55,7 @@ class ViewAddressPageTest extends TestCase
     #[Test]
     public function address_present_in_db_renders_balances_and_transactions(): void
     {
-        $address = 'PDbAddress1234567890ABCDEFG';
+        $address = 'PEPEaddress123456789ABCDEFGHiJ'; // 30 chars, valid format
 
         AddressBalance::factory()->create([
             'address' => $address,
