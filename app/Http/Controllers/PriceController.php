@@ -18,7 +18,7 @@ class PriceController extends Controller
         $price = (float) ($prices->get($currency) ?? 0);
         // Only show supply if it's already cached; do not compute here
         $supply = Cache::get('pepe:total_supply');
-        $marketCap = $this->pricesService->getMarketCap($currency);
+        $marketCap = $this->pricesService->getMarketCap($currency) ?: null;
 
         return view('price', [
             'currency' => $currency,
