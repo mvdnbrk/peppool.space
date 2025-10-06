@@ -37,7 +37,8 @@ class PepecoinRpcService implements RpcClientInterface
         $this->port = $port ?? config('pepecoin.rpc.port', '3873');
         $this->username = $username ?? config('pepecoin.rpc.username', '');
         $this->password = $password ?? config('pepecoin.rpc.password', '');
-        $this->timeout = $timeout ?? config('pepecoin.rpc.timeout', 30);
+        // Set a more reasonable default timeout for RPC calls
+        $this->timeout = $timeout ?? config('pepecoin.rpc.timeout', 60);
 
         $this->url = Str::of('http://')
             ->append($this->host)
