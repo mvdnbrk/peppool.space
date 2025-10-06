@@ -37,14 +37,13 @@ class PepecoinPriceService
         );
     }
 
-    public function getTotalSupply(bool $refresh = false): float
+    public function getTotalSupply(bool $refresh = false): int
     {
         if ($refresh) {
-            // Queue the job to update the cache in the background
             CalculateTotalSupply::dispatch();
         }
 
-        return (float) Cache::get('pepe:total_supply', 0.0);
+        return (int) Cache::get('pepe:total_supply', 0);
     }
 
     public function getMarketCap(string $currency = 'USD'): float
@@ -61,11 +60,11 @@ class PepecoinPriceService
                 }
 
                 $supply = $this->getTotalSupply();
-                if (! $supply || $supply === 0.0) {
+                if (! $supply || $supply === 0) {
                     return 0.0;
                 }
 
-                return (float) $supply * $price;
+                return $supply * $price;
             }
         );
     }
