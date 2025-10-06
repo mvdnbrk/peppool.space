@@ -39,22 +39,12 @@ class PepecoinPriceService
 
     public function getTotalSupply(bool $refresh = false): float
     {
-        $cacheKey = 'pepe:total_supply';
-
         if ($refresh) {
-            // Ensure cache is populated using the single source of truth job (RPC first, DB fallback)
-            CalculateTotalSupply::dispatchSync();
+            // Queue the job to update the cache in the background
+            CalculateTotalSupply::dispatch();
         }
 
-        $cached = Cache::get($cacheKey);
-        if ($cached !== null) {
-            return (float) $cached;
-        }
-
-        // If cache is missing, compute via the job, then return from cache
-        CalculateTotalSupply::dispatchSync();
-
-        return (float) (Cache::get($cacheKey) ?? 0.0);
+        return (float) Cache::get('pepe:total_supply', 0.0);
     }
 
     public function getMarketCap(string $currency = 'USD'): float
