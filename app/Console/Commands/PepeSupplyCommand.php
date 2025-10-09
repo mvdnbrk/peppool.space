@@ -9,9 +9,9 @@ use Illuminate\Support\Number;
 
 class PepeSupplyCommand extends Command
 {
-    protected $signature = 'pepe:supply {--refresh : Recalculate and refresh the cached value}';
+    protected $signature = 'pepe:supply';
 
-    protected $description = 'Calculate and display total PEPE supply (sum of coinbase outputs) and cache the value.';
+    protected $description = 'Calculate and display total PEPE supply.';
 
     public function __construct(private readonly PepecoinPriceService $prices)
     {
@@ -20,22 +20,17 @@ class PepeSupplyCommand extends Command
 
     public function handle(): int
     {
-        if ($this->option('refresh')) {
-            $this->info('Refreshing cached total supply...');
-            // Reuse the job's logic to compute & cache
-            CalculateTotalSupply::dispatchSync();
-        }
+        $this->info('Calculating total PEPE supply...');
+        // Always calculate fresh supply data
+        CalculateTotalSupply::dispatchSync();
 
-        // Read via price service (will use cache, or compute and cache if missing)
-        $sumStr = $this->prices->getTotalSupply(false);
-        $sumInt = (int) $sumStr;
-
-        $human = Number::abbreviate($sumInt, maxPrecision: 0);
+        // Read the freshly calculated supply directly from cache
+        $totalSupply = $this->prices->getTotalSupply();
 
         $this->line('Total PEPE supply');
         $this->line('-------------------');
-        $this->line('Full:   '.Number::format($sumInt, maxPrecision: 0));
-        $this->line('Approx: '.$human);
+        $this->line('Full:   '.Number::format($totalSupply, maxPrecision: 0));
+        $this->line('Approx: '.Number::abbreviate($totalSupply, maxPrecision: 0));
 
         return self::SUCCESS;
     }
