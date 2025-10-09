@@ -11,7 +11,7 @@
         "explorer"
     ],
     "require": {
-        "php": "^8.4",
+        "php": "^8.3",
         "blade-ui-kit/blade-icons": "^1.8",
         "laravel/framework": "^12.32",
         "laravel/tinker": "^2.10",
