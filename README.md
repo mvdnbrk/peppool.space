@@ -43,3 +43,4 @@ Please review [our security policy](../../security/policy) on how to report secu
 [link-pepecoin-core]: https://github.com/pepecoinppc/pepecoin
 [link-sponsors]: https://github.com/sponsors/mvdnbrk
 [link-thanks]: https://thanks.dev/u/gh/mvdnbrk
+# Test commit to trigger GitHub Actions
