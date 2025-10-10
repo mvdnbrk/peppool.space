@@ -18,11 +18,11 @@
         </x-stat-card>
 
         <!-- Mempool Card -->
-        <x-stat-card aria-label="Mempool: {{ number_format($mempool['size'] ?? 0) }} transactions waiting" icon-bg="bg-green-500" label="Mempool">
+        <x-stat-card aria-label="Mempool: {{ number_format($mempool->size) }} transactions waiting" icon-bg="bg-green-500" label="Mempool">
             <x-slot:icon>
                 <x-icon-refresh class="w-5 h-5 text-white" />
             </x-slot:icon>
-            <span class="text-2xl"><span id="mempool-count">{{ number_format($mempool['size'] ?? 0) }}</span> txs</span>
+            <span class="text-2xl"><span id="mempool-count">{{ number_format($mempool->size) }}</span> txs</span>
         </x-stat-card>
 
         <!-- Difficulty Card -->

@@ -14,13 +14,12 @@ class MempoolController extends Controller
 
     public function index(): JsonResponse
     {
-        return new JsonResponse(
-            $this->explorerService->getMempoolInfo()
-                ->only(['size', 'bytes'])
-                ->mapWithKeys(fn ($value, $key) => [
-                    $key === 'size' ? 'count' : $key => $value,
-                ])
-        );
+        $mempool = $this->explorerService->getMempoolInfo();
+        
+        return new JsonResponse([
+            'count' => $mempool->size,
+            'bytes' => $mempool->bytes,
+        ]);
     }
 
     public function txids(): JsonResponse

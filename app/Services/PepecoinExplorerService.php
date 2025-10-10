@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Data\Rpc\MempoolInfoData;
 use App\Data\Rpc\TxOutSetInfoData;
 use App\Data\Rpc\ValidateAddressData;
 use App\Models\Block;
@@ -102,12 +103,12 @@ class PepecoinExplorerService
         );
     }
 
-    public function getMempoolInfo(): Collection
+    public function getMempoolInfo(): MempoolInfoData
     {
         return Cache::remember(
             $this->getCacheKey(__FUNCTION__),
             Carbon::now()->addSeconds($this->mempoolCacheTtl),
-            fn (): Collection => new Collection($this->rpcService->getMempoolInfo()->toArray())
+            fn (): MempoolInfoData => $this->rpcService->getMempoolInfo()
         );
     }
 

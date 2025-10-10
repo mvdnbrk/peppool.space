@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Data\Rpc\BlockchainInfoData;
+use App\Data\Rpc\MempoolInfoData;
 use App\Models\Block;
 use App\Services\PepecoinExplorerService;
 use App\Services\PepecoinRpcService;
@@ -32,7 +33,7 @@ class ViewHomepageTest extends TestCase
 
         // Mock Explorer service
         $explorerMock = Mockery::mock(PepecoinExplorerService::class);
-        $explorerMock->shouldReceive('getMempoolInfo')->andReturn(collect(['size' => 10, 'bytes' => 1000]));
+        $explorerMock->shouldReceive('getMempoolInfo')->andReturn(new MempoolInfoData(size: 10, bytes: 1000));
         $explorerMock->shouldReceive('getNetworkSubversion')->andReturn('/pepetoshi:1.1.0/');
         $explorerMock->shouldReceive('getNetworkConnectionsCount')->andReturn(8);
         $explorerMock->shouldReceive('getMempoolTxIds')->andReturn(collect(['tx1', 'tx2']));
