@@ -107,7 +107,7 @@ class PepecoinExplorerService
         return Cache::remember(
             $this->getCacheKey(__FUNCTION__),
             Carbon::now()->addSeconds($this->mempoolCacheTtl),
-            fn (): Collection => new Collection($this->rpcService->getMempoolInfo())
+            fn (): Collection => new Collection($this->rpcService->getMempoolInfo()->toArray())
         );
     }
 

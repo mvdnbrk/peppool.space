@@ -83,14 +83,14 @@ class PepeRpcHealthCommand extends Command
         // Blockchain info
         $blockchain = $results['blockchain'];
         $this->info('🔗 Blockchain Information:');
-        $this->line("  Chain: {$blockchain['chain']}");
-        $this->line('  Blocks: '.number_format($blockchain['blocks']));
-        $this->line("  Best Block Hash: {$blockchain['bestblockhash']}");
-        $this->line('  Difficulty: '.number_format($blockchain['difficulty'], 8));
-        $this->line('  Verification Progress: '.round($blockchain['verificationprogress'] * 100, 2).'%');
+        $this->line("  Chain: {$blockchain->chain}");
+        $this->line('  Blocks: '.number_format($blockchain->blocks));
+        $this->line("  Best Block Hash: {$blockchain->bestBlockHash}");
+        $this->line('  Difficulty: '.number_format($blockchain->difficulty, 8));
+        $this->line('  Verification Progress: '.round($blockchain->verificationProgress * 100, 2).'%');
 
-        if (isset($blockchain['size_on_disk'])) {
-            $this->line('  Chain Size: '.$this->formatBytes($blockchain['size_on_disk']));
+        if ($blockchain->sizeOnDisk > 0) {
+            $this->line('  Chain Size: '.$this->formatBytes($blockchain->sizeOnDisk));
         }
 
         $this->newLine();
@@ -98,12 +98,12 @@ class PepeRpcHealthCommand extends Command
         // Mempool info
         $mempool = $results['mempool'];
         $this->info('🔄 Mempool Information:');
-        $this->line('  Transactions: '.number_format($mempool['size']));
-        $this->line('  Memory Usage: '.$this->formatBytes($mempool['bytes']));
-        $this->line('  Min Fee Rate: '.($mempool['mempoolminfee'] ?? 'N/A').' PEPE/kB');
+        $this->line('  Transactions: '.number_format($mempool->size));
+        $this->line('  Memory Usage: '.$this->formatBytes($mempool->bytes));
+        $this->line('  Min Fee Rate: '.($mempool->mempoolMinFee > 0 ? number_format($mempool->mempoolMinFee, 8) : 'N/A').' PEPE/kB');
 
-        if (isset($mempool['maxmempool'])) {
-            $this->line('  Max Mempool: '.$this->formatBytes($mempool['maxmempool']));
+        if ($mempool->maxMempool > 0) {
+            $this->line('  Max Mempool: '.$this->formatBytes($mempool->maxMempool));
         }
 
         $this->newLine();
@@ -111,14 +111,11 @@ class PepeRpcHealthCommand extends Command
         // Network info
         $network = $results['network'];
         $this->info('🌐 Network Information:');
-        $this->line("  Version: {$network['version']}");
-        $this->line("  Subversion: {$network['subversion']}");
-        $this->line("  Protocol Version: {$network['protocolversion']}");
-        $this->line("  Connections: {$network['connections']}");
-
-        if (isset($network['networkactive'])) {
-            $this->line('  Network Active: '.($network['networkactive'] ? 'Yes' : 'No'));
-        }
+        $this->line("  Version: {$network->version}");
+        $this->line("  Subversion: {$network->subversion}");
+        $this->line("  Protocol Version: {$network->protocolVersion}");
+        $this->line("  Connections: {$network->connections}");
+        $this->line('  Network Active: '.($network->networkActive ? 'Yes' : 'No'));
 
         $this->newLine();
         $this->info('✅ All systems operational!');
