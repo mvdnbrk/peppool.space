@@ -17,7 +17,7 @@ class BlocksTipHeightTest extends TestCase
 
         $this->get(route('api.blocks.tip.height'))
             ->assertStatus(200)
-            ->assertHeader('Content-Type', 'text/plain; charset=UTF-8')
+            ->assertHeader('Content-Type', 'text/plain; charset=utf-8')
             ->assertSee('655981');
     }
 }

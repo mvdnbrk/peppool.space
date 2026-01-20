@@ -18,7 +18,7 @@ class BlocksTipHashTest extends TestCase
 
         $this->get(route('api.blocks.tip.hash'))
             ->assertOk()
-            ->assertHeader('Content-Type', 'text/plain; charset=UTF-8')
+            ->assertHeader('Content-Type', 'text/plain; charset=utf-8')
             ->assertSee(str_repeat('a', 64));
     }
 }
