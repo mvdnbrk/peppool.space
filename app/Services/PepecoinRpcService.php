@@ -49,9 +49,9 @@ class PepecoinRpcService implements RpcClientInterface
             ->toString();
     }
 
-    public function call(string $method, array $params = []): mixed
+    public function call(string $method, array $params = [], ?int $timeout = null): mixed
     {
-        $response = $this->makeRequest($this->buildPayload($method, $params));
+        $response = $this->makeRequest($this->buildPayload($method, $params), $timeout);
 
         return $this->handleResponse($response, $method);
     }
@@ -83,11 +83,11 @@ class PepecoinRpcService implements RpcClientInterface
         ];
     }
 
-    private function makeRequest(array $payload)
+    private function makeRequest(array $payload, ?int $timeout = null)
     {
         return rescue(
             fn () => Http::withBasicAuth($this->username, $this->password)
-                ->timeout($this->timeout)
+                ->timeout($timeout ?? $this->timeout)
                 ->throw()
                 ->post($this->url, $payload),
             fn ($e) => $this->handleHttpException($e, $payload),
@@ -221,6 +221,6 @@ class PepecoinRpcService implements RpcClientInterface
 
     public function getTxOutSetInfo(): array
     {
-        return $this->call('gettxoutsetinfo');
+        return $this->call('gettxoutsetinfo', [], 300);
     }
 }
