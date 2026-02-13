@@ -74,7 +74,7 @@ class ElectrsPepeService
             ->throw()
             ->json();
 
-        return TransactionData::collection($response);
+        return TransactionData::collect($response, Collection::class);
     }
 
     public function getBlockTxids(string $hash): array
