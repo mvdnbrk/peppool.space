@@ -42,13 +42,11 @@ class PepecoinExplorerService
                     return 60.0; // PepeCoin target
                 }
 
-                $timeDifferences = Collection::make($blocks)
-                    ->skip(1)
-                    ->zip($blocks->take($blocks->count() - 1))
+                $timeDifferences = $blocks->sliding(2)
                     ->map(function ($pair) {
-                        [$current, $previous] = $pair;
+                        [$current, $previous] = $pair->values();
 
-                        return $current->created_at->diffInSeconds($previous->created_at);
+                        return $previous->created_at->diffInSeconds($current->created_at);
                     });
 
                 $avg = $timeDifferences->average();
