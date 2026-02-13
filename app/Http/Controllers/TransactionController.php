@@ -41,6 +41,29 @@ class TransactionController extends Controller
             // Process inputs (skip coinbase transactions)
             $inputs = [];
             if (! isset($transaction['vin'][0]['coinbase'])) {
+                $prevTxIds = collect($transaction['vin'])
+                    ->pluck('txid')
+                    ->filter()
+                    ->unique()
+                    ->values();
+
+                $prevTxs = [];
+                if ($prevTxIds->isNotEmpty()) {
+                    try {
+                        $batchCalls = $prevTxIds->map(fn ($id) => [
+                            'method' => 'getrawtransaction',
+                            'params' => [$id, true],
+                        ])->toArray();
+
+                        $batchResults = $rpc->batchCall($batchCalls);
+                        foreach ($prevTxIds as $index => $id) {
+                            $prevTxs[$id] = $batchResults[$index];
+                        }
+                    } catch (\Exception $e) {
+                        \Log::warning('Batch RPC call for previous transactions failed: '.$e->getMessage());
+                    }
+                }
+
                 foreach ($transaction['vin'] as $input) {
                     $inputData = [
                         'txid' => $input['txid'] ?? null,
@@ -51,27 +74,24 @@ class TransactionController extends Controller
                     ];
 
                     if (isset($input['txid']) && isset($input['vout'])) {
-                        try {
-                            $prevTx = $rpc->call('getrawtransaction', [$input['txid'], true]);
-                            if (isset($prevTx['vout'][$input['vout']])) {
-                                $prevOut = $prevTx['vout'][$input['vout']];
-                                $inputData['value'] = $prevOut['value'];
-                                $totalInput += $prevOut['value'];
+                        $prevTx = $prevTxs[$input['txid']] ?? null;
 
-                                // Extract address from previous output
-                                if (isset($prevOut['scriptPubKey']['addresses'][0])) {
-                                    $inputData['address'] = $prevOut['scriptPubKey']['addresses'][0];
-                                } elseif (isset($prevOut['scriptPubKey']['address'])) {
-                                    $inputData['address'] = $prevOut['scriptPubKey']['address'];
-                                }
+                        if ($prevTx && isset($prevTx['vout'][$input['vout']])) {
+                            $prevOut = $prevTx['vout'][$input['vout']];
+                            $inputData['value'] = $prevOut['value'];
+                            $totalInput += $prevOut['value'];
+
+                            // Extract address from previous output
+                            if (isset($prevOut['scriptPubKey']['addresses'][0])) {
+                                $inputData['address'] = $prevOut['scriptPubKey']['addresses'][0];
+                            } elseif (isset($prevOut['scriptPubKey']['address'])) {
+                                $inputData['address'] = $prevOut['scriptPubKey']['address'];
                             }
-                            $inputData['prevTx'] = $prevTx; // Keep full previous tx for reference
-                        } catch (\Exception $e) {
-                            // Previous transaction not found, skip
-                            \Log::warning("Could not fetch previous transaction {$input['txid']}: ".$e->getMessage());
+
+                            $inputData['prevTx'] = $prevTx;
                         }
                     }
-                    $inputs[] = $inputData; // Add the input data to the inputs array
+                    $inputs[] = $inputData;
                 }
                 $fee = $totalInput - $totalOutput;
             }
