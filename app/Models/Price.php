@@ -17,8 +17,11 @@ class Price extends Model
         'created_at',
     ];
 
-    protected $casts = [
-        'price' => 'float',
-        'created_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'price' => 'float',
+            'created_at' => 'datetime',
+        ];
+    }
 }

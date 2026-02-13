@@ -21,10 +21,13 @@ class TransactionInput extends Model
         'coinbase_data',
     ];
 
-    protected $casts = [
-        'amount' => 'decimal:8',
-        'sequence' => 'integer',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'amount' => 'decimal:8',
+            'sequence' => 'integer',
+        ];
+    }
 
     public function transaction(): BelongsTo
     {

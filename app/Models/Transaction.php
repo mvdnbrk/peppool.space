@@ -35,10 +35,13 @@ class Transaction extends Model
         return $this->getKey();
     }
 
-    protected $casts = [
-        'is_coinbase' => 'boolean',
-        'fee' => 'decimal:8',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_coinbase' => 'boolean',
+            'fee' => 'decimal:8',
+        ];
+    }
 
     protected $visible = [
         'tx_id',

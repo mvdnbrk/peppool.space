@@ -25,10 +25,13 @@ class TransactionOutput extends Model
         'spent_by_input_index',
     ];
 
-    protected $casts = [
-        'amount' => 'decimal:8',
-        'is_spent' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'amount' => 'decimal:8',
+            'is_spent' => 'boolean',
+        ];
+    }
 
     public function transaction(): BelongsTo
     {

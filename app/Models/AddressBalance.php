@@ -22,13 +22,16 @@ class AddressBalance extends Model
         'last_activity',
     ];
 
-    protected $casts = [
-        'balance' => 'decimal:8',
-        'total_received' => 'decimal:8',
-        'total_sent' => 'decimal:8',
-        'first_seen' => 'datetime',
-        'last_activity' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'balance' => 'decimal:8',
+            'total_received' => 'decimal:8',
+            'total_sent' => 'decimal:8',
+            'first_seen' => 'datetime',
+            'last_activity' => 'datetime',
+        ];
+    }
 
     public function outputs(): HasMany
     {

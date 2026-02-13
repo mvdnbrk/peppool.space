@@ -30,10 +30,13 @@ class Block extends Model
         'created_at',
     ];
 
-    protected $casts = [
-        'created_at' => 'datetime',
-        'auxpow' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'created_at' => 'datetime',
+            'auxpow' => 'array',
+        ];
+    }
 
     public static function getLatestBlocks(int $limit = 10): Collection
     {
