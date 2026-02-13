@@ -35,18 +35,13 @@ class PepecoinRpcService implements RpcClientInterface
         ?int $timeout = null,
     ) {
         $this->host = $host ?? config('pepecoin.rpc.host', '127.0.0.1');
-        $this->port = $port ?? config('pepecoin.rpc.port', '3873');
+        $this->port = $port ?? config('pepecoin.rpc.port', '33873');
         $this->username = $username ?? config('pepecoin.rpc.username', '');
         $this->password = $password ?? config('pepecoin.rpc.password', '');
         // Set a more reasonable default timeout for RPC calls
         $this->timeout = $timeout ?? config('pepecoin.rpc.timeout', 60);
 
-        $this->url = Str::of('http://')
-            ->append($this->host)
-            ->append(':')
-            ->append($this->port)
-            ->append('/')
-            ->toString();
+        $this->url = "http://{$this->host}:{$this->port}/";
     }
 
     public function call(string $method, array $params = [], ?int $timeout = null): mixed
