@@ -75,6 +75,6 @@ class PepecoinPriceService
             ->replaceFirst('get', '')
             ->prepend('pep_price')
             ->snake()
-            ->toString();
+            ->value();
     }
 }

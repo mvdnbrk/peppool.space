@@ -47,6 +47,6 @@ class Handler extends ExceptionHandler
 
         return Str::of((string) $e->response->body())
             ->limit(2000, '…')
-            ->toString();
+            ->value();
     }
 }

@@ -24,7 +24,7 @@ class FetchPepePrice implements ShouldQueue
         $this->apiUrl = Str::of(config('services.coingecko.base_url'))
             ->append('simple/price?ids=pepecoin-network&vs_currencies=')
             ->append(implode(',', $this->currencies))
-            ->toString();
+            ->value();
     }
 
     public function handle(): void

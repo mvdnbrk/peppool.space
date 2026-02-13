@@ -25,7 +25,7 @@ class PepecoinExplorerService
             ->replaceFirst('get', '')
             ->prepend('pep_explorer')
             ->snake()
-            ->toString();
+            ->value();
     }
 
     public function getAverageBlockTime(int $blockWindow = 50): float

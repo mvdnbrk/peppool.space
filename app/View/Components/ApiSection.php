@@ -35,7 +35,7 @@ class ApiSection extends Component
             ->replace(['/', '{', '}', ':', ' ', '[', ']'], '-')
             ->trim('-')
             ->lower()
-            ->toString();
+            ->value();
     }
 
     public function sectionId(): string
