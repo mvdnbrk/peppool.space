@@ -2,112 +2,71 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\PepecoinRpcService;
+use App\Services\ElectrsPepeService;
+use App\Services\PepecoinExplorerService;
 use Illuminate\View\View;
 
 class TransactionController extends Controller
 {
-    public function show(PepecoinRpcService $rpc, string $txid): View
+    public function __construct(
+        private readonly ElectrsPepeService $electrs,
+        private readonly PepecoinExplorerService $explorer,
+    ) {}
+
+    public function show(string $txid): View
     {
         try {
-            // Get transaction details
-            $transaction = $rpc->call('getrawtransaction', [$txid, true]);
+            $tx = $this->electrs->getTransaction($txid);
 
-            // Check if transaction is in a block or mempool
-            $inBlock = isset($transaction['blockhash']);
+            $inBlock = $tx->status->confirmed;
             $blockInfo = null;
 
             if ($inBlock) {
-                $blockHash = $transaction['blockhash'];
-                $block = $rpc->getBlock($blockHash, 1);
                 $blockInfo = [
-                    'hash' => $blockHash,
-                    'height' => $block['height'],
-                    'time' => $block['time'],
-                    'confirmations' => $transaction['confirmations'] ?? 0,
+                    'hash' => $tx->status->blockHash,
+                    'height' => $tx->status->blockHeight,
+                    'time' => $tx->status->blockTime,
+                    'confirmations' => $this->explorer->getBlockTipHeight() - $tx->status->blockHeight + 1,
                 ];
             }
 
-            // Calculate total input and output values
-            $totalInput = 0;
-            $totalOutput = 0;
-            $fee = 0;
+            $inputs = collect($tx->vin)->map(fn ($in, $index) => [
+                'txid' => $in->txid,
+                'vout' => $in->vout,
+                'address' => $in->prevout?->scriptpubkeyAddress,
+                'value' => $in->getValueInPep(),
+                'coinbase' => $in->isCoinbase ? ($in->scriptsig ?? 'Coinbase Transaction') : null,
+            ])->toArray();
 
-            // Calculate outputs
-            foreach ($transaction['vout'] as $output) {
-                $totalOutput += $output['value'];
-            }
+            $outputs = collect($tx->vout)->map(fn ($out, $index) => [
+                'n' => $index,
+                'value' => $out->getValueInPep(),
+                'scriptPubKey' => [
+                    'addresses' => isset($out->scriptpubkeyAddress) ? [$out->scriptpubkeyAddress] : null,
+                    'hex' => $out->scriptpubkey,
+                    'type' => $out->scriptpubkeyType,
+                ],
+            ])->toArray();
 
-            // Process inputs (skip coinbase transactions)
-            $inputs = [];
-            if (! isset($transaction['vin'][0]['coinbase'])) {
-                $prevTxIds = collect($transaction['vin'])
-                    ->pluck('txid')
-                    ->filter()
-                    ->unique()
-                    ->values();
-
-                $prevTxs = [];
-                if ($prevTxIds->isNotEmpty()) {
-                    try {
-                        $batchCalls = $prevTxIds->map(fn ($id) => [
-                            'method' => 'getrawtransaction',
-                            'params' => [$id, true],
-                        ])->toArray();
-
-                        $batchResults = $rpc->batchCall($batchCalls);
-                        foreach ($prevTxIds as $index => $id) {
-                            $prevTxs[$id] = $batchResults[$index];
-                        }
-                    } catch (\Exception $e) {
-                        \Log::warning('Batch RPC call for previous transactions failed: '.$e->getMessage());
-                    }
-                }
-
-                foreach ($transaction['vin'] as $input) {
-                    $inputData = [
-                        'txid' => $input['txid'] ?? null,
-                        'vout' => $input['vout'] ?? null,
-                        'address' => null,
-                        'value' => 0,
-                        'scriptSig' => $input['scriptSig']['hex'] ?? null,
-                    ];
-
-                    if (isset($input['txid']) && isset($input['vout'])) {
-                        $prevTx = $prevTxs[$input['txid']] ?? null;
-
-                        if ($prevTx && isset($prevTx['vout'][$input['vout']])) {
-                            $prevOut = $prevTx['vout'][$input['vout']];
-                            $inputData['value'] = $prevOut['value'];
-                            $totalInput += $prevOut['value'];
-
-                            // Extract address from previous output
-                            if (isset($prevOut['scriptPubKey']['addresses'][0])) {
-                                $inputData['address'] = $prevOut['scriptPubKey']['addresses'][0];
-                            } elseif (isset($prevOut['scriptPubKey']['address'])) {
-                                $inputData['address'] = $prevOut['scriptPubKey']['address'];
-                            }
-
-                            $inputData['prevTx'] = $prevTx;
-                        }
-                    }
-                    $inputs[] = $inputData;
-                }
-                $fee = $totalInput - $totalOutput;
-            }
-
-            // Update transaction with enriched input data
-            $transaction['vin'] = $inputs;
+            $transaction = [
+                'txid' => $tx->txid,
+                'size' => $tx->size,
+                'version' => $tx->version,
+                'locktime' => $tx->locktime,
+                'vin' => $inputs,
+                'vout' => $outputs,
+                'time' => $tx->status->blockTime,
+            ];
 
             return view('transaction.show', [
                 'transaction' => $transaction,
                 'txid' => $txid,
                 'inBlock' => $inBlock,
                 'blockInfo' => $blockInfo,
-                'totalInput' => $totalInput,
-                'totalOutput' => $totalOutput,
-                'fee' => $fee,
-                'isCoinbase' => isset($transaction['vin'][0]['coinbase']),
+                'totalInput' => $tx->getTotalInputValueInPep(),
+                'totalOutput' => $tx->getTotalOutputValueInPep(),
+                'fee' => $tx->getFeeInPep(),
+                'isCoinbase' => (bool) ($tx->vin[0]->isCoinbase ?? false),
             ]);
 
         } catch (\Exception $e) {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Data\Electrs\AddressData;
+use App\Data\Electrs\TransactionData;
 use Illuminate\Support\Facades\Http;
 
 class ElectrsPepeService
@@ -39,11 +40,13 @@ class ElectrsPepeService
             ->json();
     }
 
-    public function getTransaction(string $txid): array
+    public function getTransaction(string $txid): TransactionData
     {
-        return Http::get("{$this->url}/tx/{$txid}")
+        $response = Http::get("{$this->url}/tx/{$txid}")
             ->throw()
             ->json();
+
+        return TransactionData::from($response);
     }
 
     public function getTransactionStatus(string $txid): array
