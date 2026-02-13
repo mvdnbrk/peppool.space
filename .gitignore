@@ -6,7 +6,10 @@
 .phpactor.json
 .phpunit.result.cache
 
+/.ai
+/.agents
 /.fleet
+/.gemini
 /.idea
 /.nova
 /.phpunit.cache
@@ -20,6 +23,8 @@
 /storage/*.key
 /storage/pail
 /vendor
+boost.json
+GEMINI.md
 Homestead.json
 Homestead.yaml
 Thumbs.db
