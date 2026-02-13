@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Services\ElectrsPepeService;
 use App\Services\PepecoinExplorerService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\View\View;

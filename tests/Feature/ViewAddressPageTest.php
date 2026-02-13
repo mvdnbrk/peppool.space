@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Data\Electrs\AddressData;
-use App\Models\AddressBalance;
 use App\Services\ElectrsPepeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;

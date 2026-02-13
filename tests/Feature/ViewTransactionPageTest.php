@@ -21,7 +21,7 @@ class ViewTransactionPageTest extends TestCase
     public function transaction_page_renders_confirmed_transaction(): void
     {
         $txid = '54b0af0a480e4ad9e650ab89867bba465a33ab37bc8681b28fbd598ad7799c42';
-        
+
         $txData = TransactionData::from([
             'txid' => $txid,
             'version' => 1,
@@ -44,14 +44,14 @@ class ViewTransactionPageTest extends TestCase
                         'value' => 500000000,
                         'scriptpubkey_address' => 'address-1',
                     ],
-                ]
+                ],
             ],
             'vout' => [
                 [
                     'value' => 499000000,
                     'scriptpubkey' => 'some-script',
                     'scriptpubkey_address' => 'address-2',
-                ]
+                ],
             ],
         ]);
 
@@ -82,7 +82,7 @@ class ViewTransactionPageTest extends TestCase
     public function transaction_page_renders_unconfirmed_transaction(): void
     {
         $txid = '54b0af0a480e4ad9e650ab89867bba465a33ab37bc8681b28fbd598ad7799c42';
-        
+
         $txData = TransactionData::from([
             'txid' => $txid,
             'version' => 1,
@@ -102,14 +102,14 @@ class ViewTransactionPageTest extends TestCase
                         'value' => 500000000,
                         'scriptpubkey_address' => 'address-1',
                     ],
-                ]
+                ],
             ],
             'vout' => [
                 [
                     'value' => 499000000,
                     'scriptpubkey' => 'some-script',
                     'scriptpubkey_address' => 'address-2',
-                ]
+                ],
             ],
         ]);
 

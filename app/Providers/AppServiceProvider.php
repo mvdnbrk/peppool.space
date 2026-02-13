@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
+use App\Services\ElectrsPepeService;
 use App\Services\PepecoinExplorerService;
 use App\Services\PepecoinPriceService;
 use App\Services\PepecoinRpcService;
-use App\Services\ElectrsPepeService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\ServiceProvider;
 

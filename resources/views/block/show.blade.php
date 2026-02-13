@@ -109,15 +109,18 @@
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $index === 0 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' }}">
                                         {{ $index === 0 ? 'Coinbase' : 'Transaction' }}
                                     </span>
-                                    <a href="{{ route('transaction.show', is_string($tx) ? $tx : $tx['txid']) }}" class="text-sm font-mono text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 break-all">
-                                        {{ is_string($tx) ? $tx : $tx['txid'] }}
+                                    <a href="{{ route('transaction.show', $tx->txid) }}" class="text-sm font-mono text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 break-all">
+                                        {{ $tx->txid }}
                                     </a>
                                 </div>
-                                @if(is_array($tx) && isset($tx['vout']))
-                                    <div class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                                        {{ count($tx['vin'] ?? []) }} {{ Str::plural('input', count($tx['vin'] ?? [])) }}, {{ count($tx['vout'] ?? []) }} {{ Str::plural('output', count($tx['vout'] ?? [])) }}
+                                <div class="mt-2 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+                                    <div>
+                                        {{ count($tx->vin) }} {{ Str::plural('input', count($tx->vin)) }}, {{ count($tx->vout) }} {{ Str::plural('output', count($tx->vout)) }}
                                     </div>
-                                @endif
+                                    <div class="font-medium text-gray-900 dark:text-white">
+                                        <x-pepe-amount :amount="$tx->getTotalOutputValueInPep()" /> PEPE
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

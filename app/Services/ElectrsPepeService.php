@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Data\Electrs\AddressData;
+use App\Data\Electrs\BlockData;
 use App\Data\Electrs\TransactionData;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 
 class ElectrsPepeService
@@ -47,6 +49,39 @@ class ElectrsPepeService
             ->json();
 
         return TransactionData::from($response);
+    }
+
+    public function getBlock(string $hash): BlockData
+    {
+        $response = Http::get("{$this->url}/block/{$hash}")
+            ->throw()
+            ->json();
+
+        return BlockData::from($response);
+    }
+
+    public function getBlockHash(int $height): string
+    {
+        return Http::get("{$this->url}/block-height/{$height}")
+            ->throw()
+            ->body();
+    }
+
+    /** @return Collection<int, TransactionData> */
+    public function getBlockTransactions(string $hash): Collection
+    {
+        $response = Http::get("{$this->url}/block/{$hash}/txs")
+            ->throw()
+            ->json();
+
+        return TransactionData::collection($response);
+    }
+
+    public function getBlockTxids(string $hash): array
+    {
+        return Http::get("{$this->url}/block/{$hash}/txids")
+            ->throw()
+            ->json();
     }
 
     public function getTransactionStatus(string $txid): array
