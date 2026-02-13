@@ -40,12 +40,12 @@ class TransactionOutput extends Model
 
     public function spentByTransaction(): BelongsTo
     {
-        return $this->belongsTo(Transaction::class, 'spent_by_txid', 'txid');
+        return $this->belongsTo(Transaction::class, 'spent_by_tx_id', 'tx_id');
     }
 
     public function spentByInput(): HasOne
     {
-        return $this->hasOne(TransactionInput::class, 'prev_txid', 'txid')
+        return $this->hasOne(TransactionInput::class, 'prev_tx_id', 'tx_id')
             ->where('prev_vout', $this->output_index);
     }
 

@@ -36,7 +36,7 @@ class TransactionInput extends Model
 
     public function previousOutput(): BelongsTo
     {
-        return $this->belongsTo(TransactionOutput::class, 'prev_txid', 'txid')
+        return $this->belongsTo(TransactionOutput::class, 'prev_tx_id', 'tx_id')
             ->where('output_index', $this->prev_vout);
     }
 
