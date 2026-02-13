@@ -7,6 +7,7 @@ use App\Data\Rpc\MempoolInfoData;
 use App\Models\Block;
 use App\Services\PepecoinExplorerService;
 use App\Services\PepecoinRpcService;
+use App\Services\ElectrsPepeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
@@ -42,6 +43,11 @@ class ViewHomepageTest extends TestCase
         $explorerMock->shouldReceive('getDifficulty')->andReturn(1234.56);
         $explorerMock->shouldReceive('getHashrate')->andReturn(123456789);
         $this->app->instance(PepecoinExplorerService::class, $explorerMock);
+
+        // Mock Electrs service
+        $electrsMock = Mockery::mock(ElectrsPepeService::class);
+        $electrsMock->shouldReceive('getRecentMempoolTransactions')->andReturn(collect([]));
+        $this->app->instance(ElectrsPepeService::class, $electrsMock);
 
         $this->get('/')
             ->assertOk()
