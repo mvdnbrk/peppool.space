@@ -15,7 +15,7 @@ class MempoolController extends Controller
     public function index(): JsonResponse
     {
         $mempool = $this->explorerService->getMempoolInfo();
-        
+
         return new JsonResponse([
             'count' => $mempool->size,
             'bytes' => $mempool->bytes,
