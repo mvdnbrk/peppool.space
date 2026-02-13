@@ -4,7 +4,7 @@
       <a
         v-for="block in blocks"
         :key="Number(block.height)"
-        :href="`/block/${block.height}`"
+        :href="blockRoute.replace('__HEIGHT__', block.height)"
         class="block px-6 py-4 border-b border-gray-100 dark:border-gray-700 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
       >
         <div class="flex items-center justify-between">
@@ -46,7 +46,8 @@ import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue'
 const props = defineProps({
   initialBlocks: { type: Array, default: () => [] },
   apiUrl: { type: String, required: true },
-  intervalMs: { type: Number, default: 10000 }
+  intervalMs: { type: Number, default: 10000 },
+  blockRoute: { type: String, default: '' }
 })
 
 const blocks = ref([...(props.initialBlocks || [])])

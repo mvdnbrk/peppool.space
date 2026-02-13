@@ -29,5 +29,8 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 
+# Local scripts
+/scripts/setup-tunnels.sh
+
 # Development scratchpad (local only)
 .cursor/scratchpad.md

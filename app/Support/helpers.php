@@ -74,3 +74,33 @@ if (! function_exists('cdn_asset')) {
         return app('url')->assetFrom((string) $root, $path, $secure);
     }
 }
+
+if (! function_exists('format_pepe')) {
+    function format_pepe(float|string|null $amount): string
+    {
+        if ($amount === null) {
+            return '0.00';
+        }
+
+        // Format with up to 8 decimals and commas
+        $formatted = number_format((float) $amount, 8, '.', ',');
+
+        // Strip trailing zeros from the decimal part
+        if (str_contains($formatted, '.')) {
+            $formatted = rtrim($formatted, '0');
+            $formatted = rtrim($formatted, '.');
+        }
+
+        // Ensure at least 2 decimal places for aesthetic consistency
+        if (! str_contains($formatted, '.')) {
+            return $formatted.'.00';
+        }
+
+        $parts = explode('.', $formatted);
+        if (strlen($parts[1]) < 2) {
+            return $parts[0].'.'.str_pad($parts[1], 2, '0');
+        }
+
+        return $formatted;
+    }
+}

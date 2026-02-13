@@ -33,7 +33,7 @@
                 <x-icon-arrow-down class="w-5 h-5 text-white" />
             </x-slot:icon>
             @if($totalReceived !== null)
-                <span class="text-green-600">{{ number_format($totalReceived, 2) }}</span>
+                <x-pepe-amount :amount="$totalReceived" class="text-green-600" />
             @else
                 <span class="text-sm text-gray-400 dark:text-gray-500">Unknown</span>
             @endif
@@ -44,7 +44,7 @@
                 <x-icon-arrow-up class="w-5 h-5 text-white" />
             </x-slot:icon>
             @if(isset($totalSent) && $totalSent !== null)
-                {{ number_format($totalSent, 2) }}
+                <x-pepe-amount :amount="$totalSent" />
             @else
                 <span class="text-sm text-gray-400 dark:text-gray-500">Unknown</span>
             @endif
@@ -55,7 +55,7 @@
                 <x-icon-pep-currency-sign class="w-5 h-5 text-white" />
             </x-slot:icon>
             @if($balance !== null)
-                {{ number_format($balance, 2) }}
+                <x-pepe-amount :amount="$balance" />
             @else
                 <span class="text-sm text-gray-400 dark:text-gray-500">Unknown</span>
             @endif
@@ -85,7 +85,8 @@
             'currentPage' => $transactions->currentPage(),
             'perPage' => $transactions->perPage(),
             'total' => $transactions->total(),
-            'lastPage' => $transactions->lastPage()
+            'lastPage' => $transactions->lastPage(),
+            'txRoute' => route('transaction.show', ['txid' => '__TXID__'])
         ]) !!}
     </script>
 

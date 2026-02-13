@@ -21,8 +21,8 @@ class SearchController extends Controller
             return redirect()->route('search.index')->with('error', 'Please enter a search term.');
         }
 
-        // Address: Pepecoin base58 addresses start with 'P' (length 26-34 typically)
-        if (preg_match('/^P[1-9A-HJ-NP-Za-km-z]{25,33}$/', $q)) {
+        // Address: Pepecoin base58 addresses start with 'P' or '9' (length 26-34 typically)
+        if (preg_match('/^[P9][1-9A-HJ-NP-Za-km-z]{25,33}$/', $q)) {
             return redirect()->route('address.show', ['address' => $q]);
         }
 

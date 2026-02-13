@@ -7,7 +7,7 @@
     <a
       v-for="txid in sortedTxids"
       :key="txid"
-      :href="`/tx/${txid}`"
+      :href="txRoute.replace('__TXID__', txid)"
       class="block px-6 py-4 border-b border-gray-100 dark:border-gray-700 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
       :class="{ 'opacity-70': confirmed[txid] }"
     >
@@ -58,6 +58,10 @@ const props = defineProps({
   intervalMs: {
     type: Number,
     default: 10000
+  },
+  txRoute: {
+    type: String,
+    default: ''
   }
 })
 

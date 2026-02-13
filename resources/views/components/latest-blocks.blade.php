@@ -19,6 +19,7 @@
                 'initialBlocks' => $latestBlocks,
                 'apiUrl' => $apiUrl,
                 'intervalMs' => $intervalMs,
+                'blockRoute' => route('block.show', ['hashOrHeight' => '__HEIGHT__'])
             ]) }}"
         ></div>
     </div>

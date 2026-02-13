@@ -33,7 +33,7 @@ Route::get('/tx/{txid}', [TransactionController::class, 'show'])
 
 Route::get('/address/{address}', [AddressController::class, 'show'])
     ->name('address.show')
-    ->where('address', 'P[1-9A-HJ-NP-Za-km-z]{25,33}');
+    ->where('address', '[P9][1-9A-HJ-NP-Za-km-z]{25,33}');
 
 Route::get('/docs/api', DocumentationController::class)
     ->name('docs.api');

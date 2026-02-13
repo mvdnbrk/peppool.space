@@ -18,7 +18,8 @@
             data-props="{{ json_encode([
                 'initialTxids' => $initialTxids,
                 'apiUrl' => $apiUrl,
-                'intervalMs' => $intervalMs
+                'intervalMs' => $intervalMs,
+                'txRoute' => route('transaction.show', ['txid' => '__TXID__'])
             ]) }}"
         ></div>
     </div>

@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Data\Rpc\ValidateAddressData;
+use App\Data\Electrs\AddressData;
 use App\Models\AddressBalance;
-use App\Services\PepecoinExplorerService;
+use App\Services\ElectrsPepeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Mockery;
@@ -24,57 +24,47 @@ class ViewAddressPageTest extends TestCase
     #[Test]
     public function invalid_address_returns_404(): void
     {
-        // Test with an invalid character (contains '0' which is not allowed by route regex)
-        // Route returns 404 when address doesn't match the pattern
         $this->get('/address/PEPEaddress1234567890ABCDEFGHIJ')
             ->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
     #[Test]
-    public function valid_address_not_in_db_and_not_ours_shows_coming_soon(): void
+    public function valid_address_renders_correctly_using_electrs(): void
     {
-        // Valid address matching the route's regex pattern (no 0, O, I, l)
-        $address = 'PEPEaddress123456789ABCDEFGHiJ'; // 30 chars, valid format
+        $address = 'PEPEaddress123456789ABCDEFGHiJ';
 
-        $explorer = Mockery::mock(PepecoinExplorerService::class);
-        $explorer->shouldReceive('validateAddress')
+        $electrs = Mockery::mock(ElectrsPepeService::class);
+        $electrs->shouldReceive('getAddress')
             ->once()
             ->with($address)
-            ->andReturn(ValidateAddressData::from([
-                'isvalid' => true,
-                'ismine' => false,
+            ->andReturn(AddressData::from([
                 'address' => $address,
+                'chain_stats' => [
+                    'funded_txo_count' => 1,
+                    'funded_txo_sum' => 100_000_000,
+                    'spent_txo_count' => 0,
+                    'spent_txo_sum' => 0,
+                    'tx_count' => 1,
+                ],
+                'mempool_stats' => [
+                    'funded_txo_count' => 0,
+                    'funded_txo_sum' => 0,
+                    'spent_txo_count' => 0,
+                    'spent_txo_sum' => 0,
+                    'tx_count' => 0,
+                ],
             ]));
-        $this->app->instance(PepecoinExplorerService::class, $explorer);
 
-        $this->get(route('address.show', ['address' => $address]))
-            ->assertOk()
-            ->assertSee($address);
-    }
+        $electrs->shouldReceive('getAddressTransactions')
+            ->once()
+            ->with($address)
+            ->andReturn([]);
 
-    #[Test]
-    public function address_present_in_db_renders_balances_and_transactions(): void
-    {
-        $address = 'PEPEaddress123456789ABCDEFGHiJ'; // 30 chars, valid format
-
-        AddressBalance::factory()->create([
-            'address' => $address,
-            'balance' => 12.34,
-            'total_received' => 56.78,
-            'total_sent' => 44.44,
-            'tx_count' => 2,
-        ]);
-
-        $explorer = Mockery::mock(PepecoinExplorerService::class);
-        // The controller should not call validateAddress in DB path; ensure no calls
-        $this->app->instance(PepecoinExplorerService::class, $explorer);
+        $this->app->instance(ElectrsPepeService::class, $electrs);
 
         $this->get(route('address.show', ['address' => $address]))
             ->assertOk()
             ->assertSee($address)
-            ->assertSee('Transactions')
-            ->assertSee('Total PEPE Received')
-            ->assertSee('Total PEPE Sent')
-            ->assertSee('PEPE Balance');
+            ->assertSee('1.00'); // Balance
     }
 }

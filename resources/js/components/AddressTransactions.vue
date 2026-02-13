@@ -98,12 +98,13 @@
       >
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div class="flex-1 min-w-0">
-            <a :href="`/transaction/${tx.txid}`" class="font-mono text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 break-all">
+            <a :href="txRoute.replace('__TXID__', tx.txid)" class="font-mono text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 break-all">
               {{ tx.txid }}
             </a>
             <div class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              <span v-if="tx.confirmations === 0" class="text-red-500 font-medium">Unconfirmed</span>
               <timestamp
-                v-if="tx.time || tx.timereceived"
+                v-else-if="tx.time || tx.timereceived"
                 x-data="timestamp"
                 :datetime="formatToAtomString(tx.timereceived || tx.time)"
                 x-text="relativeTime"
@@ -116,14 +117,20 @@
           </div>
           <div class="mt-2 sm:mt-0 text-sm font-medium text-right">
             <div v-if="tx.is_incoming" class="flex items-center justify-end text-green-600">
-              <span class="text-green-600">{{ formatAmount(tx.amount) }} PEPE</span>
+              <span class="text-green-600">
+                <span>{{ splitAmount(tx.amount).whole }}</span><span class="text-[0.85em] opacity-80">{{ splitAmount(tx.amount).decimal }}</span>
+                PEPE
+              </span>
               <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" role="img" aria-label="Received" focusable="false">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
               </svg>
               <span class="sr-only">Received</span>
             </div>
             <div v-else class="flex items-center justify-end text-red-600">
-              <span class="text-red-600">{{ formatAmount(tx.amount) }} PEPE</span>
+              <span class="text-red-600">
+                <span>{{ splitAmount(tx.amount).whole }}</span><span class="text-[0.85em] opacity-80">{{ splitAmount(tx.amount).decimal }}</span>
+                PEPE
+              </span>
               <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" role="img" aria-label="Sent" focusable="false">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
               </svg>
@@ -213,11 +220,12 @@ export default {
     return {
       transactions: [],
       currentFilter: 'all',
-      currentPerPage: 25,
+      currentPerPage: 10,
       currentPage: 1,
       totalTransactions: 0,
       totalPages: 1,
       address: '',
+      txRoute: '',
       filters: [
         { key: 'all', label: 'All' },
         { key: 'in', label: 'Incoming' },
@@ -294,23 +302,12 @@ export default {
         const data = JSON.parse(dataScript.textContent);
         
         this.address = data.address || '';
+        this.txRoute = data.txRoute || '';
         this.transactions = data.transactions || [];
         this.currentPage = data.currentPage || 1;
-        this.currentPerPage = data.perPage || 25;
+        this.currentPerPage = data.perPage || 10;
         this.totalTransactions = data.total || 0;
         this.totalPages = data.lastPage || 1;
-
-        // If user has a remembered per-page and URL doesn't explicitly set it, apply it
-        const url = new URL(window.location);
-        const hasPerPageInUrl = url.searchParams.has('per_page');
-        const remembered = localStorage.getItem('address_tx_per_page');
-        if (!hasPerPageInUrl && remembered) {
-          const rememberedInt = parseInt(remembered, 10);
-          if (this.perPageOptions.includes(rememberedInt) && rememberedInt !== this.currentPerPage) {
-            this.updateUrl({ per_page: rememberedInt, page: 1 });
-            return; // navigation
-          }
-        }
 
         // Keep localStorage in sync with current value
         localStorage.setItem('address_tx_per_page', this.currentPerPage);
@@ -353,8 +350,16 @@ export default {
     formatAmount(amount) {
       return new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2,
-        maximumFractionDigits: 2
+        maximumFractionDigits: 8
       }).format(amount);
+    },
+    splitAmount(amount) {
+      const formatted = this.formatAmount(amount);
+      const parts = formatted.split('.');
+      return {
+        whole: parts[0],
+        decimal: parts[1] ? '.' + parts[1] : ''
+      };
     },
     formatToAtomString(timestamp) {
       return new Date(timestamp * 1000).toISOString();

@@ -106,12 +106,8 @@
                         <x-slot:icon>
                             <x-icon-currency-dollar class="w-5 h-5 text-blue-600" />
                         </x-slot:icon>
-                        @php
-                            $formattedFee = rtrim(rtrim(number_format($fee, 8, '.', ','), '0'), '.');
-                            $parts = explode('.', $formattedFee);
-                        @endphp
                         <span class="text-lg font-bold text-gray-900 dark:text-white">
-                            {{ $parts[0] }}<span class="text-sm">@if(isset($parts[1])).<span class="text-xs">{{ $parts[1] }}</span>@endif</span> <span>PEPE</span>
+                            <x-pepe-amount :amount="$fee" /> <span>PEPE</span>
                         </span>
                     </x-stat-card>
                 @endif
@@ -125,11 +121,7 @@
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
                             {{ count($transaction['vin'] ?? []) }} {{ Str::plural('Input', count($transaction['vin'] ?? [])) }}
                             @if(!$isCoinbase && $totalInput > 0)
-                                @php
-                                    $formattedInput = rtrim(rtrim(number_format($totalInput, 8, '.', ','), '0'), '.');
-                                    $parts = explode('.', $formattedInput);
-                                @endphp
-                                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">- {{ $parts[0] }}@if(isset($parts[1]))<span class="text-xs">.{{ $parts[1] }}</span>@endif <span>PEPE</span></span>
+                                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">- <x-pepe-amount :amount="$totalInput" /> <span>PEPE</span></span>
                             @endif
                         </h2>
                     </div>
@@ -151,11 +143,7 @@
                                         <div class="flex-1">
                                             <div class="text-sm font-medium text-gray-900 dark:text-white">
                                                 @if(isset($input['value']))
-                                                    @php
-                                                        $formattedValue = rtrim(rtrim(number_format($input['value'], 8, '.', ','), '0'), '.');
-                                                        $parts = explode('.', $formattedValue);
-                                                    @endphp
-                                                    {{ $parts[0] }}@if(isset($parts[1]))<span class="text-xs">.{{ $parts[1] }}</span>@endif <span>PEPE</span>
+                                                    <x-pepe-amount :amount="$input['value']" /> <span>PEPE</span>
                                                 @else
                                                     Input
                                                 @endif
@@ -202,11 +190,7 @@
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
                             {{ count($transaction['vout'] ?? []) }} {{ Str::plural('Output', count($transaction['vout'] ?? [])) }}
                             @if($totalOutput > 0)
-                                @php
-                                    $formattedOutput = rtrim(rtrim(number_format($totalOutput, 8, '.', ','), '0'), '.');
-                                    $parts = explode('.', $formattedOutput);
-                                @endphp
-                                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">- {{ $parts[0] }}@if(isset($parts[1]))<span class="text-xs">.{{ $parts[1] }}</span>@endif <span>PEPE</span></span>
+                                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">- <x-pepe-amount :amount="$totalOutput" /> <span>PEPE</span></span>
                             @endif
                         </h2>
                     </div>
@@ -216,11 +200,7 @@
                                 <div class="flex justify-between items-start">
                                     <div class="flex-1">
                                         <div class="text-sm font-medium text-gray-900 dark:text-white">
-                                            @php
-                                                $formattedValue = rtrim(rtrim(number_format($output['value'], 8, '.', ','), '0'), '.');
-                                                $parts = explode('.', $formattedValue);
-                                            @endphp
-                                            {{ $parts[0] }}@if(isset($parts[1]))<span class="text-xs">.{{ $parts[1] }}</span>@endif <span>PEPE</span>
+                                            <x-pepe-amount :amount="$output['value']" /> <span>PEPE</span>
                                         </div>
                                         <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                             Output #{{ $output['n'] }}
