@@ -57,8 +57,8 @@
 
         <!-- Mempool Transactions -->
         <x-mempool-transactions
-            :initial-txids="$mempoolTransactions"
-            api-url="{{ route('api.mempool.txids') }}"
+            :initial-transactions="$mempoolTransactions"
+            :api-url="route('api.mempool.recent')"
             :interval-ms="10000"
         />
     </div>

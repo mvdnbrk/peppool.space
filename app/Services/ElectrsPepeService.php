@@ -6,6 +6,8 @@ namespace App\Services;
 
 use App\Data\Electrs\AddressData;
 use App\Data\Electrs\BlockData;
+use App\Data\Electrs\MempoolData;
+use App\Data\Electrs\RecentMempoolTransactionData;
 use App\Data\Electrs\TransactionData;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
@@ -17,6 +19,25 @@ class ElectrsPepeService
     public function __construct(?string $url = null)
     {
         $this->url = $url ?? config('pepecoin.electrs.url', 'http://127.0.0.1:3002');
+    }
+
+    public function getMempool(): MempoolData
+    {
+        $response = Http::get("{$this->url}/mempool")
+            ->throw()
+            ->json();
+
+        return MempoolData::from($response);
+    }
+
+    /** @return Collection<int, RecentMempoolTransactionData> */
+    public function getRecentMempoolTransactions(): Collection
+    {
+        $response = Http::get("{$this->url}/mempool/recent")
+            ->throw()
+            ->json();
+
+        return RecentMempoolTransactionData::collect($response, Collection::class);
     }
 
     public function getAddress(string $address): AddressData

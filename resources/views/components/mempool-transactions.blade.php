@@ -1,6 +1,6 @@
 @props([
-    'initialTxids' => [],
-    'apiUrl' => '',
+    'initialTransactions' => [],
+    'apiUrl' => route('api.mempool.recent'),
     'intervalMs' => 10000,
 ])
 
@@ -16,7 +16,7 @@
         <div 
             data-vue="mempool-transactions" 
             data-props="{{ json_encode([
-                'initialTxids' => $initialTxids,
+                'initialTransactions' => $initialTransactions,
                 'apiUrl' => $apiUrl,
                 'intervalMs' => $intervalMs,
                 'txRoute' => route('transaction.show', ['txid' => '__TXID__'])

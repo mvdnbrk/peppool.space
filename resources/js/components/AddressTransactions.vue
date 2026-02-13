@@ -118,7 +118,7 @@
           <div class="mt-2 sm:mt-0 text-sm font-medium text-right">
             <div v-if="tx.is_incoming" class="flex items-center justify-end text-green-600">
               <span class="text-green-600">
-                <span>{{ splitAmount(tx.amount).whole }}</span><span class="text-[0.85em] opacity-80">{{ splitAmount(tx.amount).decimal }}</span>
+                <span>{{ splitAmount(tx.amount).whole }}</span><span class="text-[0.85em] text-gray-500 dark:text-gray-400">{{ splitAmount(tx.amount).decimal }}</span>
                 PEPE
               </span>
               <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" role="img" aria-label="Received" focusable="false">
@@ -128,7 +128,7 @@
             </div>
             <div v-else class="flex items-center justify-end text-red-600">
               <span class="text-red-600">
-                <span>{{ splitAmount(tx.amount).whole }}</span><span class="text-[0.85em] opacity-80">{{ splitAmount(tx.amount).decimal }}</span>
+                <span>{{ splitAmount(tx.amount).whole }}</span><span class="text-[0.85em] text-gray-500 dark:text-gray-400">{{ splitAmount(tx.amount).decimal }}</span>
                 PEPE
               </span>
               <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" role="img" aria-label="Sent" focusable="false">
