@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Data\Electrs\TransactionData;
 use App\Services\ElectrsPepeService;
 use App\Services\PepecoinExplorerService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
 class AddressController extends Controller
@@ -28,13 +30,13 @@ class AddressController extends Controller
             $addressInfo = $this->electrs->getAddress($address);
             $history = $this->electrs->getAddressTransactions($address);
 
-            $transactions = collect($history)->map(fn ($tx) => [
-                'txid' => $tx['txid'],
-                'time' => $tx['status']['block_time'] ?? null,
-                'confirmations' => $tx['status']['confirmed'] ? ($this->explorer->getBlockTipHeight() - $tx['status']['block_height'] + 1) : 0,
+            $transactions = TransactionData::collect($history, Collection::class)->map(fn (TransactionData $tx) => [
+                'txid' => $tx->txid,
+                'time' => $tx->status->blockTime,
+                'confirmations' => $tx->status->confirmed ? ($this->explorer->getBlockTipHeight() - $tx->status->blockHeight + 1) : 0,
                 'amount' => $this->calculateAddressAmount($address, $tx),
                 'is_incoming' => $this->isIncoming($address, $tx),
-                'is_coinbase' => $this->isCoinbase($tx),
+                'is_coinbase' => (bool) ($tx->vin[0]->isCoinbase ?? false),
             ]);
 
             $page = request('page', 1);
@@ -68,36 +70,24 @@ class AddressController extends Controller
         }
     }
 
-    private function calculateAddressAmount(string $address, array $tx): float
+    private function calculateAddressAmount(string $address, TransactionData $tx): float
     {
-        $incoming = collect($tx['vout'])
-            ->filter(fn ($out) => ($out['scriptpubkey_address'] ?? null) === $address)
+        $incoming = collect($tx->vout)
+            ->filter(fn ($out) => $out->scriptpubkeyAddress === $address)
             ->sum('value');
 
-        $outgoing = collect($tx['vin'])
-            ->filter(fn ($in) => ($in['prevout']['scriptpubkey_address'] ?? null) === $address)
-            ->sum(fn ($in) => $in['prevout']['value'] ?? 0);
+        $outgoing = collect($tx->vin)
+            ->filter(fn ($in) => $in->prevout?->scriptpubkeyAddress === $address)
+            ->sum(fn ($in) => $in->prevout?->value ?? 0);
 
         return abs($incoming - $outgoing) / 100_000_000;
     }
 
-    private function isIncoming(string $address, array $tx): bool
+    private function isIncoming(string $address, TransactionData $tx): bool
     {
-        $incoming = collect($tx['vout'])->contains(fn ($out) => ($out['scriptpubkey_address'] ?? null) === $address);
-        $outgoing = collect($tx['vin'])->contains(fn ($in) => ($in['prevout']['scriptpubkey_address'] ?? null) === $address);
+        $inValue = collect($tx->vout)->filter(fn ($out) => $out->scriptpubkeyAddress === $address)->sum('value');
+        $outValue = collect($tx->vin)->filter(fn ($in) => $in->prevout?->scriptpubkeyAddress === $address)->sum(fn ($in) => $in->prevout?->value ?? 0);
 
-        if ($incoming && $outgoing) {
-            $inValue = collect($tx['vout'])->filter(fn ($out) => ($out['scriptpubkey_address'] ?? null) === $address)->sum('value');
-            $outValue = collect($tx['vin'])->filter(fn ($in) => ($in['prevout']['scriptpubkey_address'] ?? null) === $address)->sum(fn ($in) => $in['prevout']['value'] ?? 0);
-
-            return $inValue > $outValue;
-        }
-
-        return $incoming;
-    }
-
-    private function isCoinbase(array $tx): bool
-    {
-        return collect($tx['vin'])->contains(fn ($in) => isset($in['is_coinbase']) && $in['is_coinbase'] === true);
+        return $inValue > $outValue;
     }
 }
