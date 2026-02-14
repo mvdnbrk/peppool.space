@@ -46,7 +46,7 @@
         </x-stat-card>
 
         <!-- Difficulty Card -->
-        <x-stat-card aria-label="Current network difficulty: {{ $difficulty }}" icon-bg="bg-purple-500" label="Difficulty">
+        <x-stat-card class="hidden sm:block" aria-label="Current network difficulty: {{ $difficulty }}" icon-bg="bg-purple-500" label="Difficulty">
             <x-slot:icon>
                 <x-icon-hammer class="w-5 h-5 text-white" />
             </x-slot:icon>
@@ -54,7 +54,7 @@
         </x-stat-card>
 
         <!-- Hashrate Card -->
-        <x-stat-card aria-label="Current network hashrate: {{ $hashrate }}" icon-bg="bg-cyan-500" label="Network">
+        <x-stat-card class="hidden sm:block" aria-label="Current network hashrate: {{ $hashrate }}" icon-bg="bg-cyan-500" label="Network">
             <x-slot:icon>
                 <x-icon-share class="w-5 h-5 text-white" />
             </x-slot:icon>
@@ -62,7 +62,7 @@
         </x-stat-card>
 
         <!-- Chain Size Card -->
-        <x-stat-card aria-label="Blockchain size: {{ $chainSize }}" icon-bg="bg-orange-500" label="Chain Size">
+        <x-stat-card class="hidden sm:block" aria-label="Blockchain size: {{ $chainSize }}" icon-bg="bg-orange-500" label="Chain Size">
             <x-slot:icon>
                 <x-icon-database class="w-5 h-5 text-white" />
             </x-slot:icon>
