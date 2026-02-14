@@ -35,7 +35,7 @@
         </div>
         <div class="text-right ml-4">
           <p class="text-sm font-semibold text-gray-900 dark:text-white">
-            <span>{{ splitAmount(tx.value / 100000000).whole }}</span><span class="text-[0.85em] text-gray-500 dark:text-gray-400">{{ splitAmount(tx.value / 100000000).decimal }}</span>
+            <span>{{ splitAmount(tx.value / 100000000).whole }}</span><span class="text-[0.85em] text-gray-500 dark:text-gray-400 hidden sm:inline">{{ splitAmount(tx.value / 100000000).decimal }}</span>
             PEPE
           </p>
         </div>
