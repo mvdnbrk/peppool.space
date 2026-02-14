@@ -7,30 +7,27 @@ window.Alpine = Alpine;
 Alpine.plugin(focus);
 Alpine.start();
 
-// Initialize Vue.js
-import MempoolTransactions from './components/MempoolTransactions.vue';
-import LatestBlocks from './components/LatestBlocks.vue';
-import PriceChart from './components/PriceChart.vue';
-import AddressTransactions from './components/AddressTransactions.vue';
-import CurrencyConverter from './components/CurrencyConverter.vue';
-
 // Auto-mount Vue components
 document.addEventListener('DOMContentLoaded', () => {
-    // Mount individual Vue components
     const components = {
-        'mempool-transactions': MempoolTransactions,
-        'latest-blocks': LatestBlocks,
-        'price-chart': PriceChart,
-        'address-transactions': AddressTransactions,
-        'currency-converter': CurrencyConverter,
+        'mempool-transactions': () => import('./components/MempoolTransactions.vue'),
+        'latest-blocks': () => import('./components/LatestBlocks.vue'),
+        'price-chart': () => import('./components/PriceChart.vue'),
+        'address-transactions': () => import('./components/AddressTransactions.vue'),
+        'currency-converter': () => import('./components/CurrencyConverter.vue'),
     };
 
-    Object.entries(components).forEach(([name, component]) => {
+    Object.entries(components).forEach(([name, loadComponent]) => {
         const elements = document.querySelectorAll(`[data-vue="${name}"]`);
-        elements.forEach(element => {
-            const props = element.dataset.props ? JSON.parse(element.dataset.props) : {};
-            createApp(component, props).mount(element);
-        });
+        
+        if (elements.length > 0) {
+            loadComponent().then(module => {
+                elements.forEach(element => {
+                    const props = element.dataset.props ? JSON.parse(element.dataset.props) : {};
+                    createApp(module.default, props).mount(element);
+                });
+            });
+        }
     });
 });
 
