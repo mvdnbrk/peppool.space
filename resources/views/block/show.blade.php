@@ -66,11 +66,9 @@
                     <x-icon-clock class="w-5 h-5 text-white" />
                 </x-slot:icon>
                 <timestamp
-                    x-data="timestamp"
                     datetime="{{ \Carbon\Carbon::createFromTimestamp($block['time'])->toAtomString() }}"
-                    x-text="relativeTime"
-                    title="{{ date('Y-m-d H:i:s', $block['time']) }}"
-                    class="text-lg font-bold text-gray-900 dark:text-white"></timestamp>
+                    class="text-lg font-bold text-gray-900 dark:text-white"
+                ></timestamp>
             </x-stat-card>
 
             <x-stat-card icon-bg="bg-green-500" label="Transactions">

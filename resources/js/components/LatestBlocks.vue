@@ -18,12 +18,10 @@
               <p class="text-sm font-medium text-gray-900 dark:text-white">
                 {{ (block.id || block.hash || '').substring(0, 16) }}...{{ (block.id || block.hash || '').substring((block.id || block.hash || '').length - 8) }}
               </p>
-              <timestamp
-                x-data="timestamp"
+              <Timestamp
                 :datetime="toIso(block.timestamp ?? block.time)"
-                x-text="relativeTime"
                 class="text-sm text-gray-500 dark:text-gray-400"
-              ></timestamp>
+              />
             </div>
           </div>
           <div class="text-right">
@@ -41,7 +39,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
+import Timestamp from './Timestamp.vue'
 
 const props = defineProps({
   initialBlocks: { type: Array, default: () => [] },
@@ -140,7 +139,6 @@ onMounted(async () => {
     blocks.value = sorted
   }
   updateHeightCard()
-  await initAlpine()
   startPolling()
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') startPolling()
@@ -151,21 +149,6 @@ onMounted(async () => {
 onUnmounted(() => {
   stopPolling()
   if (controller) { try { controller.abort() } catch (_) {} }
-})
-
-// Initialize Alpine on dynamically rendered content
-const initAlpine = async () => {
-  await nextTick()
-  try {
-    if (window.Alpine && root.value) {
-      window.Alpine.initTree(root.value)
-    }
-  } catch (_) {}
-}
-
-// Also re-init when blocks array changes length/content
-watch(blocks, async () => {
-  await initAlpine()
 })
 </script>
 

@@ -9,8 +9,9 @@ Alpine.start();
 // Auto-mount Vue components dynamically
 document.addEventListener('DOMContentLoaded', () => {
     const vueElements = document.querySelectorAll('[data-vue]');
+    const timestampElements = document.querySelectorAll('timestamp');
     
-    if (vueElements.length > 0) {
+    if (vueElements.length > 0 || timestampElements.length > 0) {
         import('vue').then(({ createApp }) => {
             const components = {
                 'mempool-transactions': () => import('./components/MempoolTransactions.vue'),
@@ -19,8 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 'address-transactions': () => import('./components/AddressTransactions.vue'),
                 'currency-converter': () => import('./components/CurrencyConverter.vue'),
                 'transaction-details': () => import('./components/TransactionDetails.vue'),
+                'timestamp': () => import('./components/Timestamp.vue'),
             };
 
+            // Mount standard [data-vue] components
             Object.entries(components).forEach(([name, loadComponent]) => {
                 const elements = document.querySelectorAll(`[data-vue="${name}"]`);
                 
@@ -33,10 +36,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
             });
+
+            // Specifically handle <timestamp> tags
+            if (timestampElements.length > 0) {
+                components['timestamp']().then(module => {
+                    timestampElements.forEach(element => {
+                        // Skip if already handled by data-vue logic (unlikely but safe)
+                        if (element.dataset.vApp !== undefined) return;
+                        
+                        const props = {
+                            datetime: element.getAttribute('datetime')
+                        };
+                        createApp(module.default, props).mount(element);
+                    });
+                });
+            }
         });
     }
 });
 
 import './bootstrap';
-import './timestamps';
 import './polling';

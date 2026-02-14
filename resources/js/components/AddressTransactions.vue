@@ -103,13 +103,10 @@
             </a>
             <div class="mt-1 text-sm text-gray-500 dark:text-gray-400">
               <span v-if="tx.confirmations === 0" class="text-red-500 font-medium">Unconfirmed</span>
-              <timestamp
+              <Timestamp
                 v-else-if="tx.time || tx.timereceived"
-                x-data="timestamp"
-                :datetime="formatToAtomString(tx.timereceived || tx.time)"
-                x-text="relativeTime"
-                :title="formatDateTime(tx.timereceived || tx.time)"
-              ></timestamp>
+                :datetime="new Date((tx.timereceived || tx.time) * 1000).toISOString()"
+              />
               <span v-if="tx.is_coinbase" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 ml-2">
                 Coinbase
               </span>
@@ -214,8 +211,13 @@
 </template>
 
 <script>
+import Timestamp from './Timestamp.vue';
+
 export default {
   name: 'AddressTransactions',
+  components: {
+    Timestamp
+  },
   data() {
     return {
       transactions: [],
@@ -360,12 +362,6 @@ export default {
         whole: parts[0],
         decimal: parts[1] ? '.' + parts[1] : ''
       };
-    },
-    formatToAtomString(timestamp) {
-      return new Date(timestamp * 1000).toISOString();
-    },
-    formatDateTime(timestamp) {
-      return new Date(timestamp * 1000).toLocaleString();
     },
     buildUrlForPerPage(perPage) {
       const url = new URL(window.location);

@@ -64,14 +64,10 @@
           <div class="ml-5">
             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ confirmed ? 'Time' : 'Received' }}</p>
             <div class="text-lg font-bold text-gray-900 dark:text-white">
-              <timestamp
+              <Timestamp
                 v-if="time"
-                :key="time"
-                x-data="timestamp"
                 :datetime="new Date(time * 1000).toISOString()"
-                x-text="relativeTime"
-                :title="new Date(time * 1000).toLocaleString()"
-              ></timestamp>
+              />
               <span v-else>Loading...</span>
             </div>
           </div>
@@ -142,7 +138,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+import Timestamp from './Timestamp.vue'
 
 const props = defineProps({
   txid: { type: String, required: true },
@@ -190,15 +187,6 @@ const splitAmount = (amount) => {
   }
 }
 
-const initAlpine = async () => {
-  await nextTick()
-  try {
-    if (window.Alpine) {
-      window.Alpine.initTree(document.querySelector('[data-vue="transaction-details"]'))
-    }
-  } catch (_) {}
-}
-
 const updatePollingInterval = () => {
   if (pollingTimer) clearInterval(pollingTimer)
   
@@ -242,7 +230,6 @@ const tick = async () => {
       confirmations.value = Math.max(1, currentTipHeight.value - data.block_height + 1)
       
       if (!wasConfirmed) {
-        await initAlpine()
         updatePollingInterval() // Slow down polling
       }
     }
@@ -254,7 +241,6 @@ const tick = async () => {
 onMounted(() => {
   document.addEventListener('visibilitychange', handleVisibilityChange)
   updatePollingInterval()
-  initAlpine()
 })
 
 onUnmounted(() => {
