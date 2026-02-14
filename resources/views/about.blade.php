@@ -88,13 +88,14 @@
             <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-200 mb-3">
                 Donation Address
             </h3>
-            <div class="flex flex-row flex-nowrap items-center gap-3 w-full" x-data="{ copied: false, copy() { navigator.clipboard.writeText('PbvihBLgz6cFJnhYscevB4n3o85faXPG7D'); this.copied = true; setTimeout(() => this.copied = false, 1500); } }">
+            <el-copyable id="donation-address" class="hidden">PbvihBLgz6cFJnhYscevB4n3o85faXPG7D</el-copyable>
+            <div class="flex flex-row flex-nowrap items-center gap-3 w-full">
                 <code class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded px-3 py-2 text-sm font-mono text-gray-800 dark:text-gray-200 whitespace-nowrap overflow-x-auto flex-1 min-w-0">
                     PbvihBLgz6cFJnhYscevB4n3o85faXPG7D
                 </code>
-                <button type="button" @click="copy()" class="relative inline-flex shrink-0 cursor-pointer items-center px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg transition-colors text-sm font-medium whitespace-nowrap">
-                    <span class="opacity-0">Copy Address</span>
-                    <span class="absolute inset-0 flex items-center justify-center" x-text="copied ? 'Copied!' : 'Copy Address'"></span>
+                <button type="button" command="--copy" commandfor="donation-address" class="group relative inline-flex shrink-0 cursor-pointer items-center px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg transition-colors text-sm font-medium whitespace-nowrap">
+                    <span class="group-data-[copied]:hidden">Copy Address</span>
+                    <span class="hidden group-data-[copied]:inline">Copied!</span>
                 </button>
             </div>
             <p class="text-base text-gray-500 dark:text-gray-400 mt-3">

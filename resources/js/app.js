@@ -1,5 +1,6 @@
 import Alpine from 'alpinejs';
 import focus from '@alpinejs/focus';
+import '@tailwindplus/elements';
 
 // Initialize Alpine.js
 window.Alpine = Alpine;
