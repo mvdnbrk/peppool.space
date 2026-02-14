@@ -303,9 +303,9 @@
                 </p>
                 <div class="bg-gray-900 text-white p-4 rounded-lg">
                     <pre class="text-xs md:text-sm"><code>{
+  "code": 404,
   "error": "not_found",
-  "message": "The requested resource could not be found.",
-  "code": 404
+  "message": "The requested resource could not be found."
 }</code></pre>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">

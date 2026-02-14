@@ -10,9 +10,9 @@ trait HasApiResponses
     protected function errorResponse(string $error, string $message, int $status = Response::HTTP_BAD_REQUEST): JsonResponse
     {
         return response()->json([
+            'code' => $status,
             'error' => $error,
             'message' => $message,
-            'code' => $status,
         ], $status);
     }
 
