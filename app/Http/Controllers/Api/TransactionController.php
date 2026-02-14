@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\Concerns\HasApiResponses;
 use App\Http\Controllers\Controller;
 use App\Services\ElectrsPepeService;
 use Illuminate\Http\Client\RequestException;
@@ -9,6 +10,8 @@ use Illuminate\Http\Response;
 
 class TransactionController extends Controller
 {
+    use HasApiResponses;
+
     public function __construct(
         private readonly ElectrsPepeService $electrs
     ) {}
@@ -44,16 +47,14 @@ class TransactionController extends Controller
     private function handleRequest(string $txid, callable $callback): mixed
     {
         if (! preg_match('/^[0-9a-fA-F]{64}$/', $txid)) {
-            return response('Invalid hex string', Response::HTTP_BAD_REQUEST)
-                ->header('Content-Type', 'text/plain');
+            return $this->invalidTransactionIdResponse();
         }
 
         try {
             return $callback($txid);
         } catch (RequestException $e) {
             if ($e->getCode() === Response::HTTP_NOT_FOUND) {
-                return response('Transaction not found', Response::HTTP_NOT_FOUND)
-                    ->header('Content-Type', 'text/plain');
+                return $this->transactionNotFoundResponse();
             }
 
             throw $e;

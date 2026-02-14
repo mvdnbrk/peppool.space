@@ -85,7 +85,10 @@ class AddressShowTest extends TestCase
 
         $this->get(route('api.address.show', ['address' => $address]))
             ->assertStatus(400)
-            ->assertHeader('Content-Type', 'text/plain; charset=UTF-8')
-            ->assertSee('Invalid address');
+            ->assertJson([
+                'error' => 'invalid_address',
+                'message' => 'The provided address is invalid.',
+                'code' => 400,
+            ]);
     }
 }

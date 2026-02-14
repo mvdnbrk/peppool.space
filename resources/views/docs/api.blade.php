@@ -297,14 +297,34 @@
         <!-- Error Responses -->
         <div class="mt-8 p-6 bg-red-50 dark:bg-white border border-red-200 dark:border-gray-200 rounded-lg">
             <h2 class="text-xl font-semibold mb-4 text-red-800">Error Responses</h2>
-            <div class="space-y-6 md:space-y-8">
-                <div>
-                    <strong class="text-red-700">429 Too Many Requests:</strong>
-                    <span class="text-red-600">Rate limit exceeded (60 requests per minute)</span>
+            <div class="space-y-6">
+                <p class="text-sm md:text-base text-gray-700 mb-4">
+                    Errors are returned as JSON objects with an <code>error</code> code and a human-readable <code>message</code>.
+                </p>
+                <div class="bg-gray-900 text-white p-4 rounded-lg">
+                    <pre class="text-xs md:text-sm"><code>{
+  "error": "not_found",
+  "message": "The requested resource could not be found.",
+  "code": 404
+}</code></pre>
                 </div>
-                <div>
-                    <strong class="text-red-700">500 Internal Server Error:</strong>
-                    <span class="text-red-600">Server error occurred while processing the request</span>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div>
+                        <strong class="text-red-700 text-sm block">400 Bad Request</strong>
+                        <span class="text-red-600 text-xs">Invalid parameters or malformed request</span>
+                    </div>
+                    <div>
+                        <strong class="text-red-700 text-sm block">404 Not Found</strong>
+                        <span class="text-red-600 text-xs">Resource does not exist</span>
+                    </div>
+                    <div>
+                        <strong class="text-red-700 text-sm block">429 Too Many Requests</strong>
+                        <span class="text-red-600 text-xs">Rate limit exceeded (60 req/min)</span>
+                    </div>
+                    <div>
+                        <strong class="text-red-700 text-sm block">500 Internal Error</strong>
+                        <span class="text-red-600 text-xs">Unexpected server error</span>
+                    </div>
                 </div>
             </div>
         </div>

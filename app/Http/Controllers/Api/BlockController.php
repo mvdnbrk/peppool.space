@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\Concerns\HasApiResponses;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BlockResource;
 use App\Models\Block;
@@ -11,6 +12,8 @@ use Illuminate\Http\Response;
 
 class BlockController extends Controller
 {
+    use HasApiResponses;
+
     public function __construct(
         private readonly PepecoinExplorerService $explorerService
     ) {}
@@ -37,19 +40,13 @@ class BlockController extends Controller
 
         if ($startHeight !== null) {
             if (! ctype_digit($startHeight)) {
-                return new JsonResponse([
-                    'error' => 'Bad request',
-                    'code' => Response::HTTP_BAD_REQUEST,
-                ], Response::HTTP_BAD_REQUEST);
+                return $this->errorResponse('bad_request', 'The provided startHeight must be an integer.', Response::HTTP_BAD_REQUEST);
             }
 
             $heightFilter = (int) $startHeight;
             $exists = Block::query()->where('height', $heightFilter)->exists();
             if (! $exists) {
-                return new JsonResponse([
-                    'error' => 'Block not found',
-                    'code' => Response::HTTP_NOT_FOUND,
-                ], Response::HTTP_NOT_FOUND);
+                return $this->errorResponse('block_not_found', 'The requested block height could not be found.', Response::HTTP_NOT_FOUND);
             }
         }
 
