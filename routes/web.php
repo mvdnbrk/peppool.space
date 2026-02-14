@@ -9,7 +9,6 @@ use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\PriceController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\WealthController;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 
@@ -17,7 +16,6 @@ Route::get('/', HomepageController::class)->name('homepage');
 
 Route::get('/pepecoin-price', PriceController::class)->name('price');
 Route::get('/about-pepecoin', AboutController::class)->name('about');
-Route::get('/wealth', WealthController::class)->name('wealth');
 Route::get('/converter', [ConverterController::class, 'index'])->name('converter');
 
 Route::get('/search', [SearchController::class, 'index'])->name('search.index');
