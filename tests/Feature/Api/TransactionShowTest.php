@@ -86,17 +86,17 @@ class TransactionShowTest extends TestCase
         $this->get(route('api.tx.show', ['txid' => $invalidTxid]))
             ->assertStatus(400)
             ->assertJson([
+                'code' => 400,
                 'error' => 'invalid_txid',
                 'message' => 'The provided transaction ID is invalid.',
-                'code' => 400,
             ]);
 
         $this->get(route('api.tx.status', ['txid' => $invalidTxid]))
             ->assertStatus(400)
             ->assertJson([
+                'code' => 400,
                 'error' => 'invalid_txid',
                 'message' => 'The provided transaction ID is invalid.',
-                'code' => 400,
             ]);
     }
 
@@ -119,17 +119,17 @@ class TransactionShowTest extends TestCase
         $this->get(route('api.tx.show', ['txid' => $txid]))
             ->assertStatus(404)
             ->assertJson([
+                'code' => 404,
                 'error' => 'transaction_not_found',
                 'message' => 'The requested transaction could not be found.',
-                'code' => 404,
             ]);
 
         $this->get(route('api.tx.status', ['txid' => $txid]))
             ->assertStatus(404)
             ->assertJson([
+                'code' => 404,
                 'error' => 'transaction_not_found',
                 'message' => 'The requested transaction could not be found.',
-                'code' => 404,
             ]);
     }
 

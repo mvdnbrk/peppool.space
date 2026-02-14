@@ -36,6 +36,23 @@ class AddressController extends Controller
         }
     }
 
+    public function transactions(string $address): mixed
+    {
+        try {
+            return $this->electrs->getAddressTransactions($address);
+        } catch (RequestException $e) {
+            if ($e->getCode() === Response::HTTP_BAD_REQUEST) {
+                return $this->invalidAddressResponse();
+            }
+
+            if ($e->getCode() === Response::HTTP_NOT_FOUND) {
+                return $this->addressNotFoundResponse();
+            }
+
+            throw $e;
+        }
+    }
+
     public function validate(string $address): ValidateAddressData
     {
         return $this->explorer->validateAddress($address);

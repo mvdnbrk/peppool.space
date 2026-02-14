@@ -17,6 +17,9 @@ Route::middleware('throttle:60,1')->name('api.')->group(function () {
     Route::get('/address/{address}', [AddressController::class, 'show'])
         ->name('address.show');
 
+    Route::get('/address/{address}/txs', [AddressController::class, 'transactions'])
+        ->name('address.transactions');
+
     Route::get('/validate-address/{address}', [AddressController::class, 'validate'])
         ->name('validate.address');
 

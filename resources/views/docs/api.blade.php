@@ -198,6 +198,33 @@
                 </x-slot:fields>
             </x-api-section>
 
+            <!-- Address Transactions Endpoint -->
+            <x-api-section method="GET" path="/address/:address/txs" :description="'Returns a list of transactions for a Pepecoin address.'" responseContentType="application/json">
+                <x-slot:example>
+                    <code>curl {{ route('api.address.transactions', ['address' => 'PumNFmkevCTG6RTEc7W2piGTbQHMg2im2M']) }}</code>
+                </x-slot:example>
+                <x-slot:response>
+                    <pre class="text-xs md:text-sm overflow-x-auto"><code>[
+  {
+    "txid": "58ed78527f8c2fc7e745d18c72978e6aaeb450b4816472a841d2d6453b6accb1",
+    "version": 1,
+    "locktime": 916695,
+    "vin": [...],
+    "vout": [...],
+    "size": 374,
+    "weight": 1496,
+    "fee": 374000,
+    "status": {
+      "confirmed": true,
+      "block_height": 916697,
+      "block_hash": "a991281771fb38bc5a0ac0b8a3872451c243fddd49116a3805a78a58c24620aa",
+      "block_time": 1771080551
+    }
+  }
+]</code></pre>
+                </x-slot:response>
+            </x-api-section>
+
             <!-- Address Validation Endpoint -->
             <x-api-section method="GET" path="/validate-address/:address" :description="'Validates a Pepecoin address and returns metadata.'" responseContentType="application/json">
                 <x-slot:example>

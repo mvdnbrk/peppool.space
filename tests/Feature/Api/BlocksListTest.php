@@ -47,9 +47,9 @@ class BlocksListTest extends TestCase
         $this->get(route('api.blocks.list', ['startHeight' => 'abc']))
             ->assertStatus(Response::HTTP_BAD_REQUEST)
             ->assertJson([
+                'code' => 400,
                 'error' => 'bad_request',
                 'message' => 'The provided startHeight must be an integer.',
-                'code' => 400,
             ]);
     }
 
@@ -61,9 +61,9 @@ class BlocksListTest extends TestCase
         $this->get(route('api.blocks.list', ['startHeight' => '999999999']))
             ->assertNotFound()
             ->assertJson([
+                'code' => 404,
                 'error' => 'block_not_found',
                 'message' => 'The requested block height could not be found.',
-                'code' => 404,
             ]);
     }
 }

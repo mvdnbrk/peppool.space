@@ -49,11 +49,14 @@ class ElectrsPepeService
         return AddressData::from($response);
     }
 
-    public function getAddressTransactions(string $address): array
+    /** @return Collection<int, TransactionData> */
+    public function getAddressTransactions(string $address): Collection
     {
-        return Http::get("{$this->url}/address/{$address}/txs")
+        $response = Http::get("{$this->url}/address/{$address}/txs")
             ->throw()
             ->json();
+
+        return TransactionData::collect($response, Collection::class);
     }
 
     public function getAddressUtxos(string $address): array
