@@ -8,22 +8,32 @@
     </div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-12">
         <!-- Footer Navigation (top) -->
-        <nav class="pb-4 mb-4 md:mb-0 flex justify-center md:justify-end" aria-label="Footer navigation">
-            <ul class="flex flex-wrap items-center gap-x-3 sm:gap-x-6 gap-y-2">
+        <nav class="pb-6 mb-6 border-b border-green-600/50" aria-label="Footer navigation">
+            <ul class="flex flex-wrap items-center justify-center md:justify-start gap-x-8 gap-y-4">
                 <li>
-                    <a href="{{ route('about') }}" title="About Pepecoin" aria-label="About Pepecoin" class="inline-flex items-center rounded-full bg-white text-green-800 hover:text-green-900 px-3 py-1.5 md:px-3 md:py-1.5 lg:px-2.5 lg:py-1 font-semibold shadow-sm ring-1 ring-inset ring-white/60 hover:ring-emerald-300 hover:bg-emerald-50/70 transition-colors">About PEPE</a>
+                    <a href="{{ route('about') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
+                        About PEPE
+                    </a>
                 </li>
                 <li>
-                    <a href="{{ route('price') }}" title="PEPE Price Chart" aria-label="PEPE price chart page" class="inline-flex items-center rounded-full bg-white text-green-800 hover:text-green-900 px-3 py-1.5 md:px-3 md:py-1.5 lg:px-2.5 lg:py-1 font-semibold shadow-sm ring-1 ring-inset ring-white/60 hover:ring-emerald-300 hover:bg-emerald-50/70 transition-colors">PEPE Price Chart</a>
+                    <a href="{{ route('price') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
+                        Price Chart
+                    </a>
                 </li>
                 <li>
-                    <a href="{{ route('converter') }}" title="PEPE Currency Converter" aria-label="PEPE currency converter" class="inline-flex items-center rounded-full bg-white text-green-800 hover:text-green-900 px-3 py-1.5 md:px-3 md:py-1.5 lg:px-2.5 lg:py-1 font-semibold shadow-sm ring-1 ring-inset ring-white/60 hover:ring-emerald-300 hover:bg-emerald-50/70 transition-colors">Converter</a>
+                    <a href="{{ route('converter') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
+                        Converter
+                    </a>
                 </li>
                 <li>
-                    <a href="{{ route('docs.api') }}" title="Pepecoin API Documentation" aria-label="Pepecoin API documentation" class="inline-flex items-center rounded-full bg-white text-green-800 hover:text-green-900 px-3 py-1.5 md:px-3 md:py-1.5 lg:px-2.5 lg:py-1 font-semibold shadow-sm ring-1 ring-inset ring-white/60 hover:ring-emerald-300 hover:bg-emerald-50/70 transition-colors">API</a>
+                    <a href="{{ route('docs.api') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
+                        API
+                    </a>
                 </li>
                 <li>
-                    <a href="{{ route('search.index') }}" title="Search" aria-label="Search" class="inline-flex items-center rounded-full bg-white text-green-800 hover:text-green-900 px-3 py-1.5 md:px-3 md:py-1.5 lg:px-2.5 lg:py-1 font-semibold shadow-sm ring-1 ring-inset ring-white/60 hover:ring-emerald-300 hover:bg-emerald-50/70 transition-colors">Search</a>
+                    <a href="{{ route('search.index') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
+                        Search
+                    </a>
                 </li>
             </ul>
         </nav>
