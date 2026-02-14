@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 'theme-toggle': () => import('./components/ThemeToggle.vue'),
                 'pepe-price': () => import('./components/PepePrice.vue'),
                 'block-height': () => import('./components/BlockHeight.vue'),
+                'mempool-count': () => import('./components/MempoolCount.vue'),
             };
 
             // Mount standard [data-vue] components

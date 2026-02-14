@@ -59,10 +59,6 @@ const props = defineProps({
     type: String,
     required: true
   },
-  intervalMs: {
-    type: Number,
-    default: 10000
-  },
   txRoute: {
     type: String,
     default: ''
@@ -73,7 +69,6 @@ const props = defineProps({
 const transactions = ref([...props.initialTransactions])
 const confirmed = ref({})
 const firstSeen = ref({})
-const lastCount = ref(props.initialTransactions.length)
 const showEmpty = ref(transactions.value.length === 0)
 
 // Computed
@@ -82,17 +77,11 @@ const sortedTransactions = computed(() => {
 })
 
 // Internal state
-let timer = null
 let inFlight = false
 let controller = null
 let emptyMessageTimer = null
 
 // Methods
-const updateCount = () => {
-  const el = document.getElementById('mempool-count')
-  if (el) el.innerText = (lastCount.value || 0).toLocaleString('en-US')
-}
-
 const formatAmount = (amount) => {
   return new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
@@ -124,8 +113,6 @@ const fetchTransactions = async () => {
     
     const data = await response.json()
     if (!Array.isArray(data)) return
-    
-    lastCount.value = data.length
     
     const existingIds = new Set(transactions.value.map(t => t.txid))
     const newDataIds = new Set(data.map(t => t.txid))
@@ -163,7 +150,6 @@ const fetchTransactions = async () => {
       .filter(t => seen.has(t.txid) ? false : (seen.add(t.txid), true))
       .slice(0, 200)
     
-    updateCount()
   } catch (err) {
     if (err?.name !== 'AbortError') {
       console.error('Error fetching mempool transactions:', err)
@@ -171,28 +157,6 @@ const fetchTransactions = async () => {
   } finally {
     inFlight = false
     controller = null
-  }
-}
-
-const startPolling = () => {
-  fetchTransactions()
-  if (!timer) {
-    timer = setInterval(fetchTransactions, props.intervalMs)
-  }
-}
-
-const stopPolling = () => {
-  if (timer) {
-    clearInterval(timer)
-    timer = null
-  }
-}
-
-const handleVisibilityChange = () => {
-  if (document.visibilityState === 'visible') {
-    startPolling()
-  } else {
-    stopPolling()
   }
 }
 
@@ -220,14 +184,22 @@ onMounted(() => {
     }
   }
   
-  updateCount()
-  startPolling()
-  document.addEventListener('visibilitychange', handleVisibilityChange)
+  fetchTransactions()
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      fetchTransactions()
+    }
+  })
+  window.addEventListener('mempool-updated', fetchTransactions)
 })
 
 onUnmounted(() => {
-  stopPolling()
-  document.removeEventListener('visibilitychange', handleVisibilityChange)
+  document.removeEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      fetchTransactions()
+    }
+  })
+  window.removeEventListener('mempool-updated', fetchTransactions)
   if (controller) {
     try { controller.abort() } catch (_) {}
   }

@@ -32,7 +32,17 @@
             <x-slot:icon>
                 <x-icon-refresh class="w-5 h-5 text-white" />
             </x-slot:icon>
-            <span class="text-2xl"><span id="mempool-count">{{ number_format($mempool->size) }}</span> txs</span>
+            @php
+            $mempoolProps = [
+                'initialCount' => $mempool->size,
+                'apiUrl' => route('api.mempool.index')
+            ];
+            @endphp
+            <div 
+                data-vue="mempool-count"
+                data-props='@json($mempoolProps)'
+                class="text-2xl"
+            ><span>{{ number_format($mempool->size) }} txs</span></div>
         </x-stat-card>
 
         <!-- Difficulty Card -->
