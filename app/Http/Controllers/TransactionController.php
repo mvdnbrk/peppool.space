@@ -27,7 +27,7 @@ class TransactionController extends Controller
                     'hash' => $tx->status->blockHash instanceof Optional ? null : $tx->status->blockHash,
                     'height' => $tx->status->blockHeight instanceof Optional ? null : $tx->status->blockHeight,
                     'time' => $tx->status->blockTime instanceof Optional ? null : $tx->status->blockTime,
-                    'confirmations' => $tx->status->blockHeight instanceof Optional ? 0 : ($this->explorer->getBlockTipHeight() - $tx->status->blockHeight + 1),
+                    'confirmations' => $tx->status->blockHeight instanceof Optional ? 0 : max(1, $this->explorer->getBlockTipHeight() - $tx->status->blockHeight + 1),
                 ];
             }
 

@@ -238,7 +238,7 @@ const tick = async () => {
       blockHeight.value = data.block_height
       blockTime.value = data.block_time
       time.value = data.block_time
-      confirmations.value = currentTipHeight.value - data.block_height + 1
+      confirmations.value = Math.max(1, currentTipHeight.value - data.block_height + 1)
       
       if (!wasConfirmed) {
         await initAlpine()
