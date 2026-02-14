@@ -119,7 +119,13 @@ class ViewTransactionPageTest extends TestCase
             ->with($txid)
             ->andReturn($txData);
 
+        $explorer = Mockery::mock(PepecoinExplorerService::class);
+        $explorer->shouldReceive('getMempoolEntryTime')
+            ->with($txid)
+            ->andReturn(1700000000);
+
         $this->app->instance(ElectrsPepeService::class, $electrs);
+        $this->app->instance(PepecoinExplorerService::class, $explorer);
 
         $this->get(route('transaction.show', ['txid' => $txid]))
             ->assertOk()

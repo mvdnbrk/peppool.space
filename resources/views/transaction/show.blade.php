@@ -73,9 +73,7 @@
                         <x-icon-clock class="w-5 h-5 text-white" />
                     </x-slot:icon>
                     @php
-                        $ts = $inBlock && $blockInfo
-                            ? \Carbon\Carbon::createFromTimestamp($blockInfo['time'])
-                            : \Carbon\Carbon::createFromTimestamp($transaction['timereceived'] ?? $transaction['time'] ?? time());
+                        $ts = \Carbon\Carbon::createFromTimestamp($transaction['time'] ?? time());
                     @endphp
                     <timestamp
                         x-data="timestamp"

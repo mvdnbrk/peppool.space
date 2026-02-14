@@ -157,4 +157,22 @@ final class PepecoinExplorerServiceTest extends TestCase
 
         $this->assertSame(987654321, $service->getChainSize());
     }
+
+    public function test_get_mempool_entry_time_returns_timestamp(): void
+    {
+        Cache::flush();
+
+        $txid = 'txid123';
+        $time = 1757323663;
+
+        $rpc = Mockery::mock(PepecoinRpcService::class);
+        $rpc->shouldReceive('getMempoolEntry')
+            ->once()
+            ->with($txid)
+            ->andReturn(['time' => $time]);
+
+        $service = new PepecoinExplorerService($rpc);
+
+        $this->assertSame($time, $service->getMempoolEntryTime($txid));
+    }
 }

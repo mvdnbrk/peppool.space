@@ -48,6 +48,8 @@ class TransactionController extends Controller
                 ],
             ])->toArray();
 
+            $time = $tx->status->blockTime ?? $this->explorer->getMempoolEntryTime($txid);
+
             $transaction = [
                 'txid' => $tx->txid,
                 'size' => $tx->size,
@@ -55,7 +57,7 @@ class TransactionController extends Controller
                 'locktime' => $tx->locktime,
                 'vin' => $inputs,
                 'vout' => $outputs,
-                'time' => $tx->status->blockTime,
+                'time' => $time,
             ];
 
             return view('transaction.show', [
