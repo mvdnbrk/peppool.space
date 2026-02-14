@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\ElectrsPepeService;
 use App\Services\PepecoinExplorerService;
 use Illuminate\View\View;
+use Spatie\LaravelData\Optional;
 
 class TransactionController extends Controller
 {
@@ -23,10 +24,10 @@ class TransactionController extends Controller
 
             if ($inBlock) {
                 $blockInfo = [
-                    'hash' => $tx->status->blockHash,
-                    'height' => $tx->status->blockHeight,
-                    'time' => $tx->status->blockTime,
-                    'confirmations' => $this->explorer->getBlockTipHeight() - $tx->status->blockHeight + 1,
+                    'hash' => $tx->status->blockHash instanceof Optional ? null : $tx->status->blockHash,
+                    'height' => $tx->status->blockHeight instanceof Optional ? null : $tx->status->blockHeight,
+                    'time' => $tx->status->blockTime instanceof Optional ? null : $tx->status->blockTime,
+                    'confirmations' => $tx->status->blockHeight instanceof Optional ? 0 : ($this->explorer->getBlockTipHeight() - $tx->status->blockHeight + 1),
                 ];
             }
 
@@ -48,7 +49,7 @@ class TransactionController extends Controller
                 ],
             ])->toArray();
 
-            $time = $tx->status->blockTime ?? $this->explorer->getMempoolEntryTime($txid);
+            $time = $tx->status->blockTime instanceof Optional ? $this->explorer->getMempoolEntryTime($txid) : $tx->status->blockTime;
 
             $transaction = [
                 'txid' => $tx->txid,

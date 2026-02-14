@@ -58,7 +58,7 @@
   {
     "id": "0000000000000000000384f28cb3...",
     "height": 600069,
-    "version": 536870912,
+    "version": 1,
     "timestamp": 1648829449,
     "tx_count": 1627,
     "size": 1210916,
@@ -69,7 +69,7 @@
   {
     "id": "0000000000000000000a1b2c3d4e...",
     "height": 600068,
-    "version": 536870912,
+    "version": 1,
     "timestamp": 1648828850,
     "tx_count": 1432,
     "size": 1180421,
@@ -162,6 +162,80 @@
                     <x-api-field name="scriptPubKey" type="string|null" description="The scriptPubKey for the address, if available" />
                     <x-api-field name="isscript" type="boolean" description="True if the address is a script address" />
                 </x-slot:fields>
+            </x-api-section>
+
+            <!-- Transaction Endpoint -->
+            <x-api-section method="GET" path="/tx/:txid" :description="'Returns details about a transaction.'" responseContentType="application/json">
+                <x-slot:example>
+                    <code>curl {{ route('api.tx.show', ['txid' => '2c603d097588bb7d520ffb8b270cc61865f52c1427504ab43678fc055d07c261']) }}</code>
+                </x-slot:example>
+                <x-slot:response>
+                    <pre class="text-xs md:text-sm overflow-x-auto"><code>{
+  "txid": "2c603d097588bb7d520ffb8b270cc61865f52c1427504ab43678fc055d07c261",
+  "version": 1,
+  "locktime": 0,
+  "vin": [...],
+  "vout": [...],
+  "size": 221,
+  "weight": 557,
+  "fee": 19,
+  "status": {
+    "confirmed": true,
+    "block_height": 936511,
+    "block_hash": "0000000000000000000222c4ff88dc74fb21daa72d326bbcabb2b97413dacb7a",
+    "block_time": 1771054926
+  }
+}</code></pre>
+                </x-slot:response>
+                <x-slot:fields>
+                    <x-api-field name="txid" type="string" description="Transaction ID" />
+                    <x-api-field name="version" type="integer" description="Transaction version" />
+                    <x-api-field name="locktime" type="integer" description="Transaction locktime" />
+                    <x-api-field name="size" type="integer" description="Transaction size in bytes" />
+                    <x-api-field name="fee" type="integer" description="Transaction fee in satoshis" />
+                    <x-api-field name="status" type="object" description="Confirmation status and block info" />
+                </x-slot:fields>
+            </x-api-section>
+
+            <!-- Transaction Status Endpoint -->
+            <x-api-section method="GET" path="/tx/:txid/status" :description="'Returns the confirmation status of a transaction.'" responseContentType="application/json">
+                <x-slot:example>
+                    <code>curl {{ route('api.tx.status', ['txid' => '2c603d097588bb7d520ffb8b270cc61865f52c1427504ab43678fc055d07c261']) }}</code>
+                </x-slot:example>
+                <x-slot:response>
+                    <pre class="text-xs md:text-sm overflow-x-auto"><code>{
+  "confirmed": true,
+  "block_height": 936511,
+  "block_hash": "0000000000000000000222c4ff88dc74fb21daa72d326bbcabb2b97413dacb7a",
+  "block_time": 1771054926
+}</code></pre>
+                </x-slot:response>
+                <x-slot:fields>
+                    <x-api-field name="confirmed" type="boolean" description="Whether the transaction is confirmed" />
+                    <x-api-field name="block_height" type="integer" description="Height of the block containing the transaction (if confirmed)" />
+                    <x-api-field name="block_hash" type="string" description="Hash of the block containing the transaction (if confirmed)" />
+                    <x-api-field name="block_time" type="integer" description="Unix time the block was created (if confirmed)" />
+                </x-slot:fields>
+            </x-api-section>
+
+            <!-- Transaction Hex Endpoint -->
+            <x-api-section method="GET" path="/tx/:txid/hex" :description="'Returns the raw transaction hex.'" responseContentType="text/plain">
+                <x-slot:example>
+                    <code>curl {{ route('api.tx.hex', ['txid' => '2c603d097588bb7d520ffb8b270cc61865f52c1427504ab43678fc055d07c261']) }}</code>
+                </x-slot:example>
+                <x-slot:response>
+                    <code class="text-xs md:text-sm break-all">010000000536a007284bd52ee826680a7f43536472f1bcce1e76cd76b826b88c5884eddf1f0c0000006b483045022100bcdf40fb3b5ebfa2c158ac8d1a41c03eb3dba4e180b00e81836bafd56d946efd022005cc40e35022b614275c1e485c409599667cbd41f6e5d78f421cb260a020a24f01210255ea3f53ce3ed1ad2c08dfc23b211b15b852afb819492a9a0f3f99e5747cb5f0ffffffffee08cb90c4e84dd7952b2cfad81ed3b088f5b...</code>
+                </x-slot:response>
+            </x-api-section>
+
+            <!-- Transaction Raw Endpoint -->
+            <x-api-section method="GET" path="/tx/:txid/raw" :description="'Returns the transaction as binary data.'" responseContentType="application/octet-stream">
+                <x-slot:example>
+                    <code>curl {{ route('api.tx.raw', ['txid' => '2c603d097588bb7d520ffb8b270cc61865f52c1427504ab43678fc055d07c261']) }}</code>
+                </x-slot:example>
+                <x-slot:response>
+                    <code class="text-xs md:text-sm break-all">&lt;binary data&gt;</code>
+                </x-slot:response>
             </x-api-section>
         </div>
 
