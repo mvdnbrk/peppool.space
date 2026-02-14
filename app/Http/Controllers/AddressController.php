@@ -7,7 +7,6 @@ use App\Services\ElectrsPepeService;
 use App\Services\PepecoinExplorerService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
 class AddressController extends Controller
@@ -30,7 +29,7 @@ class AddressController extends Controller
             $addressInfo = $this->electrs->getAddress($address);
             $history = $this->electrs->getAddressTransactions($address);
 
-            $transactions = TransactionData::collect($history, Collection::class)->map(fn (TransactionData $tx) => [
+            $transactions = $history->map(fn (TransactionData $tx) => [
                 'txid' => $tx->txid,
                 'time' => $tx->status->blockTime,
                 'confirmations' => $tx->status->confirmed ? ($this->explorer->getBlockTipHeight() - $tx->status->blockHeight + 1) : 0,

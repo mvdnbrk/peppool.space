@@ -57,7 +57,7 @@ class ViewAddressPageTest extends TestCase
         $electrs->shouldReceive('getAddressTransactions')
             ->once()
             ->with($address)
-            ->andReturn([]);
+            ->andReturn(collect());
 
         $this->app->instance(ElectrsPepeService::class, $electrs);
 
