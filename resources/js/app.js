@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 'price-chart': () => import('./components/PriceChart.vue'),
                 'address-transactions': () => import('./components/AddressTransactions.vue'),
                 'currency-converter': () => import('./components/CurrencyConverter.vue'),
+                'transaction-details': () => import('./components/TransactionDetails.vue'),
             };
 
             Object.entries(components).forEach(([name, loadComponent]) => {

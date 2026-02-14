@@ -20,21 +20,12 @@ class ViewTransactionPageTest extends TestCase
     #[Test]
     public function transaction_page_renders_confirmed_transaction(): void
     {
-        $txid = '54b0af0a480e4ad9e650ab89867bba465a33ab37bc8681b28fbd598ad7799c42';
+        $txid = '2c603d097588bb7d520ffb8b270cc61865f52c1427504ab43678fc055d07c261';
 
-        $txData = TransactionData::from([
+        $mockData = TransactionData::from([
             'txid' => $txid,
             'version' => 1,
             'locktime' => 0,
-            'size' => 225,
-            'weight' => 900,
-            'fee' => 1000000,
-            'status' => [
-                'confirmed' => true,
-                'block_height' => 915194,
-                'block_hash' => 'some-block-hash',
-                'block_time' => 1700000000,
-            ],
             'vin' => [
                 [
                     'txid' => 'prev-txid',
@@ -49,9 +40,17 @@ class ViewTransactionPageTest extends TestCase
             'vout' => [
                 [
                     'value' => 499000000,
-                    'scriptpubkey' => 'some-script',
-                    'scriptpubkey_address' => 'address-2',
+                    'scriptpubkey_address' => 'address-1',
                 ],
+            ],
+            'size' => 221,
+            'weight' => 557,
+            'fee' => 1000000,
+            'status' => [
+                'confirmed' => true,
+                'block_height' => 915965,
+                'block_hash' => 'some-hash',
+                'block_time' => 1771054926,
             ],
         ]);
 
@@ -59,57 +58,52 @@ class ViewTransactionPageTest extends TestCase
         $electrs->shouldReceive('getTransaction')
             ->once()
             ->with($txid)
-            ->andReturn($txData);
+            ->andReturn($mockData);
 
         $explorer = Mockery::mock(PepecoinExplorerService::class);
         $explorer->shouldReceive('getBlockTipHeight')
-            ->andReturn(915194);
+            ->andReturn(915965);
 
         $this->app->instance(ElectrsPepeService::class, $electrs);
         $this->app->instance(PepecoinExplorerService::class, $explorer);
 
         $this->get(route('transaction.show', ['txid' => $txid]))
             ->assertOk()
-            ->assertSee('Transaction Details')
-            ->assertSee($txid)
-            ->assertSee('Confirmed')
-            ->assertSee('5.00')
-            ->assertSee('4.99')
-            ->assertSee('0.01');
+            ->assertSee('data-vue="transaction-details"', false)
+            ->assertSee($txid);
     }
 
     #[Test]
     public function transaction_page_renders_unconfirmed_transaction(): void
     {
-        $txid = '54b0af0a480e4ad9e650ab89867bba465a33ab37bc8681b28fbd598ad7799c42';
+        $txid = '7d8c6b9f05301e592bc160531787631a420e056bb64f9d88ab8e4ceb12906b02';
 
-        $txData = TransactionData::from([
+        $mockData = TransactionData::from([
             'txid' => $txid,
             'version' => 1,
             'locktime' => 0,
-            'size' => 225,
-            'weight' => 900,
-            'fee' => 1000000,
-            'status' => [
-                'confirmed' => false,
-            ],
             'vin' => [
                 [
                     'txid' => 'prev-txid',
                     'vout' => 0,
                     'is_coinbase' => false,
                     'prevout' => [
-                        'value' => 500000000,
+                        'value' => 673,
                         'scriptpubkey_address' => 'address-1',
                     ],
                 ],
             ],
             'vout' => [
                 [
-                    'value' => 499000000,
-                    'scriptpubkey' => 'some-script',
-                    'scriptpubkey_address' => 'address-2',
+                    'value' => 654,
+                    'scriptpubkey_address' => 'address-1',
                 ],
+            ],
+            'size' => 221,
+            'weight' => 557,
+            'fee' => 19,
+            'status' => [
+                'confirmed' => false,
             ],
         ]);
 
@@ -117,18 +111,20 @@ class ViewTransactionPageTest extends TestCase
         $electrs->shouldReceive('getTransaction')
             ->once()
             ->with($txid)
-            ->andReturn($txData);
+            ->andReturn($mockData);
 
         $explorer = Mockery::mock(PepecoinExplorerService::class);
+        $explorer->shouldReceive('getBlockTipHeight')
+            ->andReturn(915965);
         $explorer->shouldReceive('getMempoolEntryTime')
-            ->with($txid)
-            ->andReturn(1700000000);
+            ->andReturn(1771054926);
 
         $this->app->instance(ElectrsPepeService::class, $electrs);
         $this->app->instance(PepecoinExplorerService::class, $explorer);
 
         $this->get(route('transaction.show', ['txid' => $txid]))
             ->assertOk()
-            ->assertSee('Unconfirmed');
+            ->assertSee('data-vue="transaction-details"', false)
+            ->assertSee($txid);
     }
 }

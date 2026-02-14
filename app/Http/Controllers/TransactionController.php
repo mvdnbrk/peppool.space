@@ -70,6 +70,7 @@ class TransactionController extends Controller
                 'totalOutput' => $tx->getTotalOutputValueInPep(),
                 'fee' => $tx->getFeeInPep(),
                 'isCoinbase' => (bool) ($tx->vin[0]->isCoinbase ?? false),
+                'blockTipHeight' => $this->explorer->getBlockTipHeight(),
             ]);
 
         } catch (\Exception $e) {

@@ -16,100 +16,23 @@
                 </div>
             </div>
         @else
-            <!-- Transaction Header -->
-            <div class="bg-white dark:bg-gray-900 shadow rounded-lg p-6 mb-6 border border-gray-200 dark:border-gray-700">
-                <div class="flex items-center justify-between mb-4">
-                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Transaction Details</h1>
-                    <div class="flex items-center space-x-2">
-                        @if($isCoinbase)
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300">
-                                Coinbase
-                            </span>
-                        @endif
-                        @if($inBlock)
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
-                                Confirmed
-                            </span>
-                        @else
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">
-                                Unconfirmed
-                            </span>
-                        @endif
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Transaction ID</h3>
-                    <p class="text-sm font-mono bg-gray-100 dark:bg-gray-800 dark:text-gray-100 p-3 rounded break-all">{{ $txid }}</p>
-                </div>
-
-                @if($inBlock && $blockInfo)
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Block Hash</h3>
-                            <p class="text-sm font-mono bg-gray-100 dark:bg-gray-800 dark:text-gray-100 p-2 rounded break-all">
-                                <a href="{{ route('block.show', $blockInfo['hash']) }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-                                    {{ $blockInfo['hash'] }}
-                                </a>
-                            </p>
-                        </div>
-
-                        <div>
-                            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Block Height</h3>
-                            <p class="text-sm bg-gray-100 dark:bg-gray-800 dark:text-gray-100 p-2 rounded">
-                                <a href="{{ route('block.show', $blockInfo['height']) }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-                                    {{ number_format($blockInfo['height']) }}
-                                </a>
-                            </p>
-                        </div>
-                    </div>
-                @endif
-            </div>
-
-            <!-- Transaction Stats -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-                <x-stat-card icon-bg="bg-blue-500" label="{{ $inBlock ? 'Time' : 'Received' }}">
-                    <x-slot:icon>
-                        <x-icon-clock class="w-5 h-5 text-white" />
-                    </x-slot:icon>
-                    @php
-                        $ts = \Carbon\Carbon::createFromTimestamp($transaction['time'] ?? time());
-                    @endphp
-                    <timestamp
-                        x-data="timestamp"
-                        datetime="{{ $ts->toAtomString() }}"
-                        x-text="relativeTime"
-                        title="{{ $ts->format('Y-m-d H:i:s') }}"
-                        class="text-lg font-bold text-gray-900 dark:text-white"></timestamp>
-                </x-stat-card>
-
-                @if($inBlock && $blockInfo)
-                    <x-stat-card icon-bg="bg-green-500" label="Confirmations">
-                        <x-slot:icon>
-                            <x-icon-check-circle class="w-5 h-5 text-white" />
-                        </x-slot:icon>
-                        <span class="text-lg">{{ number_format($blockInfo['confirmations']) }}</span>
-                    </x-stat-card>
-                @endif
-
-                <x-stat-card icon-bg="bg-orange-500" label="Size">
-                    <x-slot:icon>
-                        <x-icon-database class="w-5 h-5 text-white" />
-                    </x-slot:icon>
-                    <span class="text-lg">{{ number_format($transaction['size'] ?? 0) }} bytes</span>
-                </x-stat-card>
-
-                @if(!$isCoinbase && $fee > 0)
-                    <x-stat-card icon-bg="bg-blue-500/10" label="Fee">
-                        <x-slot:icon>
-                            <x-icon-currency-dollar class="w-5 h-5 text-blue-600" />
-                        </x-slot:icon>
-                        <span class="text-lg font-bold text-gray-900 dark:text-white">
-                            <x-pepe-amount :amount="$fee" /> <span>PEPE</span>
-                        </span>
-                    </x-stat-card>
-                @endif
-            </div>
+            <div 
+                data-vue="transaction-details"
+                data-props="{{ json_encode([
+                    'txid' => $txid,
+                    'isCoinbase' => $isCoinbase,
+                    'initialConfirmed' => $inBlock,
+                    'initialBlockHash' => $blockInfo['hash'] ?? '',
+                    'initialBlockHeight' => $blockInfo['height'] ?? '',
+                    'initialBlockTime' => $transaction['time'] ?? '',
+                    'initialConfirmations' => $blockInfo['confirmations'] ?? 0,
+                    'size' => $transaction['size'] ?? 0,
+                    'fee' => $fee,
+                    'statusApiUrl' => route('api.tx.status', $txid),
+                    'tipHeightApiUrl' => route('api.blocks.tip.height'),
+                    'initialBlockTipHeight' => $blockTipHeight
+                ]) }}"
+            ></div>
 
             <!-- Transaction Flow -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
