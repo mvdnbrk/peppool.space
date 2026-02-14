@@ -44,7 +44,7 @@
             </x-api-section>
 
             <!-- Blocks Window Endpoint -->
-            <x-api-section method="GET" path="/api/blocks[/:startHeight]" :description="'Returns details on the past <strong>10 blocks</strong>.<br>If <code>:startHeight</code> is specified, the 10 blocks before (and including) <code>:startHeight</code> are returned.'" responseContentType="application/json">
+            <x-api-section method="GET" path="/blocks[/:startHeight]" :description="'Returns details on the past <strong>10 blocks</strong>.<br>If <code>:startHeight</code> is specified, the 10 blocks before (and including) <code>:startHeight</code> are returned.'" responseContentType="application/json">
                 <x-slot:example>
                     <div class="whitespace-nowrap">
                         <code>curl {{ route('api.blocks.list') }}</code>
