@@ -16,22 +16,25 @@
                 </div>
             </div>
         @else
+            @php
+            $txProps = [
+                'txid' => $txid,
+                'isCoinbase' => $isCoinbase,
+                'initialConfirmed' => $inBlock,
+                'initialBlockHash' => $blockInfo['hash'] ?? '',
+                'initialBlockHeight' => $blockInfo['height'] ?? '',
+                'initialBlockTime' => $transaction['time'] ?? '',
+                'initialConfirmations' => $blockInfo['confirmations'] ?? 0,
+                'initialBlockTipHeight' => $blockTipHeight,
+                'size' => $transaction['size'] ?? 0,
+                'fee' => $fee,
+                'statusApiUrl' => route('api.tx.status', $txid),
+                'tipHeightApiUrl' => route('api.blocks.tip.height')
+            ];
+            @endphp
             <div 
                 data-vue="transaction-details"
-                data-props="{{ json_encode([
-                    'txid' => $txid,
-                    'isCoinbase' => $isCoinbase,
-                    'initialConfirmed' => $inBlock,
-                    'initialBlockHash' => $blockInfo['hash'] ?? '',
-                    'initialBlockHeight' => $blockInfo['height'] ?? '',
-                    'initialBlockTime' => $transaction['time'] ?? '',
-                    'initialConfirmations' => $blockInfo['confirmations'] ?? 0,
-                    'size' => $transaction['size'] ?? 0,
-                    'fee' => $fee,
-                    'statusApiUrl' => route('api.tx.status', $txid),
-                    'tipHeightApiUrl' => route('api.blocks.tip.height'),
-                    'initialBlockTipHeight' => $blockTipHeight
-                ]) }}"
+                data-props='@json($txProps)'
             ></div>
 
             <!-- Transaction Flow -->

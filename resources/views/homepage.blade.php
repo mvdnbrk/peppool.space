@@ -14,7 +14,17 @@
             <x-slot:icon>
                 <x-icon-cube class="w-5 h-5 text-white" />
             </x-slot:icon>
-            <span class="text-2xl" id="current-block-height">{{ $blockHeight }}</span>
+            @php
+            $heightProps = [
+                'initialHeight' => $blockHeight,
+                'apiUrl' => route('api.blocks.tip.height')
+            ];
+            @endphp
+            <div 
+                data-vue="block-height"
+                data-props='@json($heightProps)'
+                class="text-2xl"
+            >{{ number_format($blockHeight) }}</div>
         </x-stat-card>
 
         <!-- Mempool Card -->

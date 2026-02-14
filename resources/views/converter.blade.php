@@ -5,9 +5,15 @@
     </div>
 
     <!-- Main Converter Card -->
+    @php
+    $converterProps = [
+        "usdRate" => $price->usd ?? 0,
+        "eurRate" => $price->eur ?? 0
+    ];
+    @endphp
     <div 
         data-vue="currency-converter"
-        data-props='{"usdRate": {{ $price->usd ?? 0 }}, "eurRate": {{ $price->eur ?? 0 }}}'
+        data-props='@json($converterProps)'
     ></div>
 
 </x-layout>

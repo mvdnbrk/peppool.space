@@ -12,15 +12,18 @@
         </div>
         <x-wave color="text-green-700" class="-mt-px"/>
     </div>
+    @php
+    $props = [
+        'initialBlocks' => $latestBlocks,
+        'apiUrl' => $apiUrl,
+        'intervalMs' => $intervalMs,
+        'blockRoute' => route('block.show', ['hashOrHeight' => '__HEIGHT__'])
+    ];
+    @endphp
     <div class="overflow-hidden">
         <div
             data-vue="latest-blocks"
-            data-props="{{ json_encode([
-                'initialBlocks' => $latestBlocks,
-                'apiUrl' => $apiUrl,
-                'intervalMs' => $intervalMs,
-                'blockRoute' => route('block.show', ['hashOrHeight' => '__HEIGHT__'])
-            ]) }}"
+            data-props='@json($props)'
         ></div>
     </div>
 </div>

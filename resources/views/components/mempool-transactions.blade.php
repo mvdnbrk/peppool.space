@@ -12,15 +12,18 @@
         </div>
         <x-wave color="text-green-700" class="-mt-px"/>
     </div>
+    @php
+    $props = [
+        'initialTransactions' => $initialTransactions,
+        'apiUrl' => $apiUrl,
+        'intervalMs' => $intervalMs,
+        'txRoute' => route('transaction.show', ['txid' => '__TXID__'])
+    ];
+    @endphp
     <div class="overflow-hidden">
         <div 
             data-vue="mempool-transactions" 
-            data-props="{{ json_encode([
-                'initialTransactions' => $initialTransactions,
-                'apiUrl' => $apiUrl,
-                'intervalMs' => $intervalMs,
-                'txRoute' => route('transaction.show', ['txid' => '__TXID__'])
-            ]) }}"
+            data-props='@json($props)'
         ></div>
     </div>
 </div>

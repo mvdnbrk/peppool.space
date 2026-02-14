@@ -56,10 +56,12 @@ let inFlight = false
 let controller = null
 
 const updateHeightCard = () => {
-  const el = document.getElementById('current-block-height')
-  if (!el) return
   const maxH = blocks.value.reduce((m, b) => Math.max(m, Number(b.height) || 0), 0)
-  if (maxH > 0) el.innerText = maxH.toLocaleString('en-US')
+  if (maxH > 0) {
+    window.dispatchEvent(new CustomEvent('block-height-updated', { 
+      detail: { height: maxH } 
+    }))
+  }
 }
 
 const formatSize = (bytes) => {

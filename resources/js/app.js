@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 'transaction-details': () => import('./components/TransactionDetails.vue'),
                 'timestamp': () => import('./components/Timestamp.vue'),
                 'theme-toggle': () => import('./components/ThemeToggle.vue'),
+                'pepe-price': () => import('./components/PepePrice.vue'),
+                'block-height': () => import('./components/BlockHeight.vue'),
             };
 
             // Mount standard [data-vue] components
@@ -51,4 +53,3 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 import './bootstrap';
-import './polling';
