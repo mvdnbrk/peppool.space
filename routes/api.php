@@ -14,17 +14,14 @@ Route::middleware('throttle:60,1')->name('api.')->group(function () {
     Route::get('/blocks/{startHeight?}', [BlockController::class, 'list'])->name('blocks.list');
     Route::get('/prices', PricesController::class)->name('prices');
 
-    Route::get('/address/{address}', [AddressController::class, 'show'])
-        ->name('address.show');
-
     Route::get('/address/{address}/txs', [AddressController::class, 'transactions'])
         ->name('address.transactions');
 
+    Route::get('/address/{address}', [AddressController::class, 'show'])
+        ->name('address.show');
+
     Route::get('/validate-address/{address}', [AddressController::class, 'validate'])
         ->name('validate.address');
-
-    Route::get('/tx/{txid}', [TransactionController::class, 'show'])
-        ->name('tx.show');
 
     Route::get('/tx/{txid}/status', [TransactionController::class, 'status'])
         ->name('tx.status');
@@ -34,6 +31,9 @@ Route::middleware('throttle:60,1')->name('api.')->group(function () {
 
     Route::get('/tx/{txid}/raw', [TransactionController::class, 'raw'])
         ->name('tx.raw');
+
+    Route::get('/tx/{txid}', [TransactionController::class, 'show'])
+        ->name('tx.show');
 
     // Internal-only signed endpoint for chart time series
     Route::get('/chart', ChartPricesController::class)
