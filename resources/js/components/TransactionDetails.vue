@@ -66,6 +66,7 @@
             <div class="text-lg font-bold text-gray-900 dark:text-white">
               <timestamp
                 v-if="time"
+                :key="time"
                 x-data="timestamp"
                 :datetime="new Date(time * 1000).toISOString()"
                 x-text="relativeTime"
