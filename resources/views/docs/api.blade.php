@@ -124,6 +124,30 @@
                 </x-slot:response>
             </x-api-section>
 
+            <!-- Mempool Recent Endpoint -->
+            <x-api-section method="GET" path="/mempool/recent" :description="'Returns a list of the last 10 transactions to enter the mempool. Each transaction object contains simplified overview data.'" responseContentType="application/json">
+                <x-slot:example>
+                    <code>curl {{ route('api.mempool.recent') }}</code>
+                </x-slot:example>
+                <x-slot:response>
+                    <pre class="text-xs md:text-sm overflow-x-auto"><code>[
+  {
+    "txid": "4b93c138293a7e3dfea6f0a63d944890b5ba571b03cc22d8c66995535e90dce8",
+    "fee": 18277,
+    "vsize": 2585,
+    "value": 4972029
+  },
+  ...
+]</code></pre>
+                </x-slot:response>
+                <x-slot:fields>
+                    <x-api-field name="txid" type="string" description="Transaction ID" />
+                    <x-api-field name="fee" type="integer" description="Transaction fee in ribbits" />
+                    <x-api-field name="vsize" type="integer" description="Virtual size of the transaction" />
+                    <x-api-field name="value" type="integer" description="Total output value in ribbits" />
+                </x-slot:fields>
+            </x-api-section>
+
             <!-- Prices Endpoint -->
             <x-api-section method="GET" path="/prices" :description="'Returns the latest Pepecoin prices.'" responseContentType="application/json">
                 <x-slot:example>
@@ -192,7 +216,7 @@
                     <x-api-field name="version" type="integer" description="Transaction version" />
                     <x-api-field name="locktime" type="integer" description="Transaction locktime" />
                     <x-api-field name="size" type="integer" description="Transaction size in bytes" />
-                    <x-api-field name="fee" type="integer" description="Transaction fee in satoshis" />
+                    <x-api-field name="fee" type="integer" description="Transaction fee in ribbits" />
                     <x-api-field name="status" type="object" description="Confirmation status and block info" />
                 </x-slot:fields>
             </x-api-section>
