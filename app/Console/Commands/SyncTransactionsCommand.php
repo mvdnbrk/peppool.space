@@ -815,14 +815,14 @@ class SyncTransactionsCommand extends Command
 
     private function calculateTransactionFee(array $txData): string
     {
-        // Calculate total output value in satoshis (integer arithmetic)
-        $totalOutputSatoshis = 0;
+        // Calculate total output value in ribbits (integer arithmetic)
+        $totalOutputRibbits = 0;
         foreach ($txData['vout'] ?? [] as $output) {
-            $totalOutputSatoshis += $this->toSatoshis($output['value']);
+            $totalOutputRibbits += $this->toRibbits($output['value']);
         }
 
         // Calculate total input value by looking up previous outputs
-        $totalInputSatoshis = 0;
+        $totalInputRibbits = 0;
         foreach ($txData['vin'] ?? [] as $input) {
             if (isset($input['coinbase'])) {
                 continue; // Skip coinbase inputs
@@ -836,13 +836,13 @@ class SyncTransactionsCommand extends Command
                     ->value('amount');
 
                 if ($prevOutput !== null) {
-                    $totalInputSatoshis += $this->toSatoshis($prevOutput);
+                    $totalInputRibbits += $this->toRibbits($prevOutput);
                 } else {
                     // If we can't find the input, try to get it from RPC
                     try {
                         $prevTx = $this->retryRpcCall(fn () => $this->rpc->getRawTransaction($input['txid'], true), "getRawTransaction for {$input['txid']}");
                         if (isset($prevTx['vout'][$input['vout']]['value'])) {
-                            $totalInputSatoshis += $this->toSatoshis($prevTx['vout'][$input['vout']]['value']);
+                            $totalInputRibbits += $this->toRibbits($prevTx['vout'][$input['vout']]['value']);
                         }
                     } catch (\Exception $e) {
                         Log::warning("Could not get input value for {$input['txid']}:{$input['vout']}: ".$e->getMessage());
@@ -851,14 +851,14 @@ class SyncTransactionsCommand extends Command
             }
         }
 
-        // Fee is the difference between inputs and outputs (in satoshis)
-        $feeSatoshis = max(0, $totalInputSatoshis - $totalOutputSatoshis);
+        // Fee is the difference between inputs and outputs (in ribbits)
+        $feeRibbits = max(0, $totalInputRibbits - $totalOutputRibbits);
 
         // Convert back to decimal format
-        return $this->fromSatoshis($feeSatoshis);
+        return $this->fromRibbits($feeRibbits);
     }
 
-    private function toSatoshis($amount): int
+    private function toRibbits($amount): int
     {
         // Handle scientific notation by using bcmath first
         $amountStr = (string) $amount;
@@ -870,18 +870,18 @@ class SyncTransactionsCommand extends Command
         }
 
         // Multiply by 100,000,000 using bcmath to avoid precision loss
-        $satoshiStr = bcmul($decimal, '100000000', 0);
+        $ribbitStr = bcmul($decimal, '100000000', 0);
 
-        return (int) $satoshiStr;
+        return (int) $ribbitStr;
     }
 
     /**
-     * Convert satoshis (integer) back to decimal format
+     * Convert ribbits (integer) back to decimal format
      */
-    private function fromSatoshis(int $satoshis): string
+    private function fromRibbits(int $ribbits): string
     {
         // Use bcmath to divide by 100,000,000 and get exact decimal
-        return bcdiv((string) $satoshis, '100000000', 8);
+        return bcdiv((string) $ribbits, '100000000', 8);
     }
 
     private function displaySummary(): void
