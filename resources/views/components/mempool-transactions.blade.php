@@ -8,7 +8,7 @@
     <div class="relative">
         <x-wave color="text-green-700" class="-mt-px rotate-180 bg-gray-50 dark:bg-gray-900"/>
         <div class="px-6 py-2 bg-green-700">
-            <h2 class="text-lg font-ubuntu font-bold italic text-white">Mempool Transactions</h2>
+            <h2 class="text-lg font-ubuntu font-bold italic text-white">Recent Mempool Transactions</h2>
         </div>
         <x-wave color="text-green-700" class="-mt-px"/>
     </div>
