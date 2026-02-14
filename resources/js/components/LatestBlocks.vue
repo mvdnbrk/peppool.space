@@ -107,7 +107,6 @@ const fetchBlocks = async () => {
 
     blocks.value = deduped.slice(0, 10)
     updateHeightCard()
-    await initAlpine()
   } catch (err) {
     if (err?.name !== 'AbortError') {
       console.error('Error fetching latest blocks:', err)

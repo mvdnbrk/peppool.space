@@ -1,11 +1,4 @@
-import Alpine from 'alpinejs';
-import focus from '@alpinejs/focus';
 import '@tailwindplus/elements';
-
-// Initialize Alpine.js
-window.Alpine = Alpine;
-Alpine.plugin(focus);
-Alpine.start();
 
 // Auto-mount Vue components dynamically
 document.addEventListener('DOMContentLoaded', () => {
@@ -22,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 'currency-converter': () => import('./components/CurrencyConverter.vue'),
                 'transaction-details': () => import('./components/TransactionDetails.vue'),
                 'timestamp': () => import('./components/Timestamp.vue'),
+                'theme-toggle': () => import('./components/ThemeToggle.vue'),
             };
 
             // Mount standard [data-vue] components
