@@ -206,21 +206,22 @@
                 <x-slot:response>
                     <pre class="text-xs md:text-sm overflow-x-auto"><code>[
   {
-    "txid": "58ed78527f8c2fc7e745d18c72978e6aaeb450b4816472a841d2d6453b6accb1",
+    "txid": "dba43fd04b7ae3df8e5b596f2e7fab247c58629d622e3a5213f03a5a09684430",
     "version": 1,
-    "locktime": 916695,
-    "vin": [...],
-    "vout": [...],
-    "size": 374,
-    "weight": 1496,
-    "fee": 374000,
+    "locktime": 0,
+    "vin": [ ... ],
+    "vout": [ ... ],
+    "size": 255,
+    "weight": 1020,
+    "fee": 10000,
     "status": {
       "confirmed": true,
-      "block_height": 916697,
-      "block_hash": "a991281771fb38bc5a0ac0b8a3872451c243fddd49116a3805a78a58c24620aa",
-      "block_time": 1771080551
+      "block_height": 326148,
+      "block_hash": "00000000000000001e4118adcfbb02364bc13c41c210d8811e4f39aeb3687e36",
+      "block_time": 1413798020
     }
-  }
+  },
+  ...
 ]</code></pre>
                 </x-slot:response>
             </x-api-section>
