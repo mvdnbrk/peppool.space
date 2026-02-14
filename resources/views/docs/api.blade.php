@@ -167,6 +167,37 @@
                 </x-slot:fields>
             </x-api-section>
 
+            <!-- Address Endpoint -->
+            <x-api-section method="GET" path="/address/:address" :description="'Returns details about a Pepecoin address, including chain and mempool statistics.'" responseContentType="application/json">
+                <x-slot:example>
+                    <code>curl {{ route('api.address.show', ['address' => 'PumNFmkevCTG6RTEc7W2piGTbQHMg2im2M']) }}</code>
+                </x-slot:example>
+                <x-slot:response>
+                    <pre class="text-xs md:text-sm overflow-x-auto"><code>{
+  "address": "PumNFmkevCTG6RTEc7W2piGTbQHMg2im2M",
+  "chain_stats": {
+    "funded_txo_count": 1,
+    "funded_txo_sum": 100000000,
+    "spent_txo_count": 0,
+    "spent_txo_sum": 0,
+    "tx_count": 1
+  },
+  "mempool_stats": {
+    "funded_txo_count": 0,
+    "funded_txo_sum": 0,
+    "spent_txo_count": 0,
+    "spent_txo_sum": 0,
+    "tx_count": 0
+  }
+}</code></pre>
+                </x-slot:response>
+                <x-slot:fields>
+                    <x-api-field name="address" type="string" description="The address" />
+                    <x-api-field name="chain_stats" type="object" description="Statistics for confirmed transactions" />
+                    <x-api-field name="mempool_stats" type="object" description="Statistics for unconfirmed transactions" />
+                </x-slot:fields>
+            </x-api-section>
+
             <!-- Address Validation Endpoint -->
             <x-api-section method="GET" path="/validate-address/:address" :description="'Validates a Pepecoin address and returns metadata.'" responseContentType="application/json">
                 <x-slot:example>

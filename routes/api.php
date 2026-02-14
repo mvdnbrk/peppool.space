@@ -14,6 +14,9 @@ Route::middleware('throttle:60,1')->name('api.')->group(function () {
     Route::get('/blocks/{startHeight?}', [BlockController::class, 'list'])->name('blocks.list');
     Route::get('/prices', PricesController::class)->name('prices');
 
+    Route::get('/address/{address}', [AddressController::class, 'show'])
+        ->name('address.show');
+
     Route::get('/validate-address/{address}', [AddressController::class, 'validate'])
         ->name('validate.address');
 

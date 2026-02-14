@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Data\Electrs;
 
 use Spatie\LaravelData\Attributes\MapInputName;
+use Spatie\LaravelData\Attributes\MapOutputName;
 use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
+#[MapOutputName(SnakeCaseMapper::class)]
 final class AddressData extends Data
 {
     public function __construct(
