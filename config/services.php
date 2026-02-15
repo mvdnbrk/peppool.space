@@ -37,6 +37,11 @@ return [
 
     'fathom' => [
         'site_id' => env('FATHOM_SITE_ID'),
+        'affiliate_url' => env('FATHOM_AFFILIATE_URL', 'https://usefathom.com/ref/FI15PB'),
+    ],
+
+    'digitalocean' => [
+        'referral_url' => env('DIGITALOCEAN_REFERRAL_URL', 'https://m.do.co/c/7a24c68b1e6d'),
     ],
 
     'coingecko' => [

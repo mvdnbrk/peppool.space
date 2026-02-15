@@ -72,7 +72,7 @@ If you find this project useful and want to support its development:
 
 - GitHub Sponsors: [link][link-sponsors]
 - thanks.dev: [link][link-thanks]
-- Pepecoin: `PbvihBLgz6cFJnhYscevB4n3o85faXPG7D`
+- Pepecoin: [sponsor][link-sponsor-page]
 
 ## Security Vulnerabilities
 
@@ -92,3 +92,4 @@ Please review [our security policy](../../security/policy) on how to report secu
 [link-electrs-pepe]: https://github.com/mvdnbrk/electrs-pepe
 [link-sponsors]: https://github.com/sponsors/mvdnbrk
 [link-thanks]: https://thanks.dev/u/gh/mvdnbrk
+[link-sponsor-page]: https://peppool.space/sponsor

@@ -37,8 +37,14 @@
 
     <!-- Social Media Section -->
     <div class="mt-8 md:mt-12 pt-6 md:pt-8 border-t border-gray-200 dark:border-gray-700">
-        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-200 mb-4">Connect with the Community</h2>
-        <div class="flex flex-col sm:flex-row flex-wrap gap-4">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-200">Connect with the Community</h2>
+            <a href="{{ route('sponsor') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-green-700 hover:text-green-800 dark:text-green-600 dark:hover:text-green-400 underline decoration-green-700/30 hover:decoration-green-700 transition-all">
+                <span>Sponsor the project</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+        </div>
+        <div class="mt-4 flex flex-col sm:flex-row flex-wrap gap-4">
             <a href="{{ $socials->twitter_url }}" target="_blank" rel="noopener" aria-label="Follow Pepecoin on X (Twitter)" class="inline-flex items-center gap-2 px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg transition-colors">
                 <x-icon-x class="w-4 h-4" />
                 <span class="font-medium">Follow on X</span>
@@ -75,32 +81,6 @@
                 <x-icon-github class="w-4 h-4" />
                 <span class="font-medium">View on GitHub</span>
             </a>
-        </div>
-    </div>
-
-    <!-- Support Section -->
-    <div id="support" class="mt-8 md:mt-12 pt-6 md:pt-8 border-t border-gray-200 dark:border-gray-700">
-        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-200 mb-4">Support the Project</h2>
-        <p class="text-base md:text-lg leading-7 md:leading-8 text-gray-600 dark:text-gray-300 mb-4">
-            If you find <span class="text-green-800 dark:text-green-600">peppool.space</span> useful and would like to support its development and maintenance, you can make a donation using Pepecoin.
-        </p>
-        <div class="bg-gray-300 dark:bg-gray-800 p-4 rounded-lg">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-200 mb-3">
-                Donation Address
-            </h3>
-            <el-copyable id="donation-address" class="hidden">PbvihBLgz6cFJnhYscevB4n3o85faXPG7D</el-copyable>
-            <div class="flex flex-row flex-nowrap items-center gap-3 w-full">
-                <code class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded px-3 py-2 text-sm font-mono text-gray-800 dark:text-gray-200 whitespace-nowrap overflow-x-auto flex-1 min-w-0">
-                    PbvihBLgz6cFJnhYscevB4n3o85faXPG7D
-                </code>
-                <button type="button" command="--copy" commandfor="donation-address" class="group relative inline-flex shrink-0 cursor-pointer items-center px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg transition-colors text-sm font-medium whitespace-nowrap">
-                    <span class="group-data-[copied]:hidden">Copy Address</span>
-                    <span class="hidden group-data-[copied]:inline">Copied!</span>
-                </button>
-            </div>
-            <p class="text-base text-gray-500 dark:text-gray-400 mt-3">
-                Your support helps keep this blockchain explorer running and continuously improving. Thank you!
-            </p>
         </div>
     </div>
 </x-layout>
