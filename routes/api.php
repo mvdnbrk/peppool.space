@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\BlockController;
 use App\Http\Controllers\Api\ChartPricesController;
+use App\Http\Controllers\Api\FeesController;
 use App\Http\Controllers\Api\MempoolController;
 use App\Http\Controllers\Api\PricesController;
 use App\Http\Controllers\Api\TransactionController;
@@ -13,6 +14,11 @@ Route::middleware('throttle:60,1')->name('api.')->group(function () {
     Route::get('/blocks/tip/hash', [BlockController::class, 'tipHash'])->name('blocks.tip.hash');
     Route::get('/blocks/{startHeight?}', [BlockController::class, 'list'])->name('blocks.list');
     Route::get('/prices', PricesController::class)->name('prices');
+
+    Route::prefix('fees')->name('fees.')->group(function () {
+        Route::get('/recommended', [FeesController::class, 'recommended'])->name('recommended');
+        Route::get('/precise', [FeesController::class, 'precise'])->name('precise');
+    });
 
     Route::get('/address/{address}/txs', [AddressController::class, 'transactions'])
         ->name('address.transactions');

@@ -163,6 +163,38 @@
                 </x-slot:response>
             </x-api-section>
 
+            <!-- Recommended Fees Endpoint -->
+            <x-api-section method="GET" path="/fees/recommended" :description="'Returns recommended fee rates as integers for different confirmation targets.'" responseContentType="application/json">
+                <x-slot:example>
+                    <code>curl {{ route('api.fees.recommended') }}</code>
+                </x-slot:example>
+                <x-slot:response>
+                    <pre class="text-xs md:text-sm overflow-x-auto"><code>{
+  "fastestFee": 10,
+  "halfHourFee": 8,
+  "hourFee": 5,
+  "economyFee": 2,
+  "minimumFee": 1
+}</code></pre>
+                </x-slot:response>
+            </x-api-section>
+
+            <!-- Precise Fees Endpoint -->
+            <x-api-section method="GET" path="/fees/precise" :description="'Returns precise floating-point fee estimates for different confirmation targets.'" responseContentType="application/json">
+                <x-slot:example>
+                    <code>curl {{ route('api.fees.precise') }}</code>
+                </x-slot:example>
+                <x-slot:response>
+                    <pre class="text-xs md:text-sm overflow-x-auto"><code>{
+  "fastestFee": 10.028,
+  "halfHourFee": 8.5,
+  "hourFee": 5.23,
+  "economyFee": 2.0,
+  "minimumFee": 1.0
+}</code></pre>
+                </x-slot:response>
+            </x-api-section>
+
             <!-- Prices Endpoint -->
             <x-api-section method="GET" path="/prices" :description="'Returns the latest Pepecoin prices.'" responseContentType="application/json">
                 <x-slot:example>

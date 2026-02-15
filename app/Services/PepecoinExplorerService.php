@@ -195,18 +195,16 @@ class PepecoinExplorerService
             $this->getCacheKey(__FUNCTION__),
             Carbon::now()->addMinutes(1),
             function (): array {
-                $targets = [2, 3, 4, 5, 6, 10, 20, 144, 1008];
+                $targets = [1, 2, 3, 4, 5, 6, 10, 12, 20, 144, 1008];
                 $estimates = [];
 
                 foreach ($targets as $target) {
                     try {
                         $result = $this->rpcService->call('estimatesmartfee', [$target]);
                         if (isset($result['feerate'])) {
-                            // RPC returns BTC/kB (or PEPE/kB). Convert to sat/vB (RIBBITS/vB)
-                            // 1 PEPE/kB = 100,000,000 RIBBITS / 1000 vB = 100,000 RIBBITS/vB
-                            // Wait, Bitcoin core returns BTC/kvB.
-                            // 0.01 PEPE/kB * 10^8 RIBBITS / 1000 bytes = 1000 RIBBITS/vB
-                            $estimates[(string) $target] = round($result['feerate'] * 100_000, 2);
+                            // Convert PEPE/kvB to RIBBITS/vB (sat/vB equivalent)
+                            // 0.001 PEPE/kvB = 1 RIBBIT/vB (assuming 1000 multiplier for display)
+                            $estimates[(string) $target] = round($result['feerate'] * 1000, 3);
                         }
                     } catch (\Throwable) {
                         continue;
@@ -216,5 +214,28 @@ class PepecoinExplorerService
                 return $estimates;
             }
         );
+    }
+
+    public function getRecommendedFees(): array
+    {
+        $estimates = $this->getFeeEstimates();
+        $network = $this->rpcService->getNetworkInfo();
+        $minRelayFee = round($network->relayFee * 1000, 3);
+
+        $fees = [
+            'fastestFee' => $estimates['1'] ?? $estimates['2'] ?? $minRelayFee,
+            'halfHourFee' => $estimates['6'] ?? $estimates['5'] ?? $minRelayFee,
+            'hourFee' => $estimates['12'] ?? $estimates['10'] ?? $minRelayFee,
+            'economyFee' => $estimates['144'] ?? $minRelayFee,
+            'minimumFee' => $minRelayFee,
+        ];
+
+        // Ensure fees are never below the relay fee and are descending correctly
+        $fees['fastestFee'] = max($fees['fastestFee'], $fees['halfHourFee']);
+        $fees['halfHourFee'] = max($fees['halfHourFee'], $fees['hourFee']);
+        $fees['hourFee'] = max($fees['hourFee'], $fees['economyFee']);
+        $fees['economyFee'] = max($fees['economyFee'], $fees['minimumFee']);
+
+        return $fees;
     }
 }
