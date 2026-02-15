@@ -27,12 +27,11 @@ class TransactionController extends Controller
         return $this->handleRequest($txid, fn ($id) => response()->json($this->electrs->getTransaction($id)->status));
     }
 
-    public function hex(string $txid): JsonResponse
+    public function hex(string $txid): Response
     {
         return $this->handleRequest($txid, function ($id) {
-            return response()->json([
-                'hex' => $this->electrs->getRawTransaction($id),
-            ]);
+            return response($this->electrs->getRawTransaction($id), Response::HTTP_OK)
+                ->header('Content-Type', 'text/plain');
         });
     }
 

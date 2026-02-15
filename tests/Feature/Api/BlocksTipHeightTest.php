@@ -9,7 +9,7 @@ use Tests\TestCase;
 class BlocksTipHeightTest extends TestCase
 {
     #[Test]
-    public function tip_height_returns_json_number(): void
+    public function tip_height_returns_plain_text_number(): void
     {
         $mock = \Mockery::mock(PepecoinExplorerService::class);
         $mock->shouldReceive('getBlockTipHeight')->once()->andReturn(655981);
@@ -17,8 +17,7 @@ class BlocksTipHeightTest extends TestCase
 
         $this->get(route('api.blocks.tip.height'))
             ->assertStatus(200)
-            ->assertJson([
-                'height' => 655981,
-            ]);
+            ->assertHeader('Content-Type', 'text/plain; charset=UTF-8')
+            ->assertSee('655981');
     }
 }
