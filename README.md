@@ -14,15 +14,64 @@ This project is currently in an early alpha phase and under active development. 
 - [Laravel][link-laravel]
 - [Tailwind CSS][link-tailwind]
 - [Vue.js][link-vue]
-- [Alpine.js][link-alpine]
 - [Lightweight Charts][link-lightweight-charts]
+
+## Development Setup
+
+### Prerequisites
+
+- PHP 8.4+
+- Node.js 22+
+- Composer
+- A running Pepecoin node with RPC enabled
+- [Electrs-pepe][link-electrs-pepe] indexer (optional for most features, but recommended)
+
+### Getting Started
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/mvdnbrk/peppool.space.git
+   cd peppool.space
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   composer install
+   npm install
+   ```
+
+3. **Configure environment:**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+   Update `.env` with your database and Pepecoin node RPC/Electrs credentials.
+
+4. **Run migrations:**
+   ```bash
+   php artisan migrate
+   ```
+
+5. **Build assets:**
+   ```bash
+   # For development
+   npm run dev
+
+   # For production
+   npm run build
+   ```
+
+6. **Run tests:**
+   ```bash
+   php artisan test
+   ```
 
 ## Support the project
 
 If you find this project useful and want to support its development:
 
-- GitHub Sponsors: [link][link-sponsor-github-mvdnrk]
-- thanks.dev: [link][link-sponsor-thanks-dev-mvdnrk]
+- GitHub Sponsors: [link][link-sponsors]
+- thanks.dev: [link][link-thanks]
 - Pepecoin: `PbvihBLgz6cFJnhYscevB4n3o85faXPG7D`
 
 ## Security Vulnerabilities
@@ -38,8 +87,8 @@ Please review [our security policy](../../security/policy) on how to report secu
 [link-laravel]: https://laravel.com
 [link-vue]: https://vuejs.org
 [link-tailwind]: https://tailwindcss.com
-[link-alpine]: https://alpinejs.dev
 [link-lightweight-charts]: https://www.tradingview.com/lightweight-charts/
 [link-pepecoin-core]: https://github.com/pepecoinppc/pepecoin
+[link-electrs-pepe]: https://github.com/mvdnbrk/electrs-pepe
 [link-sponsors]: https://github.com/sponsors/mvdnbrk
 [link-thanks]: https://thanks.dev/u/gh/mvdnbrk
