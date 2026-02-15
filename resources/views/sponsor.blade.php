@@ -10,7 +10,7 @@
 
     <div class="max-w-none space-y-8">
         <!-- Why Sponsor -->
-        <div class="bg-white dark:bg-gray-900 shadow rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+        <div class="bg-white dark:bg-gray-900 shadow-2xs rounded-lg p-6 border border-gray-200 dark:border-gray-700">
             <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">Why Sponsor peppool.space?</h2>
             <p class="text-gray-600 dark:text-gray-400 mb-4">
                 <span class="text-green-800 dark:text-green-600 font-semibold">peppool.space</span> is a free, open-source Pepecoin blockchain explorer built for the community.
@@ -31,7 +31,7 @@
         </div>
 
         <!-- PEP Donation -->
-        <div class="bg-white dark:bg-gray-900 shadow rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+        <div class="bg-white dark:bg-gray-900 shadow-2xs rounded-lg p-6 border border-gray-200 dark:border-gray-700">
             <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Donate with Pepecoin</h2>
             <p class="text-gray-600 dark:text-gray-400 mb-6">
                 Directly support the project by sending PEP to the address below.
@@ -55,11 +55,8 @@
         </div>
 
         <!-- DigitalOcean Referral -->
-        <div class="bg-white dark:bg-gray-900 shadow rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+        <div class="bg-white dark:bg-gray-900 shadow-2xs rounded-lg p-6 border border-gray-200 dark:border-gray-700">
             <div class="flex flex-col md:flex-row md:items-center gap-6">
-                <div class="hidden md:flex shrink-0 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
-                    <x-icon-digitalocean class="w-12 h-12 text-[#0080FF]" />
-                </div>
                 <div class="flex-1 space-y-4">
                     <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Host with DigitalOcean</h2>
                     <p class="text-green-600 dark:text-green-400 font-bold mb-2">Get $200 in free credit</p>
@@ -68,7 +65,7 @@
                         <p>By using our link, you support peppool.space at no extra cost.</p>
                         <p>Once you've spent $25, the project receives $25 in credit to help cover our infrastructure costs.</p>
                     </div>
-                    <a href="{{ $digitalOceanUrl }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-lg px-6 py-3 bg-green-700 hover:bg-green-800 text-white text-sm font-bold uppercase tracking-wide shadow-xs transition-colors">
+                    <a href="{{ $digitalOceanUrl }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-lg px-6 py-3 bg-green-700 hover:bg-green-800 text-white text-sm font-bold uppercase tracking-wide shadow-2xs transition-colors">
                         <span>Claim your $200 credit</span>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                     </a>
@@ -77,11 +74,8 @@
         </div>
 
         <!-- Fathom Analytics -->
-        <div class="bg-white dark:bg-gray-900 shadow rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+        <div class="bg-white dark:bg-gray-900 shadow-2xs rounded-lg p-6 border border-gray-200 dark:border-gray-700">
             <div class="flex flex-col md:flex-row md:items-center gap-6">
-                <div class="hidden md:flex shrink-0 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
-                    <x-icon-fathom class="w-12 h-12 text-gray-600 dark:text-gray-400" />
-                </div>
                 <div class="flex-1">
                     <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Start Fathom analytics free trial</h2>
                     <p class="text-green-600 dark:text-green-400 font-bold mb-2">A Google Analytics alternative</p>
@@ -92,7 +86,7 @@
                     <p class="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
                         Trusted by IBM, GitHub, Laravel and over a million websites.
                     </p>
-                    <a href="{{ $fathomUrl }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-lg px-6 py-3 bg-green-700 hover:bg-green-800 text-white text-sm font-bold uppercase tracking-wide shadow-xs transition-colors">
+                    <a href="{{ $fathomUrl }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-lg px-6 py-3 bg-green-700 hover:bg-green-800 text-white text-sm font-bold uppercase tracking-wide shadow-2xs transition-colors">
                         <span>Free trial with $10 credit</span>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                     </a>
@@ -102,8 +96,8 @@
 
         <!-- External Sponsors -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <a href="https://github.com/sponsors/mvdnbrk" target="_blank" rel="noopener" class="flex items-center gap-4 p-6 bg-white dark:bg-gray-900 shadow rounded-lg border border-gray-200 dark:border-gray-700 hover:border-green-500 dark:hover:border-green-500 transition-colors group">
-                <div class="p-3 bg-white dark:bg-gray-800 rounded-full text-gray-900 dark:text-gray-100 shadow-sm">
+            <a href="https://github.com/sponsors/mvdnbrk" target="_blank" rel="noopener" class="flex items-center gap-4 p-6 bg-white dark:bg-gray-900 shadow-2xs rounded-lg border border-gray-200 dark:border-gray-700 hover:border-black dark:hover:border-white transition-colors group">
+                <div class="p-3 bg-white dark:bg-gray-800 rounded-full text-gray-900 dark:text-gray-100 shadow-2xs">
                     <x-icon-github class="w-6 h-6" />
                 </div>
                 <div>
@@ -112,8 +106,8 @@
                 </div>
             </a>
 
-            <a href="https://thanks.dev/u/gh/mvdnbrk" target="_blank" rel="noopener" class="flex items-center gap-4 p-6 bg-white dark:bg-gray-900 shadow rounded-lg border border-gray-200 dark:border-gray-700 hover:border-black dark:hover:border-white transition-colors group">
-                <div class="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-gray-900 to-black rounded-full text-white font-bold text-lg font-mono shrink-0 shadow-sm">
+            <a href="https://thanks.dev/u/gh/mvdnbrk" target="_blank" rel="noopener" class="flex items-center gap-4 p-6 bg-white dark:bg-gray-900 shadow-2xs rounded-lg border border-gray-200 dark:border-gray-700 hover:border-black dark:hover:border-white transition-colors group">
+                <div class="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-gray-900 to-black rounded-full text-white font-bold text-lg font-mono shrink-0 shadow-2xs">
                     <span class="bg-white text-black rounded px-1.5 py-0.5 text-xs font-bold">{}</span>
                 </div>
                 <div>

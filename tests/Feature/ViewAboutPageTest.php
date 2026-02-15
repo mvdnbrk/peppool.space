@@ -15,7 +15,7 @@ class ViewAboutPageTest extends TestCase
             ->assertViewIs('about')
             ->assertSee('About Pepecoin')
             ->assertSee('About the Creator')
-            ->assertSee('Connect with the Community');
+            ->assertSee('Connect with the Pepecoin Community');
     }
 
     #[Test]
