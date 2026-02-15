@@ -79,7 +79,7 @@
     </div>
 
     <!-- Support Section -->
-    <div class="mt-8 md:mt-12 pt-6 md:pt-8 border-t border-gray-200 dark:border-gray-700">
+    <div id="support" class="mt-8 md:mt-12 pt-6 md:pt-8 border-t border-gray-200 dark:border-gray-700">
         <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-200 mb-4">Support the Project</h2>
         <p class="text-base md:text-lg leading-7 md:leading-8 text-gray-600 dark:text-gray-300 mb-4">
             If you find <span class="text-green-800 dark:text-green-600">peppool.space</span> useful and would like to support its development and maintenance, you can make a donation using Pepecoin.
