@@ -41,6 +41,13 @@ class ElectrsPepeService
         return RecentMempoolTransactionData::collect($response, Collection::class);
     }
 
+    public function getFeeEstimates(): array
+    {
+        return Http::get("{$this->url}/fee-estimates")
+            ->throw()
+            ->json();
+    }
+
     public function getAddress(string $address): AddressData
     {
         $response = Http::get("{$this->url}/address/{$address}")

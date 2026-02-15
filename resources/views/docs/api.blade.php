@@ -148,6 +148,21 @@
                 </x-slot:fields>
             </x-api-section>
 
+            <!-- Fee Estimates Endpoint -->
+            <x-api-section method="GET" path="/mempool/fee-estimates" :description="'Returns a map of block targets to estimated fee rates in ribbits per virtual byte (RIBBITS/vB).'" responseContentType="application/json">
+                <x-slot:example>
+                    <code>curl {{ route('api.mempool.fee-estimates') }}</code>
+                </x-slot:example>
+                <x-slot:response>
+                    <pre class="text-xs md:text-sm overflow-x-auto"><code>{
+  "2": 10.03,
+  "3": 8.5,
+  "6": 5.2,
+  "144": 1.0
+}</code></pre>
+                </x-slot:response>
+            </x-api-section>
+
             <!-- Prices Endpoint -->
             <x-api-section method="GET" path="/prices" :description="'Returns the latest Pepecoin prices.'" responseContentType="application/json">
                 <x-slot:example>

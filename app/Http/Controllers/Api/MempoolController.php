@@ -47,4 +47,21 @@ class MempoolController extends Controller
             $this->electrs->getRecentMempoolTransactions()
         );
     }
+
+    public function feeEstimates(): JsonResponse
+    {
+        $estimates = [];
+
+        try {
+            $estimates = $this->electrs->getFeeEstimates();
+        } catch (\Exception) {
+            // Fallback to RPC
+        }
+
+        if (empty($estimates)) {
+            $estimates = $this->explorerService->getFeeEstimates();
+        }
+
+        return new JsonResponse($estimates);
+    }
 }

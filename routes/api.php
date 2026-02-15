@@ -50,5 +50,6 @@ Route::middleware('throttle:60,1')->name('api.')->group(function () {
         Route::get('/', [MempoolController::class, 'index'])->name('index');
         Route::get('/txids', [MempoolController::class, 'txids'])->name('txids');
         Route::get('/recent', [MempoolController::class, 'recent'])->name('recent');
+        Route::get('/fee-estimates', [MempoolController::class, 'feeEstimates'])->name('fee-estimates');
     });
 });
