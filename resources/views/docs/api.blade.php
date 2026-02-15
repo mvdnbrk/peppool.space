@@ -313,6 +313,18 @@
                 </x-slot:fields>
             </x-api-section>
 
+            <!-- Broadcast Transaction Endpoint -->
+            <x-api-section method="POST" path="/tx" :description="'Broadcasts a raw transaction to the network. The transaction hex should be provided in the request body.'" responseContentType="application/json">
+                <x-slot:example>
+                    <code>curl -X POST --data &quot;01000000...&quot; {{ route('api.tx.broadcast') }}</code>
+                </x-slot:example>
+                <x-slot:response>
+                    <pre class="text-xs md:text-sm overflow-x-auto"><code>{
+  "txid": "2c603d097588bb7d520ffb8b270cc61865f52c1427504ab43678fc055d07c261"
+}</code></pre>
+                </x-slot:response>
+            </x-api-section>
+
             <!-- Transaction Status Endpoint -->
             <x-api-section method="GET" path="/tx/:txid/status" :description="'Returns the confirmation status of a transaction.'" responseContentType="application/json">
                 <x-slot:example>

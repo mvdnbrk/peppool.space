@@ -125,4 +125,12 @@ class ElectrsPepeService
             ->throw()
             ->body();
     }
+
+    public function broadcastTransaction(string $hex): string
+    {
+        return Http::withBody($hex, 'text/plain')
+            ->post("{$this->url}/tx")
+            ->throw()
+            ->body();
+    }
 }

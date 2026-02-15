@@ -38,6 +38,9 @@ Route::middleware('throttle:60,1')->name('api.')->group(function () {
     Route::get('/tx/{txid}', [TransactionController::class, 'show'])
         ->name('tx.show');
 
+    Route::post('/tx', [TransactionController::class, 'broadcast'])
+        ->name('tx.broadcast');
+
     // Internal-only signed endpoint for chart time series
     Route::get('/chart', ChartPricesController::class)
         ->middleware('signed')

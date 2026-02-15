@@ -243,4 +243,67 @@ class TransactionShowTest extends TestCase
             ->assertHeader('Content-Type', 'application/octet-stream')
             ->assertSee($binary);
     }
+
+    #[Test]
+    public function it_broadcasts_a_transaction(): void
+    {
+        $hex = '0100000001abcdef';
+        $txid = '2c603d097588bb7d520ffb8b270cc61865f52c1427504ab43678fc055d07c261';
+
+        $electrs = Mockery::mock(ElectrsPepeService::class);
+        $electrs->shouldReceive('broadcastTransaction')
+            ->once()
+            ->with($hex)
+            ->andReturn($txid);
+        $this->app->instance(ElectrsPepeService::class, $electrs);
+
+        $this->call('POST', route('api.tx.broadcast'), content: $hex)
+            ->assertOk()
+            ->assertJson([
+                'txid' => $txid,
+            ]);
+    }
+
+    #[Test]
+    public function it_returns_error_for_invalid_broadcast_hex(): void
+    {
+        $this->call('POST', route('api.tx.broadcast'), content: 'invalid-hex-!!')
+            ->assertStatus(400)
+            ->assertJson([
+                'code' => 400,
+                'error' => 'invalid_hex',
+            ]);
+
+        $this->call('POST', route('api.tx.broadcast'), content: '')
+            ->assertStatus(400)
+            ->assertJson([
+                'code' => 400,
+                'error' => 'invalid_hex',
+            ]);
+    }
+
+    #[Test]
+    public function it_returns_error_when_broadcast_fails(): void
+    {
+        $hex = '0100000001abcdef';
+
+        $electrs = Mockery::mock(ElectrsPepeService::class);
+        $electrs->shouldReceive('broadcastTransaction')
+            ->once()
+            ->with($hex)
+            ->andThrow(new \Illuminate\Http\Client\RequestException(
+                new \Illuminate\Http\Client\Response(
+                    new \GuzzleHttp\Psr7\Response(400, [], 'Missing inputs')
+                )
+            ));
+        $this->app->instance(ElectrsPepeService::class, $electrs);
+
+        $this->call('POST', route('api.tx.broadcast'), content: $hex)
+            ->assertStatus(400)
+            ->assertJson([
+                'code' => 400,
+                'error' => 'broadcast_failed',
+                'message' => 'Missing inputs',
+            ]);
+    }
 }

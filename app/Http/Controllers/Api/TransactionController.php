@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Services\ElectrsPepeService;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class TransactionController extends Controller
@@ -16,6 +17,27 @@ class TransactionController extends Controller
     public function __construct(
         private readonly ElectrsPepeService $electrs
     ) {}
+
+    public function broadcast(Request $request): JsonResponse
+    {
+        $hex = $request->getContent();
+
+        if (empty($hex) || ! preg_match('/^[0-9a-fA-F]+$/', $hex)) {
+            return $this->errorResponse('invalid_hex', 'The provided transaction hex is invalid.', Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            return response()->json([
+                'txid' => $this->electrs->broadcastTransaction($hex),
+            ]);
+        } catch (RequestException $e) {
+            return $this->errorResponse(
+                'broadcast_failed',
+                $e->response->body() ?: 'Failed to broadcast transaction.',
+                $e->getCode() ?: Response::HTTP_BAD_REQUEST
+            );
+        }
+    }
 
     public function show(string $txid): JsonResponse
     {
