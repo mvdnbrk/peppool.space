@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Concerns\HasApiResponses;
 use App\Http\Controllers\Controller;
 use App\Services\ElectrsPepeService;
 use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
 class TransactionController extends Controller
@@ -16,21 +17,22 @@ class TransactionController extends Controller
         private readonly ElectrsPepeService $electrs
     ) {}
 
-    public function show(string $txid): mixed
+    public function show(string $txid): JsonResponse
     {
-        return $this->handleRequest($txid, fn ($id) => $this->electrs->getTransaction($id));
+        return $this->handleRequest($txid, fn ($id) => response()->json($this->electrs->getTransaction($id)));
     }
 
-    public function status(string $txid): mixed
+    public function status(string $txid): JsonResponse
     {
-        return $this->handleRequest($txid, fn ($id) => $this->electrs->getTransaction($id)->status);
+        return $this->handleRequest($txid, fn ($id) => response()->json($this->electrs->getTransaction($id)->status));
     }
 
-    public function hex(string $txid): mixed
+    public function hex(string $txid): JsonResponse
     {
         return $this->handleRequest($txid, function ($id) {
-            return response($this->electrs->getRawTransaction($id), Response::HTTP_OK)
-                ->header('Content-Type', 'text/plain');
+            return response()->json([
+                'hex' => $this->electrs->getRawTransaction($id),
+            ]);
         });
     }
 

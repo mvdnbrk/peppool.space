@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Services\ElectrsPepeService;
 use App\Services\PepecoinExplorerService;
 use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
 class AddressController extends Controller
@@ -19,10 +20,10 @@ class AddressController extends Controller
         private readonly ElectrsPepeService $electrs,
     ) {}
 
-    public function show(string $address): mixed
+    public function show(string $address): JsonResponse
     {
         try {
-            return $this->electrs->getAddress($address);
+            return response()->json($this->electrs->getAddress($address));
         } catch (RequestException $e) {
             if ($e->getCode() === Response::HTTP_BAD_REQUEST) {
                 return $this->invalidAddressResponse();
@@ -36,10 +37,10 @@ class AddressController extends Controller
         }
     }
 
-    public function transactions(string $address): mixed
+    public function transactions(string $address): JsonResponse
     {
         try {
-            return $this->electrs->getAddressTransactions($address);
+            return response()->json($this->electrs->getAddressTransactions($address));
         } catch (RequestException $e) {
             if ($e->getCode() === Response::HTTP_BAD_REQUEST) {
                 return $this->invalidAddressResponse();
@@ -53,10 +54,10 @@ class AddressController extends Controller
         }
     }
 
-    public function utxo(string $address): mixed
+    public function utxo(string $address): JsonResponse
     {
         try {
-            return $this->electrs->getAddressUtxos($address);
+            return response()->json($this->electrs->getAddressUtxos($address));
         } catch (RequestException $e) {
             if ($e->getCode() === Response::HTTP_BAD_REQUEST) {
                 return $this->invalidAddressResponse();
@@ -70,8 +71,8 @@ class AddressController extends Controller
         }
     }
 
-    public function validate(string $address): ValidateAddressData
+    public function validate(string $address): JsonResponse
     {
-        return $this->explorer->validateAddress($address);
+        return response()->json($this->explorer->validateAddress($address));
     }
 }

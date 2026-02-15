@@ -18,20 +18,18 @@ class BlockController extends Controller
         private readonly PepecoinExplorerService $explorerService
     ) {}
 
-    public function tipHeight(): Response
+    public function tipHeight(): JsonResponse
     {
-        return new Response(
-            content: (string) $this->explorerService->getBlockTipHeight(),
-            headers: ['Content-Type' => 'text/plain']
-        );
+        return response()->json([
+            'height' => $this->explorerService->getBlockTipHeight(),
+        ]);
     }
 
-    public function tipHash(): Response
+    public function tipHash(): JsonResponse
     {
-        return new Response(
-            content: $this->explorerService->getBlockTipHash(),
-            headers: ['Content-Type' => 'text/plain']
-        );
+        return response()->json([
+            'hash' => $this->explorerService->getBlockTipHash(),
+        ]);
     }
 
     public function list(?string $startHeight = null): JsonResponse

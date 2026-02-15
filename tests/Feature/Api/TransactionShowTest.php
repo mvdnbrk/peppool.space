@@ -220,8 +220,9 @@ class TransactionShowTest extends TestCase
 
         $this->get(route('api.tx.hex', ['txid' => $txid]))
             ->assertOk()
-            ->assertHeader('Content-Type', 'text/plain; charset=UTF-8')
-            ->assertSee($hex);
+            ->assertJson([
+                'hex' => $hex,
+            ]);
     }
 
     #[Test]

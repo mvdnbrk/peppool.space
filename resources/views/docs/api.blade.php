@@ -24,22 +24,26 @@
         <!-- Endpoints -->
         <div class="space-y-8">
             <!-- Block Hash Endpoint -->
-            <x-api-section method="GET" path="/blocks/tip/hash" :description="'Returns the hash of the current tip block of the Pepecoin blockchain.'" responseContentType="text/plain">
+            <x-api-section method="GET" path="/blocks/tip/hash" :description="'Returns the hash of the current tip block of the Pepecoin blockchain.'" responseContentType="application/json">
                 <x-slot:example>
                     <code class="whitespace-nowrap">curl {{ route('api.blocks.tip.hash') }}</code>
                 </x-slot:example>
                 <x-slot:response>
-                    <code class="text-xs md:text-sm break-all">a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456</code>
+                    <pre class="text-xs md:text-sm overflow-x-auto"><code>{
+  "hash": "a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456"
+}</code></pre>
                 </x-slot:response>
             </x-api-section>
 
             <!-- Block Height Endpoint -->
-            <x-api-section method="GET" path="/blocks/tip/height" :description="'Returns the current block height of the Pepecoin blockchain.'" responseContentType="text/plain">
+            <x-api-section method="GET" path="/blocks/tip/height" :description="'Returns the current block height of the Pepecoin blockchain.'" responseContentType="application/json">
                 <x-slot:example>
                     <code>curl {{ route('api.blocks.tip.height') }}</code>
                 </x-slot:example>
                 <x-slot:response>
-                    <code class="text-sm">672216</code>
+                    <pre class="text-xs md:text-sm overflow-x-auto"><code>{
+  "height": 672216
+}</code></pre>
                 </x-slot:response>
             </x-api-section>
 
@@ -335,12 +339,14 @@
             </x-api-section>
 
             <!-- Transaction Hex Endpoint -->
-            <x-api-section method="GET" path="/tx/:txid/hex" :description="'Returns the raw transaction hex.'" responseContentType="text/plain">
+            <x-api-section method="GET" path="/tx/:txid/hex" :description="'Returns the raw transaction hex.'" responseContentType="application/json">
                 <x-slot:example>
                     <code>curl {{ route('api.tx.hex', ['txid' => '2c603d097588bb7d520ffb8b270cc61865f52c1427504ab43678fc055d07c261']) }}</code>
                 </x-slot:example>
                 <x-slot:response>
-                    <code class="text-xs md:text-sm break-all">010000000536a007284bd52ee826680a7f43536472f1bcce1e76cd76b826b88c5884eddf1f0c0000006b483045022100bcdf40fb3b5ebfa2c158ac8d1a41c03eb3dba4e180b00e81836bafd56d946efd022005cc40e35022b614275c1e485c409599667cbd41f6e5d78f421cb260a020a24f01210255ea3f53ce3ed1ad2c08dfc23b211b15b852afb819492a9a0f3f99e5747cb5f0ffffffffee08cb90c4e84dd7952b2cfad81ed3b088f5b...</code>
+                    <pre class="text-xs md:text-sm overflow-x-auto"><code>{
+  "hex": "010000000536a007284bd52ee826680a7f43536472f1bcce1e76cd76b826b88c5884eddf1f0c0000006b483045022100bcdf40fb3b5ebfa2c158ac8d1a41c03eb3dba4e180b00e81836bafd56d946efd022005cc40e35022b614275c1e485c409599667cbd41f6e5d78f421cb260a020a24f01210255ea3f53ce3ed1ad2c08dfc23b211b15b852afb819492a9a0f3f99e5747cb5f0ffffffffee08cb90c4e84dd7952b2cfad81ed3b088f5b..."
+}</code></pre>
                 </x-slot:response>
             </x-api-section>
 
