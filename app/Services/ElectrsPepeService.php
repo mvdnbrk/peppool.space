@@ -9,6 +9,7 @@ use App\Data\Electrs\BlockData;
 use App\Data\Electrs\MempoolData;
 use App\Data\Electrs\RecentMempoolTransactionData;
 use App\Data\Electrs\TransactionData;
+use App\Data\Electrs\UtxoData;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 
@@ -59,11 +60,14 @@ class ElectrsPepeService
         return TransactionData::collect($response, Collection::class);
     }
 
-    public function getAddressUtxos(string $address): array
+    /** @return Collection<int, UtxoData> */
+    public function getAddressUtxos(string $address): Collection
     {
-        return Http::get("{$this->url}/address/{$address}/utxo")
+        $response = Http::get("{$this->url}/address/{$address}/utxo")
             ->throw()
             ->json();
+
+        return UtxoData::collect($response, Collection::class);
     }
 
     public function getTransaction(string $txid): TransactionData

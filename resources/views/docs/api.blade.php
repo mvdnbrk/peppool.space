@@ -226,6 +226,39 @@
                 </x-slot:response>
             </x-api-section>
 
+            <!-- Address UTXO Endpoint -->
+            <x-api-section method="GET" path="/address/:address/utxo" :description="'Returns the unspent transaction outputs (UTXOs) for a Pepecoin address.'" responseContentType="application/json">
+                <x-slot:example>
+                    <code>curl {{ route('api.address.utxo', ['address' => 'PumNFmkevCTG6RTEc7W2piGTbQHMg2im2M']) }}</code>
+                </x-slot:example>
+                <x-slot:response>
+                    <pre class="text-xs md:text-sm overflow-x-auto"><code>[
+  {
+    "txid": "58ed78527f8c2fc7e745d18c72978e6aaeb450b4816472a841d2d6453b6accb1",
+    "vout": 0,
+    "status": {
+      "confirmed": true,
+      "block_height": 916697,
+      "block_hash": "a991281771fb38bc5a0ac0b8a3872451c243fddd49116a3805a78a58c24620aa",
+      "block_time": 1771080551
+    },
+    "value": 100000000
+  },
+  {
+    "txid": "9fcd620fff32eff8d9d48de65100501098d48eb175ad993d44c434ff7e462756",
+    "vout": 1,
+    "status": {
+      "confirmed": true,
+      "block_height": 916835,
+      "block_hash": "a1b0da083051e4a2c06eb2f5fdffd950b8ca0cb14672b72d908e928340cd1737",
+      "block_time": 1771089008
+    },
+    "value": 100000000
+  }
+]</code></pre>
+                </x-slot:response>
+            </x-api-section>
+
             <!-- Address Validation Endpoint -->
             <x-api-section method="GET" path="/validate-address/:address" :description="'Validates a Pepecoin address and returns metadata.'" responseContentType="application/json">
                 <x-slot:example>
