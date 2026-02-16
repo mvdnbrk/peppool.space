@@ -18,7 +18,7 @@ class TransactionController extends Controller
         private readonly ElectrsPepeService $electrs
     ) {}
 
-    public function broadcast(Request $request): JsonResponse
+    public function broadcast(Request $request): Response|JsonResponse
     {
         $hex = $request->getContent();
 
@@ -27,9 +27,8 @@ class TransactionController extends Controller
         }
 
         try {
-            return response()->json([
-                'txid' => $this->electrs->broadcastTransaction($hex),
-            ]);
+            return response($this->electrs->broadcastTransaction($hex), Response::HTTP_OK)
+                ->header('Content-Type', 'text/plain');
         } catch (RequestException $e) {
             return $this->errorResponse(
                 'broadcast_failed',

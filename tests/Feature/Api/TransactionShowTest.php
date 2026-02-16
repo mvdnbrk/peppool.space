@@ -259,9 +259,8 @@ class TransactionShowTest extends TestCase
 
         $this->call('POST', route('api.tx.broadcast'), content: $hex)
             ->assertOk()
-            ->assertJson([
-                'txid' => $txid,
-            ]);
+            ->assertHeader('Content-Type', 'text/plain; charset=UTF-8')
+            ->assertContent($txid);
     }
 
     #[Test]
