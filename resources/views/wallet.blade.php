@@ -104,23 +104,23 @@
             </div>
             <div class="mx-auto grid max-w-lg grid-cols-2 items-center gap-x-8 gap-y-10 sm:max-w-xl sm:grid-cols-3 sm:gap-x-10 lg:mx-0 lg:max-w-none lg:grid-cols-5">
                 <a data-fslightbox="gallery" href="{{ cdn_asset('wallet-preview/1-dashboard.png') }}" class="group relative">
-                    <img src="{{ cdn_asset('wallet-preview/1-dashboard-frame.png') }}" alt="Dashboard" class="max-h-32 w-full object-contain transition-transform duration-300 group-hover:scale-110">
+                    <img src="{{ cdn_asset('wallet-preview/1-dashboard-frame.png') }}" alt="Dashboard" class="max-h-32 w-full object-contain rounded-md transition-transform duration-300 group-hover:scale-110">
                     <p class="mt-2 text-center text-xs font-medium text-gray-500 dark:text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">Dashboard</p>
                 </a>
                 <a data-fslightbox="gallery" href="{{ cdn_asset('wallet-preview/2-send.png') }}" class="group relative">
-                    <img src="{{ cdn_asset('wallet-preview/2-send-frame.png') }}" alt="Send" class="max-h-32 w-full object-contain transition-transform duration-300 group-hover:scale-110">
+                    <img src="{{ cdn_asset('wallet-preview/2-send-frame.png') }}" alt="Send" class="max-h-32 w-full object-contain rounded-md transition-transform duration-300 group-hover:scale-110">
                     <p class="mt-2 text-center text-xs font-medium text-gray-500 dark:text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">Send PEP</p>
                 </a>
                 <a data-fslightbox="gallery" href="{{ cdn_asset('wallet-preview/3-receive.png') }}" class="group relative">
-                    <img src="{{ cdn_asset('wallet-preview/3-receive-frame.png') }}" alt="Receive" class="max-h-32 w-full object-contain transition-transform duration-300 group-hover:scale-110">
+                    <img src="{{ cdn_asset('wallet-preview/3-receive-frame.png') }}" alt="Receive" class="max-h-32 w-full object-contain rounded-md transition-transform duration-300 group-hover:scale-110">
                     <p class="mt-2 text-center text-xs font-medium text-gray-500 dark:text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">Receive</p>
                 </a>
                 <a data-fslightbox="gallery" href="{{ cdn_asset('wallet-preview/4-settings.png') }}" class="group relative">
-                    <img src="{{ cdn_asset('wallet-preview/4-settings-frame.png') }}" alt="Settings" class="max-h-32 w-full object-contain transition-transform duration-300 group-hover:scale-110">
+                    <img src="{{ cdn_asset('wallet-preview/4-settings-frame.png') }}" alt="Settings" class="max-h-32 w-full object-contain rounded-md transition-transform duration-300 group-hover:scale-110">
                     <p class="mt-2 text-center text-xs font-medium text-gray-500 dark:text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">Settings</p>
                 </a>
                 <a data-fslightbox="gallery" href="{{ cdn_asset('wallet-preview/5-preferences.png') }}" class="group relative">
-                    <img src="{{ cdn_asset('wallet-preview/5-preferences-frame.png') }}" alt="Preferences" class="max-h-32 w-full object-contain transition-transform duration-300 group-hover:scale-110">
+                    <img src="{{ cdn_asset('wallet-preview/5-preferences-frame.png') }}" alt="Preferences" class="max-h-32 w-full object-contain rounded-md transition-transform duration-300 group-hover:scale-110">
                     <p class="mt-2 text-center text-xs font-medium text-gray-500 dark:text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">Preferences</p>
                 </a>
             </div>
