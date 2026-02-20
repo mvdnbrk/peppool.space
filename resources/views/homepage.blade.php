@@ -73,12 +73,11 @@
     <!-- Latest Blocks and Mempool -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Latest Blocks -->
-        <x-latest-blocks :latest-blocks="$latestBlocks" />
+        <x-latest-blocks />
 
         <!-- Mempool Transactions -->
         <x-mempool-transactions
             :api-url="route('api.mempool.recent')"
-            :interval-ms="10000"
         />
     </div>
 </x-layout>

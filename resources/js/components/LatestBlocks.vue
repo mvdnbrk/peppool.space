@@ -32,14 +32,15 @@
       </a>
     </TransitionGroup>
 
-    <div v-if="blocks.length === 0" class="px-6 py-8 text-center">
-      <p class="text-gray-500 dark:text-gray-400">No blocks available</p>
+    <div v-if="placeholder" class="px-6 py-8 flex flex-col items-center justify-center space-y-3">
+      <div v-if="placeholder.spin" class="w-8 h-8 border-2 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+      <p class="text-sm text-gray-500 dark:text-gray-400">{{ placeholder.text }}</p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import Timestamp from './Timestamp.vue'
 
 const props = defineProps({
@@ -50,10 +51,25 @@ const props = defineProps({
 })
 
 const blocks = ref([...(props.initialBlocks || [])])
+const loading = ref(blocks.value.length === 0)
+const showEmpty = ref(false)
 const root = ref(null)
 let timer = null
 let inFlight = false
 let controller = null
+let emptyMessageTimer = null
+
+const placeholder = computed(() => {
+  if (loading.value) {
+    return { text: 'fetching latest blocks...', spin: true }
+  }
+
+  if (showEmpty.value && blocks.value.length === 0) {
+    return { text: 'No blocks available', spin: false }
+  }
+
+  return null
+})
 
 const updateHeightCard = () => {
   const maxH = blocks.value.reduce((m, b) => Math.max(m, Number(b.height) || 0), 0)
@@ -89,6 +105,8 @@ const fetchBlocks = async () => {
     if (!res.ok) return
     const data = await res.json()
     if (!Array.isArray(data)) return
+
+    loading.value = false
 
     // Build maps for quick lookup
     const existingByHeight = new Map(blocks.value.map(b => [Number(b.height), b]))
@@ -147,9 +165,20 @@ onMounted(async () => {
   })
 })
 
+watch([blocks, loading], ([list, isLoading]) => {
+  clearTimeout(emptyMessageTimer)
+  
+  const isNowEmpty = list.length === 0 && !isLoading
+  
+  isNowEmpty
+    ? (emptyMessageTimer = setTimeout(() => showEmpty.value = true, 1600))
+    : (showEmpty.value = false)
+}, { immediate: true })
+
 onUnmounted(() => {
   stopPolling()
   if (controller) { try { controller.abort() } catch (_) {} }
+  if (emptyMessageTimer) { clearTimeout(emptyMessageTimer) }
 })
 </script>
 

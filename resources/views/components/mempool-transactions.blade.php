@@ -1,7 +1,6 @@
 @props([
     'initialTransactions' => [],
     'apiUrl' => route('api.mempool.recent'),
-    'intervalMs' => 10000,
 ])
 
 <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow overflow-hidden">
@@ -16,7 +15,6 @@
     $props = [
         'initialTransactions' => $initialTransactions,
         'apiUrl' => $apiUrl,
-        'intervalMs' => $intervalMs,
         'txRoute' => route('transaction.show', ['txid' => '__TXID__'])
     ];
     @endphp

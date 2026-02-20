@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Block;
 use App\Services\PepecoinExplorerService;
 use Exception;
 use Illuminate\Http\Response;
@@ -20,7 +19,6 @@ class HomepageController extends Controller
                     'subversion' => $explorer->getNetworkSubversion(),
                     'connectionCount' => $explorer->getNetworkConnectionsCount(),
                 ],
-                'latestBlocks' => Block::getLatestBlocks(),
                 'chainSize' => Number::fileSize($explorer->getChainSize(), precision: 1),
                 'blockHeight' => $explorer->getBlockTipHeight(),
                 'difficulty' => format_difficulty($explorer->getDifficulty()),
