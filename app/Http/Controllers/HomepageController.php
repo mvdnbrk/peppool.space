@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Block;
 use App\Services\ElectrsPepeService;
 use App\Services\PepecoinExplorerService;
-use App\Services\PepecoinRpcService;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Number;
@@ -13,11 +12,10 @@ use Illuminate\View\View;
 
 class HomepageController extends Controller
 {
-    public function __invoke(PepecoinRpcService $rpc, PepecoinExplorerService $explorer, ElectrsPepeService $electrs): View
+    public function __invoke(PepecoinExplorerService $explorer, ElectrsPepeService $electrs): View
     {
         try {
             return view('homepage', [
-                'blockchain' => $rpc->getBlockchainInfo(),
                 'mempool' => $explorer->getMempoolInfo(),
                 'network' => [
                     'subversion' => $explorer->getNetworkSubversion(),
