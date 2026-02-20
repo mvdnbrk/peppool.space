@@ -42,8 +42,9 @@
       </div>
     </a>
   </TransitionGroup>
-  <div v-if="showEmpty" class="px-6 py-8 text-center">
-    <p class="text-gray-500 dark:text-gray-400">no transactions in mempool</p>
+  <div v-if="placeholder" class="px-6 py-8 flex flex-col items-center justify-center space-y-3">
+    <div v-if="placeholder.spin" class="w-8 h-8 border-2 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+    <p class="text-sm text-gray-500 dark:text-gray-400">{{ placeholder.text }}</p>
   </div>
 </template>
 
@@ -69,11 +70,24 @@ const props = defineProps({
 const transactions = ref([...props.initialTransactions])
 const confirmed = ref({})
 const firstSeen = ref({})
-const showEmpty = ref(transactions.value.length === 0)
+const loading = ref(props.initialTransactions.length === 0)
+const showEmpty = ref(false)
 
 // Computed
 const sortedTransactions = computed(() => {
   return [...transactions.value].sort((a, b) => (firstSeen.value[b.txid] || 0) - (firstSeen.value[a.txid] || 0))
+})
+
+const placeholder = computed(() => {
+  if (loading.value) {
+    return { text: 'fetching mempool...', spin: true }
+  }
+
+  if (showEmpty.value && transactions.value.length === 0) {
+    return { text: 'no transactions in mempool', spin: false }
+  }
+
+  return null
 })
 
 // Internal state
@@ -113,6 +127,8 @@ const fetchTransactions = async () => {
     
     const data = await response.json()
     if (!Array.isArray(data)) return
+    
+    loading.value = false
     
     const existingIds = new Set(transactions.value.map(t => t.txid))
     const newDataIds = new Set(data.map(t => t.txid))
@@ -160,19 +176,14 @@ const fetchTransactions = async () => {
   }
 }
 
-watch(sortedTransactions, (list) => {
-  if (list.length === 0) {
-    if (emptyMessageTimer) clearTimeout(emptyMessageTimer)
-    emptyMessageTimer = setTimeout(() => {
-      showEmpty.value = true
-    }, 1600)
-  } else {
-    showEmpty.value = false
-    if (emptyMessageTimer) {
-      clearTimeout(emptyMessageTimer)
-      emptyMessageTimer = null
-    }
-  }
+watch([transactions, loading], ([list, isLoading]) => {
+  clearTimeout(emptyMessageTimer)
+  
+  const isNowEmpty = list.length === 0 && !isLoading
+  
+  isNowEmpty
+    ? (emptyMessageTimer = setTimeout(() => showEmpty.value = true, 1600))
+    : (showEmpty.value = false)
 }, { immediate: true })
 
 onMounted(() => {

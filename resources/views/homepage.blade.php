@@ -77,7 +77,6 @@
 
         <!-- Mempool Transactions -->
         <x-mempool-transactions
-            :initial-transactions="$mempoolTransactions"
             :api-url="route('api.mempool.recent')"
             :interval-ms="10000"
         />

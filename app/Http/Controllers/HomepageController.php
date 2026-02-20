@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Block;
-use App\Services\ElectrsPepeService;
 use App\Services\PepecoinExplorerService;
 use Exception;
 use Illuminate\Http\Response;
@@ -12,7 +11,7 @@ use Illuminate\View\View;
 
 class HomepageController extends Controller
 {
-    public function __invoke(PepecoinExplorerService $explorer, ElectrsPepeService $electrs): View
+    public function __invoke(PepecoinExplorerService $explorer): View
     {
         try {
             return view('homepage', [
@@ -22,7 +21,6 @@ class HomepageController extends Controller
                     'connectionCount' => $explorer->getNetworkConnectionsCount(),
                 ],
                 'latestBlocks' => Block::getLatestBlocks(),
-                'mempoolTransactions' => $electrs->getRecentMempoolTransactions()->take(10),
                 'chainSize' => Number::fileSize($explorer->getChainSize(), precision: 1),
                 'blockHeight' => $explorer->getBlockTipHeight(),
                 'difficulty' => format_difficulty($explorer->getDifficulty()),
