@@ -26,7 +26,7 @@
                     </div>
 
                     <div class="flex flex-col sm:flex-row items-center gap-6">
-                        <a href="https://github.com/mvdnbrk/peppool-wallet" target="_blank" rel="noopener" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-900 hover:bg-black text-white rounded-xl transition-all duration-300 font-bold shadow-[0_10px_20px_-5px_rgba(0,0,0,0.3)] hover:shadow-[0_15px_30px_-5px_rgba(0,0,0,0.4)] hover:-translate-y-1 active:scale-95">
+                        <a href="https://github.com/mvdnbrk/peppool-wallet" target="_blank" rel="noopener" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-900 hover:bg-black text-white dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 rounded-xl transition-all duration-300 font-bold shadow-[0_10px_20px_-5px_rgba(0,0,0,0.3)] hover:shadow-[0_15px_30px_-5px_rgba(0,0,0,0.4)] hover:-translate-y-1 active:scale-95">
                             <x-icon-github class="w-5 h-5" />
                             <span>View on GitHub</span>
                         </a>
