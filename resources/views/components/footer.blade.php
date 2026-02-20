@@ -12,7 +12,7 @@
             <ul class="flex flex-wrap items-center justify-center md:justify-start gap-x-8 gap-y-4">
                 <li>
                     <a href="{{ route('about') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
-                        About PEPE
+                        About Pepecoin
                     </a>
                 </li>
                 <li>
