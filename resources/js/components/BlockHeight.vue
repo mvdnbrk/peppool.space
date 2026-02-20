@@ -36,7 +36,7 @@ const fetchHeight = async () => {
     if (!res.ok) throw new Error('Network response was not ok')
     const heightText = await res.text()
     const newHeight = parseInt(heightText, 10)
-    if (!isNaN(newHeight)) {
+    if (!isNaN(newHeight) && newHeight > height.value) {
       height.value = newHeight
     }
   } catch (e) {
@@ -65,7 +65,7 @@ onMounted(() => {
   
   // Listen for updates from LatestBlocks component if it exists
   window.addEventListener('block-height-updated', (event) => {
-    if (event.detail && event.detail.height) {
+    if (event.detail && event.detail.height && Number(event.detail.height) > height.value) {
       height.value = Number(event.detail.height)
     }
   })

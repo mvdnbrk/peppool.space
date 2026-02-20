@@ -71,9 +71,12 @@ const placeholder = computed(() => {
   return null
 })
 
+let currentMaxHeight = blocks.value.reduce((m, b) => Math.max(m, Number(b.height) || 0), 0)
+
 const updateHeightCard = () => {
   const maxH = blocks.value.reduce((m, b) => Math.max(m, Number(b.height) || 0), 0)
-  if (maxH > 0) {
+  if (maxH > currentMaxHeight) {
+    currentMaxHeight = maxH
     window.dispatchEvent(new CustomEvent('block-height-updated', { 
       detail: { height: maxH } 
     }))
