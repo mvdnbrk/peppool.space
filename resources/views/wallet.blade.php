@@ -1,4 +1,4 @@
-<x-layout title="Peppool Wallet: The Pepecoin wallet for everyone. (coming soon)" og_image="peppol-wallet.png" og_description="The Pepecoin wallet for everyone. Coming soon.">
+<x-layout title="Peppool Wallet: The Pepecoin wallet for everyone. (coming soon)" og_image="peppool-wallet.png" og_description="The Pepecoin wallet for everyone. Coming soon.">
     <div class="max-w-none space-y-8 lg:space-y-12">
         <!-- Hero Section -->
         <div class="relative bg-white dark:bg-gray-900 shadow-2xs rounded-[2rem] border border-gray-200 dark:border-gray-700 my-16 md:my-24 lg:my-32">
