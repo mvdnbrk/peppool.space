@@ -26,7 +26,7 @@
                     </div>
 
                     <div class="flex flex-col sm:flex-row items-center gap-6">
-                        <a href="{{ $socials->github_url }}/peppool-wallet" target="_blank" rel="noopener" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-900 hover:bg-black text-white rounded-xl transition-all duration-300 font-bold shadow-[0_10px_20px_-5px_rgba(0,0,0,0.3)] hover:shadow-[0_15px_30px_-5px_rgba(0,0,0,0.4)] hover:-translate-y-1 active:scale-95">
+                        <a href="https://github.com/mvdnbrk/peppool-wallet" target="_blank" rel="noopener" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-900 hover:bg-black text-white rounded-xl transition-all duration-300 font-bold shadow-[0_10px_20px_-5px_rgba(0,0,0,0.3)] hover:shadow-[0_15px_30px_-5px_rgba(0,0,0,0.4)] hover:-translate-y-1 active:scale-95">
                             <x-icon-github class="w-5 h-5" />
                             <span>View on GitHub</span>
                         </a>
@@ -127,7 +127,7 @@
         </div>
 
         <!-- Join the Waitlist CTA -->
-        <div id="join-waitlist" class="bg-white dark:bg-gray-900 shadow-2xs rounded-3xl border border-gray-200 dark:border-gray-700 px-8 py-10 md:px-12 md:py-12 flex flex-col lg:flex-row items-center justify-between gap-8 pb-12">
+        <div id="join-waitlist" class="bg-white dark:bg-gray-900 shadow-2xs rounded-lg border border-gray-200 dark:border-gray-700 px-8 py-10 md:px-12 md:py-12 flex flex-col lg:flex-row items-center justify-between gap-8 pb-12">
             <div class="max-w-xl text-center lg:text-left">
                 <p class="font-bold text-gray-600 dark:text-gray-400">
                     Get notified when we launch the Peppool Wallet browser extension.
@@ -144,6 +144,222 @@
                     <input type="email" placeholder="Enter your email" disabled class="flex-grow px-5 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-400 outline-none">
                     <button disabled class="px-8 py-3 bg-green-700 text-white font-bold rounded-xl shadow-lg shadow-green-700/20 opacity-50 tracking-wider uppercase text-xs">Join Waitlist</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="bg-white dark:bg-gray-900 shadow-2xs rounded-lg border border-gray-200 dark:border-gray-700 px-8 py-12 md:px-12">
+            <div class="mx-auto divide-y divide-gray-200 dark:divide-gray-800">
+                <h2 class="text-2xl font-bold leading-10 tracking-tight text-gray-900 dark:text-gray-100">Frequently Asked Questions</h2>
+                <dl class="mt-16 divide-y divide-gray-900/10 dark:divide-white/10">
+                    <div class="py-6 first:pt-0 last:pb-0">
+                        <dt>
+                            <button type="button" command="--toggle" commandfor="faq-1" class="flex w-full items-start justify-between text-left text-gray-900 dark:text-white cursor-pointer" aria-expanded="false" aria-controls="faq-1">
+                                <span class="text-base/7 font-semibold">What is Peppool Wallet?</span>
+                                <span class="ml-6 flex h-7 items-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 in-aria-expanded:hidden">
+                                        <path d="M12 6v12m6-6H6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 not-in-aria-expanded:hidden">
+                                        <path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </span>
+                            </button>
+                        </dt>
+                        <el-disclosure id="faq-1" class="contents" hidden="">
+                            <dd class="mt-2 pr-12">
+                                <p class="text-base/7 text-gray-600 dark:text-gray-400">
+                                    Peppool Wallet is a non-custodial browser extension wallet specifically designed for the Pepecoin network. It allows you to manage your PEP, interact with dApps, and more, all from within your Chrome browser.
+                                </p>
+                            </dd>
+                        </el-disclosure>
+                    </div>
+
+                    <div class="py-6 first:pt-0 last:pb-0">
+                        <dt>
+                            <button type="button" command="--toggle" commandfor="faq-2" class="flex w-full items-start justify-between text-left text-gray-900 dark:text-white cursor-pointer" aria-expanded="false" aria-controls="faq-2">
+                                <span class="text-base/7 font-semibold">Is it safe to use?</span>
+                                <span class="ml-6 flex h-7 items-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 in-aria-expanded:hidden">
+                                        <path d="M12 6v12m6-6H6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 not-in-aria-expanded:hidden">
+                                        <path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </span>
+                            </button>
+                        </dt>
+                        <el-disclosure id="faq-2" class="contents" hidden="">
+                            <dd class="mt-2 pr-12">
+                                <p class="text-base/7 text-gray-600 dark:text-gray-400">
+                                    Yes! Peppool Wallet is non-custodial, which means you own your private keys and your PEP. We never have access to your funds. The code is fully open-source, allowing anyone to audit it for security and transparency.
+                                </p>
+                            </dd>
+                        </el-disclosure>
+                    </div>
+
+                    <div class="py-6 first:pt-0 last:pb-0">
+                        <dt>
+                            <button type="button" command="--toggle" commandfor="faq-3" class="flex w-full items-start justify-between text-left text-gray-900 dark:text-white cursor-pointer" aria-expanded="false" aria-controls="faq-3">
+                                <span class="text-base/7 font-semibold">When is it available?</span>
+                                <span class="ml-6 flex h-7 items-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 in-aria-expanded:hidden">
+                                        <path d="M12 6v12m6-6H6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 not-in-aria-expanded:hidden">
+                                        <path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </span>
+                            </button>
+                        </dt>
+                        <el-disclosure id="faq-3" class="contents" hidden="">
+                            <dd class="mt-2 pr-12">
+                                <p class="text-base/7 text-gray-600 dark:text-gray-400">
+                                    Soon on the Chrome Web Store. Available now on GitHub, see <a href="https://github.com/mvdnbrk/peppool-wallet?tab=readme-ov-file#manual-installation" target="_blank" rel="noopener" class="text-green-700 hover:underline">manual installation instructions</a>.
+                                </p>
+                            </dd>
+                        </el-disclosure>
+                    </div>
+
+                    <div class="py-6 first:pt-0 last:pb-0">
+                        <dt>
+                            <button type="button" command="--toggle" commandfor="faq-4" class="flex w-full items-start justify-between text-left text-gray-900 dark:text-white cursor-pointer" aria-expanded="false" aria-controls="faq-4">
+                                <span class="text-base/7 font-semibold">Which browsers are supported?</span>
+                                <span class="ml-6 flex h-7 items-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 in-aria-expanded:hidden">
+                                        <path d="M12 6v12m6-6H6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 not-in-aria-expanded:hidden">
+                                        <path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </span>
+                            </button>
+                        </dt>
+                        <el-disclosure id="faq-4" class="contents" hidden="">
+                            <dd class="mt-2 pr-12">
+                                <p class="text-base/7 text-gray-600 dark:text-gray-400">
+                                    Our primary focus is on Chromium-based browsers like Google Chrome, Brave, and Edge.
+                                    <br><br>
+                                    Support for other browsers may be considered as our roadmap evolves.
+                                </p>
+                            </dd>
+                        </el-disclosure>
+                    </div>
+
+                    <div class="py-6 first:pt-0 last:pb-0">
+                        <dt>
+                            <button type="button" command="--toggle" commandfor="faq-5" class="flex w-full items-start justify-between text-left text-gray-900 dark:text-white cursor-pointer" aria-expanded="false" aria-controls="faq-5">
+                                <span class="text-base/7 font-semibold">Will this support Pepinals?</span>
+                                <span class="ml-6 flex h-7 items-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 in-aria-expanded:hidden">
+                                        <path d="M12 6v12m6-6H6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 not-in-aria-expanded:hidden">
+                                        <path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </span>
+                            </button>
+                        </dt>
+                        <el-disclosure id="faq-5" class="contents" hidden="">
+                            <dd class="mt-2 pr-12">
+                                <p class="text-base/7 text-gray-600 dark:text-gray-400">
+                                    Support for Pepinals will not be available immediately at launch, but it is a key feature on our development roadmap.
+                                </p>
+                            </dd>
+                        </el-disclosure>
+                    </div>
+
+                    <div class="py-6 first:pt-0 last:pb-0">
+                        <dt>
+                            <button type="button" command="--toggle" commandfor="faq-6" class="flex w-full items-start justify-between text-left text-gray-900 dark:text-white cursor-pointer" aria-expanded="false" aria-controls="faq-6">
+                                <span class="text-base/7 font-semibold">Is the seed phrase compatible with other wallets?</span>
+                                <span class="ml-6 flex h-7 items-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 in-aria-expanded:hidden">
+                                        <path d="M12 6v12m6-6H6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 not-in-aria-expanded:hidden">
+                                        <path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </span>
+                            </button>
+                        </dt>
+                        <el-disclosure id="faq-6" class="contents" hidden="">
+                            <dd class="mt-2 pr-12">
+                                <p class="text-base/7 text-gray-600 dark:text-gray-400">
+                                    Yes. Peppool Wallet uses industry-standard BIP39 seed phrases (compatible with Coinomi and Nintondo) and standard WIF private keys (compatible with Pepecoin Core).
+                                </p>
+                            </dd>
+                        </el-disclosure>
+                    </div>
+
+                    <div class="py-6 first:pt-0 last:pb-0">
+                        <dt>
+                            <button type="button" command="--toggle" commandfor="faq-7" class="flex w-full items-start justify-between text-left text-gray-900 dark:text-white cursor-pointer" aria-expanded="false" aria-controls="faq-7">
+                                <span class="text-base/7 font-semibold">How does Peppool Wallet handle my privacy?</span>
+                                <span class="ml-6 flex h-7 items-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 in-aria-expanded:hidden">
+                                        <path d="M12 6v12m6-6H6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 not-in-aria-expanded:hidden">
+                                        <path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </span>
+                            </button>
+                        </dt>
+                        <el-disclosure id="faq-7" class="contents" hidden="">
+                            <dd class="mt-2 pr-12">
+                                <p class="text-base/7 text-gray-600 dark:text-gray-400">
+                                    Your privacy is a priority. We do not track your activity or collect any personal data. For more details, please review our <a href="https://github.com/mvdnbrk/peppool-wallet/blob/main/PRIVACY.md" target="_blank" rel="noopener" class="text-green-700 hover:underline">Privacy Policy</a> on GitHub.
+                                </p>
+                            </dd>
+                        </el-disclosure>
+                    </div>
+
+                    <div class="py-6 first:pt-0 last:pb-0">
+                        <dt>
+                            <button type="button" command="--toggle" commandfor="faq-8" class="flex w-full items-start justify-between text-left text-gray-900 dark:text-white cursor-pointer" aria-expanded="false" aria-controls="faq-8">
+                                <span class="text-base/7 font-semibold">Where can I find security information?</span>
+                                <span class="ml-6 flex h-7 items-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 in-aria-expanded:hidden">
+                                        <path d="M12 6v12m6-6H6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 not-in-aria-expanded:hidden">
+                                        <path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </span>
+                            </button>
+                        </dt>
+                        <el-disclosure id="faq-8" class="contents" hidden="">
+                            <dd class="mt-2 pr-12">
+                                <p class="text-base/7 text-gray-600 dark:text-gray-400">
+                                    Peppool Wallet is open-source and non-custodial. For security practices and reporting, please review our <a href="https://github.com/mvdnbrk/peppool-wallet/blob/main/SECURITY.md" target="_blank" rel="noopener" class="text-green-700 hover:underline">Security Policy</a> on GitHub.
+                                </p>
+                            </dd>
+                        </el-disclosure>
+                    </div>
+                    <div class="py-6 first:pt-0 last:pb-0">
+                        <dt>
+                            <button type="button" command="--toggle" commandfor="faq-9" class="flex w-full items-start justify-between text-left text-gray-900 dark:text-white cursor-pointer" aria-expanded="false" aria-controls="faq-9">
+                                <span class="text-base/7 font-semibold">Where can I find the Terms of Use?</span>
+                                <span class="ml-6 flex h-7 items-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 in-aria-expanded:hidden">
+                                        <path d="M12 6v12m6-6H6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 not-in-aria-expanded:hidden">
+                                        <path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </span>
+                            </button>
+                        </dt>
+                        <el-disclosure id="faq-9" class="contents" hidden="">
+                            <dd class="mt-2 pr-12">
+                                <p class="text-base/7 text-gray-600 dark:text-gray-400">
+                                    By using Peppool Wallet, you agree to our Terms of Use. You can review the full <a href="https://github.com/mvdnbrk/peppool-wallet/blob/main/TERMS_OF_USE.md" target="_blank" rel="noopener" class="text-green-700 hover:underline">Terms of Use</a> on GitHub.
+                                </p>
+                            </dd>
+                        </el-disclosure>
+                    </div>
+                </dl>
             </div>
         </div>
     </div>
