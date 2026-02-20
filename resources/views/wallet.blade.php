@@ -142,7 +142,7 @@
                 <!-- Fallback if JS is disabled -->
                 <div class="flex flex-col sm:flex-row gap-3">
                     <input type="email" placeholder="Enter your email" disabled class="flex-grow px-5 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-400 outline-none">
-                    <button disabled class="px-8 py-3 bg-green-700 text-white font-bold rounded-xl shadow-lg shadow-green-700/20 opacity-50 tracking-wider uppercase text-xs">Join Waitlist</button>
+                    <button disabled class="px-8 py-3 bg-green-700 text-white font-bold rounded-xl shadow-lg shadow-green-700/20 opacity-50 cursor-pointer tracking-wider uppercase text-xs">Join Waitlist</button>
                 </div>
             </div>
         </div>

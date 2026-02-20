@@ -16,7 +16,7 @@
                 <button 
                     type="submit" 
                     :disabled="isLoading || isSuccess"
-                    class="px-8 py-3 bg-green-700 hover:bg-green-800 disabled:bg-green-700/50 text-white font-bold rounded-xl transition-all shadow-lg shadow-green-700/20 active:scale-95 whitespace-nowrap flex items-center justify-center gap-2 tracking-wider uppercase text-xs"
+                    class="px-8 py-3 bg-green-700 hover:bg-green-800 disabled:bg-green-700/50 cursor-pointer text-white font-bold rounded-xl transition-all shadow-lg shadow-green-700/20 active:scale-95 whitespace-nowrap flex items-center justify-center gap-2 tracking-wider uppercase text-xs"
                 >
                     <span v-if="isLoading" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
                     <span>{{ buttonText }}</span>
