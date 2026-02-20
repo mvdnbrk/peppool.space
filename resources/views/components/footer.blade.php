@@ -16,8 +16,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('wallet') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
-                        Wallet
+                    <a href="{{ route('search.index') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
+                        Search
                     </a>
                 </li>
                 <li>
@@ -31,13 +31,13 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('docs.api') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
-                        API
+                    <a href="{{ route('wallet') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
+                        Wallet
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('search.index') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
-                        Search
+                    <a href="{{ route('docs.api') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
+                        API
                     </a>
                 </li>
                 <li>
