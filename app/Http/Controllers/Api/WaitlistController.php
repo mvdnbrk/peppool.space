@@ -15,15 +15,13 @@ class WaitlistController extends Controller
     public function __invoke(Request $request): JsonResponse
     {
         $request->validate([
-            'email' => ['required', 'email', 'unique:waitlist_entries,email'],
-        ], [
-            'email.unique' => 'You have already joined the waitlist.',
+            'email' => ['required', 'email'],
         ]);
 
-        WaitlistEntry::create([
-            'email' => $request->email,
-            'ip_address' => $request->ip(),
-        ]);
+        WaitlistEntry::firstOrCreate(
+            ['email' => $request->email],
+            ['ip_address' => $request->ip()]
+        );
 
         return response()->json([
             'message' => 'Successfully joined the waitlist.',

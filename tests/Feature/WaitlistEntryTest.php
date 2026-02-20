@@ -51,7 +51,7 @@ class WaitlistEntryTest extends TestCase
     }
 
     #[Test]
-    public function email_must_be_unique(): void
+    public function email_uniqueness_is_handled_silently(): void
     {
         WaitlistEntry::create([
             'email' => 'duplicate@example.com',
@@ -61,10 +61,13 @@ class WaitlistEntryTest extends TestCase
             'email' => 'duplicate@example.com',
         ]);
 
-        $response->assertStatus(422)
-            ->assertJsonValidationErrors(['email'])
-            ->assertJsonFragment([
-                'email' => ['You have already joined the waitlist.'],
+        $response->assertStatus(200)
+            ->assertJson([
+                'message' => 'Successfully joined the waitlist.',
             ]);
+
+        $this->assertDatabaseHas('waitlist_entries', [
+            'email' => 'duplicate@example.com',
+        ]);
     }
 }
