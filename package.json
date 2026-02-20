@@ -14,6 +14,7 @@
         "axios": "^1.13.5",
         "concurrently": "^9.0.1",
         "date-fns": "^4.1.0",
+        "fslightbox": "^3.7.5",
         "laravel-vite-plugin": "^2.1.0",
         "lightweight-charts": "^5.1.0",
         "tailwindcss": "^4.1.18",

@@ -16,6 +16,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('wallet') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
+                        Wallet
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('price') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
                         Price Chart
                     </a>

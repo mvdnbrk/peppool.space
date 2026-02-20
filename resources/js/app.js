@@ -1,4 +1,5 @@
 import '@tailwindplus/elements';
+import 'fslightbox';
 
 // Auto-mount Vue components dynamically
 document.addEventListener('DOMContentLoaded', () => {
@@ -19,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 'pepe-price': () => import('./components/PepePrice.vue'),
                 'block-height': () => import('./components/BlockHeight.vue'),
                 'mempool-count': () => import('./components/MempoolCount.vue'),
+                'waitlist-form': () => import('./components/WaitlistForm.vue'),
             };
 
             // Mount standard [data-vue] components
