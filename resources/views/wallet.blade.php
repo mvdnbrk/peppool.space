@@ -359,6 +359,28 @@
                             </dd>
                         </el-disclosure>
                     </div>
+                    <div class="py-6 first:pt-0 last:pb-0">
+                        <dt>
+                            <button type="button" command="--toggle" commandfor="faq-10" class="flex w-full items-start justify-between text-left text-gray-900 dark:text-white cursor-pointer" aria-expanded="false" aria-controls="faq-10">
+                                <span class="text-base/7 font-semibold">How can I get support or report a bug?</span>
+                                <span class="ml-6 flex h-7 items-center">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 in-aria-expanded:hidden">
+                                        <path d="M12 6v12m6-6H6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 not-in-aria-expanded:hidden">
+                                        <path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </span>
+                            </button>
+                        </dt>
+                        <el-disclosure id="faq-10" class="contents" hidden="">
+                            <dd class="mt-2 pr-12">
+                                <p class="text-base/7 text-gray-600 dark:text-gray-400">
+                                    If you encounter any issues, have questions, or want to suggest a feature, please open an issue on our <a href="https://github.com/mvdnbrk/peppool-wallet/issues" target="_blank" rel="noopener" class="text-green-700 hover:underline">GitHub repository</a>. This is the best way to get help directly from the developers.
+                                </p>
+                            </dd>
+                        </el-disclosure>
+                    </div>
                 </dl>
             </div>
         </div>
