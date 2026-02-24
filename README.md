@@ -11,6 +11,7 @@ This project is currently in an early alpha phase and under active development. 
 ## Development Stack
 
 - [Pepecoin Core][link-pepecoin-core]
+- [Electrs-pepe][link-electrs-pepe]
 - [Laravel][link-laravel]
 - [Tailwind CSS][link-tailwind]
 - [Vue.js][link-vue]
