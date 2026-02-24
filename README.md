@@ -2,11 +2,7 @@
 
 <p align="center"><a href="https://peppool.space" target="_blank"><img src="https://cdn.peppool.space/opengraph/default-card-large.png" width="800" height="418" alt="peppool.space"></p>
 
-This is the source of the [peppool.space][link-website] website.
-
-## Project status: Alpha (in development)
-
-This project is currently in an early alpha phase and under active development. Features may change frequently, and breaking changes can occur without notice. Expect rapid iterations, incomplete features, and occasional instability while we build out the best real-time Pepecoin explorer experience.
+This is the source of the [peppool.space][link-website] website, providing a real-time Pepecoin explorer experience and powering the [peppool-wallet][link-peppool-wallet] browser extension.
 
 ## Development Stack
 
@@ -91,6 +87,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 [link-lightweight-charts]: https://www.tradingview.com/lightweight-charts/
 [link-pepecoin-core]: https://github.com/pepecoinppc/pepecoin
 [link-electrs-pepe]: https://github.com/mvdnbrk/electrs-pepe
+[link-peppool-wallet]: https://github.com/mvdnbrk/peppool-wallet
 [link-sponsors]: https://github.com/sponsors/mvdnbrk
 [link-thanks]: https://thanks.dev/u/gh/mvdnbrk
 [link-sponsor-page]: https://peppool.space/sponsor
