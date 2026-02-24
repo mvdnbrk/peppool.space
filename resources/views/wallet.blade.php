@@ -1,4 +1,4 @@
-<x-layout title="Peppool Wallet: The Pepecoin wallet for everyone. (coming soon)" og_image="peppool-wallet.png" og_description="The Pepecoin wallet for everyone. Coming soon.">
+<x-layout title="Peppool Wallet: The Pepecoin wallet for everyone." og_image="peppool-wallet.png" og_description="The Pepecoin wallet for everyone. Manage your PEP, and more—all from your browser.">
     <div class="max-w-none space-y-8 lg:space-y-12">
         <!-- Hero Section -->
         <div class="relative bg-white dark:bg-gray-900 shadow-2xs rounded-[2rem] border border-gray-200 dark:border-gray-700 my-16 md:my-24 lg:my-32">
@@ -7,7 +7,7 @@
                 <div class="md:col-span-7 p-8 md:p-12 lg:p-16 xl:p-20 space-y-10">
                     <div class="space-y-6">
                         <div class="inline-flex items-center gap-2 px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-bold uppercase tracking-wider">
-                            Coming Soon
+                            Available Now
                         </div>
                         
                         <div class="space-y-4">
@@ -16,7 +16,7 @@
                             </h1>
                             <div class="space-y-2 max-w-lg">
                                 <p class="text-lg lg:text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
-                                    We're building a powerful, easy-to-use browser extension wallet for the Pepecoin network.
+                                    A powerful, easy-to-use browser extension wallet for the Pepecoin network.
                                 </p>
                                 <p class="text-lg lg:text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
                                     Manage your PEP, and more—all from your browser.
@@ -26,12 +26,11 @@
                     </div>
 
                     <div class="flex flex-col sm:flex-row items-center gap-6">
-                        <a href="https://github.com/mvdnbrk/peppool-wallet" target="_blank" rel="noopener" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-900 hover:bg-black text-white dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 rounded-xl transition-all duration-300 font-bold shadow-[0_10px_20px_-5px_rgba(0,0,0,0.3)] hover:shadow-[0_15px_30px_-5px_rgba(0,0,0,0.4)] hover:-translate-y-1 active:scale-95">
-                            <x-icon-github class="w-5 h-5" />
-                            <span>View on GitHub</span>
+                        <a href="https://chromewebstore.google.com/detail/jfdajbjjeejnlelljgobbfmkkbcbggbp" target="_blank" rel="noopener" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 bg-green-700 hover:bg-green-800 text-white rounded-xl transition-all duration-300 font-bold shadow-[0_10px_20px_-5px_rgba(21,128,61,0.3)] hover:shadow-[0_15px_30px_-5px_rgba(21,128,61,0.4)] hover:-translate-y-1 active:scale-95">
+                            <span>DOWNLOAD WALLET</span>
                         </a>
-                        <a href="#join-waitlist" class="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 group transition-colors hover:text-green-700 dark:hover:text-green-500 tracking-wide uppercase text-sm">
-                            Join the waitlist
+                        <a href="https://github.com/mvdnbrk/peppool-wallet" target="_blank" rel="noopener" class="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 group transition-colors hover:text-green-700 dark:hover:text-green-500 tracking-wide uppercase text-sm">
+                            View on GitHub
                             <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
                         </a>
                     </div>
@@ -98,7 +97,7 @@
                 </div>
                 <div class="relative flex justify-center">
                     <h2 class="bg-gray-50 dark:bg-gray-900 px-4 text-lg font-semibold text-gray-900 dark:text-white">
-                        Sneak peek of what's coming
+                        Designed for simplicity
                     </h2>
                 </div>
             </div>
@@ -126,24 +125,19 @@
             </div>
         </div>
 
-        <!-- Join the Waitlist CTA -->
-        <div id="join-waitlist" class="bg-white dark:bg-gray-900 shadow-2xs rounded-lg border border-gray-200 dark:border-gray-700 px-8 py-10 md:px-12 md:py-12 flex flex-col lg:flex-row items-center justify-between gap-8 pb-12">
+        <!-- Download CTA -->
+        <div class="bg-white dark:bg-gray-900 shadow-2xs rounded-lg border border-gray-200 dark:border-gray-700 px-8 py-10 md:px-12 md:py-12 flex flex-col lg:flex-row items-center justify-between gap-8">
             <div class="max-w-xl text-center lg:text-left">
-                <p class="font-bold text-gray-600 dark:text-gray-400">
-                    Get notified when we launch the Peppool Wallet browser extension.
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Ready to get started?</h3>
+                <p class="text-gray-600 dark:text-gray-400">
+                    Download the Peppool Wallet browser extension from the Chrome Web Store and start managing your PEP today.
                 </p>
             </div>
 
-            <div 
-                data-vue="waitlist-form" 
-                data-props='@json(['apiUrl' => route('api.wallet.waitlist')])'
-                class="w-full lg:w-auto min-w-[320px] sm:min-w-[440px]"
-            >
-                <!-- Fallback if JS is disabled -->
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <input type="email" placeholder="Enter your email" disabled class="flex-grow px-5 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-400 outline-none">
-                    <button disabled class="px-8 py-3 bg-green-700 text-white font-bold rounded-xl shadow-lg shadow-green-700/20 opacity-50 cursor-pointer tracking-wider uppercase text-xs">Join Waitlist</button>
-                </div>
+            <div class="w-full lg:w-auto flex justify-center lg:justify-end">
+                <a href="https://chromewebstore.google.com/detail/jfdajbjjeejnlelljgobbfmkkbcbggbp" target="_blank" rel="noopener" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-green-700 hover:bg-green-800 text-white rounded-xl transition-all duration-300 font-bold shadow-lg shadow-green-700/20 hover:-translate-y-1 active:scale-95 text-lg uppercase tracking-wider">
+                    <span>Install Now</span>
+                </a>
             </div>
         </div>
 
@@ -201,7 +195,7 @@
                     <div class="py-6 first:pt-0 last:pb-0">
                         <dt>
                             <button type="button" command="--toggle" commandfor="faq-3" class="flex w-full items-start justify-between text-left text-gray-900 dark:text-white cursor-pointer" aria-expanded="false" aria-controls="faq-3">
-                                <span class="text-base/7 font-semibold">When is it available?</span>
+                                <span class="text-base/7 font-semibold">Where can I download it?</span>
                                 <span class="ml-6 flex h-7 items-center">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 in-aria-expanded:hidden">
                                         <path d="M12 6v12m6-6H6" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -215,7 +209,7 @@
                         <el-disclosure id="faq-3" class="contents" hidden="">
                             <dd class="mt-2 pr-12">
                                 <p class="text-base/7 text-gray-600 dark:text-gray-400">
-                                    Soon on the Chrome Web Store. Available now on GitHub, see <a href="https://github.com/mvdnbrk/peppool-wallet?tab=readme-ov-file#manual-installation" target="_blank" rel="noopener" class="text-green-700 hover:underline">manual installation instructions</a>.
+                                    Peppool Wallet is available now on the <a href="https://chromewebstore.google.com/detail/jfdajbjjeejnlelljgobbfmkkbcbggbp" target="_blank" rel="noopener" class="text-green-700 hover:underline font-semibold">Chrome Web Store</a>.
                                 </p>
                             </dd>
                         </el-disclosure>

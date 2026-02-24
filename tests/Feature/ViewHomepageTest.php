@@ -53,7 +53,7 @@ class ViewHomepageTest extends TestCase
             ->assertOk()
             ->assertSee('Pepecoin')
             ->assertSee('Latest Blocks')
-            ->assertSee('Recent Mempool Transactions')
+            ->assertSee('Recent Transactions')
             ->assertSee('real-time pepecoin blockchain explorer')
             ->assertSee('peppool.space');
     }
