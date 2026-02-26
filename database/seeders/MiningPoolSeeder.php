@@ -67,7 +67,7 @@ class MiningPoolSeeder extends Seeder
             [
                 'name' => 'Mining-Dutch',
                 'link' => 'https://www.mining-dutch.nl/',
-                'addresses' => ['PhHpo2HmqWZnBEsmFeQYLHHKxTeF25yfX8'],
+                'addresses' => ['PgRLcaCTEkXSguu6ZgzkuncHdCxADmPBXP'],
                 'regexes' => ['Mining-Dutch'],
             ],
             [
