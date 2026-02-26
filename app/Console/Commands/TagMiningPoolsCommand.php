@@ -60,6 +60,10 @@ class TagMiningPoolsCommand extends Command
                         $block->pool_id = $pool->id;
                         $block->save();
                         $tagged++;
+
+                        // Auto-discover historical addresses too
+                        $pepeAddress = $block->auxpow['tx']['vout'][0]['scriptPubKey']['addresses'][0] ?? null;
+                        $this->miningPoolService->recordPayoutAddress($pool, $pepeAddress);
                     }
                 }
                 $bar->advance();

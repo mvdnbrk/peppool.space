@@ -157,10 +157,9 @@ class SyncBlocksCommand extends Command
 
                 $pool = $this->miningPoolService->identifyFromBlock($blockData);
 
-                // If not identified from auxpow, try fetching full block to get coinbase
-                if (! $pool && ! isset($blockData['auxpow'])) {
-                    $blockData = $this->rpcService->getBlock($blockHash, 2);
-                    $pool = $this->miningPoolService->identifyFromBlock($blockData);
+                if ($pool) {
+                    $pepeAddress = $blockData['tx'][0]['vout'][0]['scriptPubKey']['addresses'][0] ?? null;
+                    $this->miningPoolService->recordPayoutAddress($pool, $pepeAddress);
                 }
 
                 $blocksToInsert[] = [
