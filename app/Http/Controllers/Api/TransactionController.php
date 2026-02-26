@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Contracts\BlockchainServiceInterface;
+use App\Exceptions\RpcResponseException;
 use App\Http\Controllers\Api\Concerns\HasApiResponses;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -77,7 +79,17 @@ class TransactionController extends Controller
         try {
             return $callback($txid);
         } catch (Throwable $e) {
-            if ($e->getCode() === Response::HTTP_NOT_FOUND || str_contains(strtolower($e->getMessage()), 'not found')) {
+            $status = 0;
+
+            if ($e instanceof RequestException) {
+                $status = $e->getCode();
+            } elseif ($e instanceof RpcResponseException) {
+                $status = $e->httpStatus;
+            } else {
+                $status = (int) $e->getCode();
+            }
+
+            if ($status === Response::HTTP_NOT_FOUND || str_contains(strtolower($e->getMessage()), 'not found')) {
                 return $this->transactionNotFoundResponse();
             }
 
