@@ -61,16 +61,18 @@ class MiningPoolService
             $decodedScript = @hex2bin($coinbaseScriptHex) ?: '';
         }
 
-        foreach ($this->getPools() as $pool) {
+        $pools = Pool::all();
+
+        foreach ($pools as $pool) {
             // Check addresses
             if (! empty($payoutAddress) && in_array($payoutAddress, $pool->addresses, true)) {
                 return $pool;
             }
 
-            // Check regexes against decoded script
+            // Check tags (case-insensitive substring match)
             if (! empty($decodedScript)) {
-                foreach ($pool->regexes as $regex) {
-                    if (@preg_match($regex, $decodedScript)) {
+                foreach ($pool->regexes as $tag) {
+                    if (str_contains(strtolower($decodedScript), strtolower((string) $tag))) {
                         return $pool;
                     }
                 }

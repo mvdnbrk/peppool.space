@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Pool extends Model
 {
+    public $timestamps = false;
+
     protected $fillable = [
         'name',
         'link',

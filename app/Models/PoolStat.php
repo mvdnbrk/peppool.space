@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PoolStat extends Model
 {
+    public $timestamps = false;
+
     protected $fillable = [
         'hashrate_timestamp',
         'avg_hashrate',

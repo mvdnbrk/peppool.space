@@ -28,7 +28,7 @@ class CalculateMiningStats implements ShouldQueue
         }
 
         $referenceTime = $latestBlock->created_at;
-        $unknownPool = Pool::firstOrCreate(['slug' => 'unknown'], ['name' => 'Unknown', 'addresses' => [], 'regexes' => []]);
+        $unknownPool = Pool::where('slug', 'unknown')->first() ?? Pool::create(['slug' => 'unknown', 'name' => 'Unknown', 'addresses' => [], 'regexes' => []]);
 
         $this->calculateForType('daily', $referenceTime->copy()->subDay(), $referenceTime, $explorer, $unknownPool->id);
         $this->calculateForType('weekly', $referenceTime->copy()->subWeek(), $referenceTime, $explorer, $unknownPool->id);
@@ -41,7 +41,13 @@ class CalculateMiningStats implements ShouldQueue
             return;
         }
 
-        $networkHashrate = $explorer->getHashrate();
+        $timeWindowSeconds = (float) abs($end->diffInSeconds($start));
+        if ($timeWindowSeconds === 0.0) {
+            return;
+        }
+
+        $avgDifficulty = (float) Block::whereBetween('created_at', [$start, $end])->avg('difficulty');
+        $networkHashrate = ($avgDifficulty * 4294967296.0 * $totalBlocks) / $timeWindowSeconds;
 
         $poolCounts = Block::query()
             ->select('pool_id', DB::raw('count(*) as block_count'))

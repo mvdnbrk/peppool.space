@@ -43,13 +43,18 @@ class MiningController extends Controller
 
     public function hashrate(Request $request): JsonResponse
     {
-        $type = $request->query('type', 'daily');
-        // For history, we usually show daily points even if the toggle is weekly? 
-        // Actually, let's just return all daily points for the last month.
-        
+        $latestTimestamp = PoolStat::where('type', 'daily')->max('hashrate_timestamp');
+
+        if (! $latestTimestamp) {
+            return response()->json([]);
+        }
+
+        $end = \Illuminate\Support\Carbon::parse($latestTimestamp);
+        $start = $end->copy()->subMonth();
+
         $stats = PoolStat::with('pool')
             ->where('type', 'daily')
-            ->where('hashrate_timestamp', '>=', now()->subMonth())
+            ->whereBetween('hashrate_timestamp', [$start, $end])
             ->orderBy('hashrate_timestamp')
             ->get()
             ->groupBy(fn ($stat) => $stat->hashrate_timestamp->toIso8601String())

@@ -10,7 +10,6 @@ use App\Models\PoolStat;
 use App\Services\PepecoinExplorerService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class BackfillMiningStatsCommand extends Command
 {
@@ -33,6 +32,7 @@ class BackfillMiningStatsCommand extends Command
         $latestBlock = Block::orderBy('height', 'desc')->first();
         if (! $latestBlock) {
             $this->error('No blocks found in database.');
+
             return self::FAILURE;
         }
 
@@ -43,13 +43,13 @@ class BackfillMiningStatsCommand extends Command
 
         for ($i = $days; $i >= 0; $i--) {
             $end = $referenceTime->copy()->subDays($i)->endOfDay();
-            
+
             // Daily
             $this->calculateForType('daily', $end->copy()->subDay(), $end, $unknownPool->id);
-            
+
             // Weekly (only once a day is fine)
             $this->calculateForType('weekly', $end->copy()->subWeek(), $end, $unknownPool->id);
-            
+
             $bar->advance();
         }
 
@@ -64,17 +64,17 @@ class BackfillMiningStatsCommand extends Command
     {
         $blocksInWindow = Block::whereBetween('created_at', [$start, $end])->get();
         $count = $blocksInWindow->count();
-        
+
         if ($count === 0) {
             return;
         }
 
         // Estimate hashrate for this window
         // Formula: Difficulty * 2^32 / TimeInSeconds
-        $avgDifficulty = $blocksInWindow->avg('difficulty');
-        $timeWindowSeconds = $end->diffInSeconds($start);
-        
-        $totalHashrate = ($avgDifficulty * 4294967296 * $count) / $timeWindowSeconds;
+        $avgDifficulty = (float) $blocksInWindow->avg('difficulty');
+        $timeWindowSeconds = (float) abs($end->diffInSeconds($start));
+
+        $totalHashrate = ($avgDifficulty * 4294967296.0 * $count) / $timeWindowSeconds;
 
         $poolCounts = $blocksInWindow->groupBy('pool_id');
 
