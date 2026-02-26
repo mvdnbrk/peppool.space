@@ -63,5 +63,6 @@ Route::middleware('throttle:60,1')->name('api.')->group(function () {
     Route::prefix('mining')->name('mining.')->group(function () {
         Route::get('/pools', [MiningController::class, 'pools'])->name('pools');
         Route::get('/hashrate', [MiningController::class, 'hashrate'])->name('hashrate');
+        Route::get('/blocks', [MiningController::class, 'blocks'])->name('blocks');
     });
 });

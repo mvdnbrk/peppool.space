@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Models\Pool;
 use App\Services\PepecoinExplorerService;
 use Illuminate\View\View;
 
@@ -17,7 +16,6 @@ class MiningDashboardController extends Controller
                 'subversion' => $explorer->getNetworkSubversion(),
                 'connectionCount' => $explorer->getNetworkConnectionsCount(),
             ],
-            'pools' => Pool::where('name', '!=', 'Unknown')->get(),
         ]);
     }
 }

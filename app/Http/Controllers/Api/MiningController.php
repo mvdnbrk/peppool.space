@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MiningBlockResource;
+use App\Models\Block;
 use App\Models\PoolStat;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class MiningController extends Controller
 {
@@ -49,7 +52,7 @@ class MiningController extends Controller
             return response()->json([]);
         }
 
-        $end = \Illuminate\Support\Carbon::parse($latestTimestamp);
+        $end = Carbon::parse($latestTimestamp);
         $start = $end->copy()->subMonth();
 
         $stats = PoolStat::with('pool')
@@ -69,5 +72,16 @@ class MiningController extends Controller
             ->values();
 
         return response()->json($stats);
+    }
+
+    public function blocks(): JsonResponse
+    {
+        return MiningBlockResource::collection(
+            Block::query()
+                ->with('pool')
+                ->orderByDesc('height')
+                ->limit(10)
+                ->get()
+        )->response();
     }
 }

@@ -73,7 +73,7 @@
     <!-- Latest Blocks and Mempool -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Latest Blocks -->
-        <x-latest-blocks />
+        <x-latest-blocks :api-url="route('api.mining.blocks')" />
 
         <!-- Mempool Transactions -->
         <x-mempool-transactions

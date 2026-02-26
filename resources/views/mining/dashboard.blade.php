@@ -60,7 +60,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-                    @foreach($pools as $pool)
+                    @foreach(App\Models\Pool::where('name', '!=', 'Unknown')->get() as $pool)
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                             {{ $pool->name }}

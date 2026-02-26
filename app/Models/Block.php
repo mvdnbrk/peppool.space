@@ -7,7 +7,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Collection;
 
 class Block extends Model
 {
@@ -46,25 +45,5 @@ class Block extends Model
     public function pool(): BelongsTo
     {
         return $this->belongsTo(Pool::class);
-    }
-
-    public static function getLatestBlocks(int $limit = 10): Collection
-    {
-        return static::orderBy('height', 'desc')
-            ->select(['height', 'hash', 'created_at', 'tx_count', 'size', 'pool_id'])
-            ->with('pool')
-            ->take($limit)
-            ->get()
-            ->map(fn ($block): array => [
-                'height' => $block->height,
-                'hash' => $block->hash,
-                'time' => $block->created_at->timestamp,
-                'tx_count' => $block->tx_count,
-                'size' => $block->size,
-                'pool' => $block->pool ? [
-                    'name' => $block->pool->name,
-                    'slug' => $block->pool->slug,
-                ] : null,
-            ]);
     }
 }
