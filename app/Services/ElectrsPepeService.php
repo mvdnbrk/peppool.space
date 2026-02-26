@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Data\Electrs\AddressData;
-use App\Data\Electrs\BlockData;
-use App\Data\Electrs\MempoolData;
-use App\Data\Electrs\RecentMempoolTransactionData;
-use App\Data\Electrs\TransactionData;
-use App\Data\Electrs\UtxoData;
+use App\Data\Blockchain\AddressData;
+use App\Data\Blockchain\BlockData;
+use App\Data\Blockchain\MempoolData;
+use App\Data\Blockchain\RecentMempoolTransactionData;
+use App\Data\Blockchain\TransactionData;
+use App\Data\Blockchain\UtxoData;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 

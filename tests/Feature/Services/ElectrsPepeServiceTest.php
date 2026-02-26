@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Services;
 
-use App\Data\Electrs\AddressData;
+use App\Data\Blockchain\AddressData;
 use App\Services\ElectrsPepeService;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;

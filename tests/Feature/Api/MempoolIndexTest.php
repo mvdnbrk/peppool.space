@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Api;
 
-use App\Data\Electrs\MempoolData;
-use App\Data\Rpc\MempoolInfoData;
+use App\Data\Blockchain\MempoolData;
+use App\Data\Blockchain\MempoolInfoData;
 use App\Services\ElectrsPepeService;
 use App\Services\PepecoinExplorerService;
 use Mockery;

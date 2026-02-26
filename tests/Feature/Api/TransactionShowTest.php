@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Api;
 
-use App\Data\Electrs\TransactionData;
+use App\Data\Blockchain\TransactionData;
 use App\Services\ElectrsPepeService;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;

@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Api;
 
-use App\Data\Electrs\AddressData;
-use App\Data\Electrs\TransactionData;
-use App\Data\Electrs\UtxoData;
+use App\Data\Blockchain\AddressData;
+use App\Data\Blockchain\TransactionData;
+use App\Data\Blockchain\UtxoData;
 use App\Services\ElectrsPepeService;
 use Illuminate\Support\Collection;
 use Mockery;

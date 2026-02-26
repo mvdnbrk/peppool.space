@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Data\Rpc\MempoolInfoData;
-use App\Data\Rpc\TxOutSetInfoData;
-use App\Data\Rpc\ValidateAddressData;
+use App\Data\Blockchain\MempoolInfoData;
+use App\Data\Blockchain\TxOutSetInfoData;
+use App\Data\Blockchain\ValidateAddressData;
 use App\Models\Block;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;

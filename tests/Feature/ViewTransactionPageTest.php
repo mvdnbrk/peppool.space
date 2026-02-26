@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Data\Electrs\TransactionData;
+use App\Data\Blockchain\TransactionData;
 use App\Services\ElectrsPepeService;
 use App\Services\PepecoinExplorerService;
 use Mockery;

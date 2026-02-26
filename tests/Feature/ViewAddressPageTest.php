@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Data\Electrs\AddressData;
+use App\Data\Blockchain\AddressData;
 use App\Services\ElectrsPepeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;

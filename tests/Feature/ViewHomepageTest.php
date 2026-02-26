@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Data\Rpc\BlockchainInfoData;
-use App\Data\Rpc\MempoolInfoData;
+use App\Data\Blockchain\BlockchainInfoData;
+use App\Data\Blockchain\MempoolInfoData;
 use App\Models\Block;
 use App\Services\ElectrsPepeService;
 use App\Services\PepecoinExplorerService;
