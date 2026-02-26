@@ -56,6 +56,7 @@ class TagMiningPoolsCommand extends Command
         $query->chunkById(500, function ($blocks) use ($bar, &$tagged) {
             foreach ($blocks as $block) {
                 $pool = null;
+                $blockData = null;
 
                 // 1. Try with stored auxpow
                 if (! empty($block->auxpow)) {
@@ -77,13 +78,12 @@ class TagMiningPoolsCommand extends Command
                     $block->save();
                     $tagged++;
 
-                    // Capture payout address
-                    // For auxpow blocks, it's in the auxpow json. For standard blocks, it's in the first tx.
+                    // Capture payout address from auxpow or from the Pepecoin coinbase tx
                     $pepeAddress = null;
                     if (! empty($block->auxpow)) {
                         $pepeAddress = $block->auxpow['tx']['vout'][0]['scriptPubKey']['addresses'][0] ?? null;
-                    } else {
-                        // Fallback logic for capturing standard block addresses if needed
+                    } elseif ($blockData) {
+                        $pepeAddress = $blockData['tx'][0]['vout'][0]['scriptPubKey']['addresses'][0] ?? null;
                     }
 
                     if ($pepeAddress) {
