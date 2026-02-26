@@ -4,22 +4,38 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Contracts\BlockchainServiceInterface;
 use App\Data\Blockchain\AddressData;
 use App\Data\Blockchain\BlockData;
 use App\Data\Blockchain\MempoolData;
 use App\Data\Blockchain\RecentMempoolTransactionData;
 use App\Data\Blockchain\TransactionData;
+use App\Data\Blockchain\TransactionStatusData;
 use App\Data\Blockchain\UtxoData;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 
-class ElectrsPepeService
+class ElectrsPepeService implements BlockchainServiceInterface
 {
     private readonly string $url;
 
     public function __construct(?string $url = null)
     {
         $this->url = $url ?? config('pepecoin.electrs.url', 'http://127.0.0.1:3002');
+    }
+
+    public function getBlockTipHeight(): int
+    {
+        return (int) Http::get("{$this->url}/blocks/tip/height")
+            ->throw()
+            ->body();
+    }
+
+    public function getBlockTipHash(): string
+    {
+        return Http::get("{$this->url}/blocks/tip/hash")
+            ->throw()
+            ->body();
     }
 
     public function getMempool(): MempoolData
@@ -29,6 +45,16 @@ class ElectrsPepeService
             ->json();
 
         return MempoolData::from($response);
+    }
+
+    /** @return Collection<int, string> */
+    public function getMempoolTxIds(): Collection
+    {
+        $response = Http::get("{$this->url}/mempool/txids")
+            ->throw()
+            ->json();
+
+        return new Collection($response);
     }
 
     /** @return Collection<int, RecentMempoolTransactionData> */
@@ -119,11 +145,13 @@ class ElectrsPepeService
             ->json();
     }
 
-    public function getTransactionStatus(string $txid): array
+    public function getTransactionStatus(string $txid): TransactionStatusData
     {
-        return Http::get("{$this->url}/tx/{$txid}/status")
+        $response = Http::get("{$this->url}/tx/{$txid}/status")
             ->throw()
             ->json();
+
+        return TransactionStatusData::from($response);
     }
 
     public function getRawTransaction(string $txid): string
