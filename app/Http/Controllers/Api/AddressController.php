@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Data\Rpc\ValidateAddressData;
 use App\Http\Controllers\Api\Concerns\HasApiResponses;
 use App\Http\Controllers\Controller;
 use App\Services\ElectrsPepeService;
