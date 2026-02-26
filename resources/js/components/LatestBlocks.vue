@@ -9,16 +9,14 @@
       >
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-4">
-            <div class="flex-shrink-0 text-center">
+            <div class="flex-shrink-0">
               <div class="px-3 py-1 bg-green-100 dark:bg-green-900 rounded-md flex items-center justify-center">
                 <span class="text-sm font-semibold text-green-600 dark:text-green-400">{{ block.height }}</span>
               </div>
-              <p v-if="block.pool" class="mt-1 text-[10px] font-medium text-gray-500 dark:text-gray-400 leading-tight truncate max-w-[64px]">
-                {{ block.pool.name }}
-              </p>
             </div>
             <div class="min-w-0 flex-1">
               <p class="text-sm font-medium text-gray-900 dark:text-white">
+                <span v-if="block.pool" class="text-gray-500 dark:text-gray-400 font-normal mr-1">{{ block.pool.name }}:</span>
                 {{ (block.id || block.hash || '').substring(0, 16) }}...{{ (block.id || block.hash || '').substring((block.id || block.hash || '').length - 8) }}
               </p>
               <div class="flex items-center space-x-2">
