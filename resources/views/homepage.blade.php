@@ -28,13 +28,13 @@
         </x-stat-card>
 
         <!-- Mempool Card -->
-        <x-stat-card aria-label="Mempool: {{ number_format($mempool->size) }} transactions waiting" icon-bg="bg-green-500" label="Mempool">
+        <x-stat-card aria-label="Mempool: {{ number_format($mempool->count) }} transactions waiting" icon-bg="bg-green-500" label="Mempool">
             <x-slot:icon>
                 <x-icon-refresh class="w-5 h-5 text-white" />
             </x-slot:icon>
             @php
             $mempoolProps = [
-                'initialCount' => $mempool->size,
+                'initialCount' => $mempool->count,
                 'apiUrl' => route('api.mempool.index')
             ];
             @endphp
@@ -42,7 +42,7 @@
                 data-vue="mempool-count"
                 data-props='@json($mempoolProps)'
                 class="text-2xl"
-            ><span>{{ number_format($mempool->size) }} txs</span></div>
+            ><span>{{ number_format($mempool->count) }} txs</span></div>
         </x-stat-card>
 
         <!-- Difficulty Card -->
