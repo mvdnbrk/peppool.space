@@ -67,19 +67,24 @@ class MiningPoolService
             $decodedScript = @hex2bin($coinbaseScriptHex) ?: '';
         }
 
-        // Using getPools() ensures we only query the DB once per command/request
-        foreach ($this->getPools() as $pool) {
-            // Check addresses
-            if (! empty($payoutAddress) && in_array($payoutAddress, $pool->addresses, true)) {
-                return $pool;
-            }
+        $pools = $this->getPools();
 
-            // Check tags (case-insensitive substring match)
-            if (! empty($decodedScript)) {
+        // 1. Check tags first (more reliable)
+        if (! empty($decodedScript)) {
+            foreach ($pools as $pool) {
                 foreach ($pool->regexes as $tag) {
                     if (str_contains(strtolower($decodedScript), strtolower((string) $tag))) {
                         return $pool;
                     }
+                }
+            }
+        }
+
+        // 2. Fallback to address matching
+        if (! empty($payoutAddress)) {
+            foreach ($pools as $pool) {
+                if (in_array($payoutAddress, $pool->addresses, true)) {
+                    return $pool;
                 }
             }
         }
