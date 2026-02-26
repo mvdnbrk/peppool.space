@@ -11,7 +11,6 @@ use App\Data\Blockchain\MempoolData;
 use App\Data\Blockchain\RecentMempoolTransactionData;
 use App\Data\Blockchain\TransactionData;
 use App\Data\Blockchain\TransactionStatusData;
-use App\Data\Blockchain\UtxoData;
 use App\Exceptions\UnsupportedOperationException;
 use Illuminate\Support\Collection;
 
