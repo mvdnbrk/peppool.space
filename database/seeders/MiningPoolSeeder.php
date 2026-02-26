@@ -55,13 +55,13 @@ class MiningPoolSeeder extends Seeder
             [
                 'name' => 'Binance Pool',
                 'link' => 'https://pool.binance.com/',
-                'addresses' => [],
+                'addresses' => ['PmAKzVn2hqR6a2whuzkD7jLV4Q5ALSctSK'],
                 'regexes' => ['Binance'],
             ],
             [
                 'name' => 'EMCD',
                 'link' => 'https://emcd.io/',
-                'addresses' => [],
+                'addresses' => ['PvSYktoNfDa2BRU5q39Ldafpx6Ei2goJLr'],
                 'regexes' => ['emcd', 'one_more_mcd'],
             ],
             [
