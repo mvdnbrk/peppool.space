@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Contracts\BlockchainServiceInterface;
+use App\Models\PoolStat;
 use App\Services\PepecoinExplorerService;
 use Exception;
 use Illuminate\Http\Response;
@@ -16,6 +17,10 @@ class HomepageController extends Controller
     public function __invoke(PepecoinExplorerService $explorer, BlockchainServiceInterface $blockchain): View
     {
         try {
+            // Get most recent hashrate from stats table for a more accurate history-based number
+            $recentHashrate = PoolStat::where('type', 'daily')->latest('hashrate_timestamp')->first();
+            $hashrateValue = $recentHashrate?->avg_hashrate ?? $explorer->getHashrate();
+
             return view('homepage', [
                 'mempool' => $blockchain->getMempool(),
                 'network' => [
@@ -25,7 +30,7 @@ class HomepageController extends Controller
                 'chainSize' => Number::fileSize($explorer->getChainSize(), precision: 1),
                 'blockHeight' => $blockchain->getBlockTipHeight(),
                 'difficulty' => format_difficulty($explorer->getDifficulty()),
-                'hashrate' => format_hashrate($explorer->getHashrate()),
+                'hashrate' => format_hashrate($hashrateValue),
             ]);
 
         } catch (Exception $e) {
