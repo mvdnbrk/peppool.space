@@ -7,6 +7,10 @@ use App\Data\Blockchain\AddressData;
 use App\Data\Blockchain\TransactionData;
 use App\Data\Blockchain\UtxoData;
 use App\Exceptions\UnsupportedOperationException;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
@@ -159,19 +163,22 @@ class AddressShowTest extends TestCase
     {
         $address = 'invalid-address';
 
+        $response400 = new Response(new GuzzleResponse(400));
+        $exception400 = new RequestException($response400);
+
         $blockchain = Mockery::mock(BlockchainServiceInterface::class);
         $blockchain->shouldReceive('getAddress')
             ->once()
             ->with($address)
-            ->andThrow(new \Exception('Invalid address', 400));
+            ->andThrow($exception400);
         $blockchain->shouldReceive('getAddressTransactions')
             ->once()
             ->with($address)
-            ->andThrow(new \Exception('Invalid address', 400));
+            ->andThrow($exception400);
         $blockchain->shouldReceive('getAddressUtxos')
             ->once()
             ->with($address)
-            ->andThrow(new \Exception('Invalid address', 400));
+            ->andThrow($exception400);
         $this->app->instance(BlockchainServiceInterface::class, $blockchain);
 
         $this->get(route('api.address.show', ['address' => $address]))
