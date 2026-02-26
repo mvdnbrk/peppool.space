@@ -36,19 +36,22 @@ class BackfillMiningStatsCommand extends Command
             return self::FAILURE;
         }
 
-        $referenceTime = $latestBlock->created_at;
+        $referenceTime = $latestBlock->created_at->startOfHour();
         $unknownPool = Pool::firstOrCreate(['slug' => 'unknown'], ['name' => 'Unknown', 'addresses' => [], 'regexes' => []]);
 
-        $bar = $this->output->createProgressBar($days);
+        $totalHours = $days * 24;
+        $bar = $this->output->createProgressBar($totalHours);
 
-        for ($i = $days; $i >= 0; $i--) {
-            $end = $referenceTime->copy()->subDays($i)->endOfDay();
+        for ($i = $totalHours; $i >= 0; $i--) {
+            $end = $referenceTime->copy()->subHours($i);
 
-            // Daily
+            // Calculate daily stats (24h window ending at this hour)
             $this->calculateForType('daily', $end->copy()->subDay(), $end, $unknownPool->id);
 
-            // Weekly (only once a day is fine)
-            $this->calculateForType('weekly', $end->copy()->subWeek(), $end, $unknownPool->id);
+            // Calculate weekly stats (7d window ending at this hour) once a day to save time
+            if ($i % 24 === 0) {
+                $this->calculateForType('weekly', $end->copy()->subWeek(), $end, $unknownPool->id);
+            }
 
             $bar->advance();
         }
@@ -69,8 +72,7 @@ class BackfillMiningStatsCommand extends Command
             return;
         }
 
-        // Estimate hashrate for this window
-        // Formula: Difficulty * 2^32 / TimeInSeconds
+        // Formula: (Difficulty * 2^32 * BlockCount) / TimeInSeconds
         $avgDifficulty = (float) $blocksInWindow->avg('difficulty');
         $timeWindowSeconds = (float) abs($end->diffInSeconds($start));
 
@@ -85,7 +87,7 @@ class BackfillMiningStatsCommand extends Command
 
             PoolStat::updateOrCreate(
                 [
-                    'hashrate_timestamp' => $end->startOfHour(),
+                    'hashrate_timestamp' => $end,
                     'pool_id' => $poolId,
                     'type' => $type,
                 ],

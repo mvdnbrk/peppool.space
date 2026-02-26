@@ -32,4 +32,20 @@ class PoolStat extends Model
     {
         return $this->belongsTo(Pool::class);
     }
+
+    /**
+     * Get the sum of all pool hashrates for the latest timestamp.
+     */
+    public static function getLatestNetworkHashrate(): float
+    {
+        $latestTimestamp = static::where('type', 'daily')->max('hashrate_timestamp');
+
+        if (! $latestTimestamp) {
+            return 0.0;
+        }
+
+        return (float) static::where('type', 'daily')
+            ->where('hashrate_timestamp', $latestTimestamp)
+            ->sum('avg_hashrate');
+    }
 }
