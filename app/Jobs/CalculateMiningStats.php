@@ -47,7 +47,7 @@ class CalculateMiningStats implements ShouldQueue
         }
 
         $avgDifficulty = (float) Block::whereBetween('created_at', [$start, $end])->avg('difficulty');
-        $networkHashrate = ($avgDifficulty * 4294967296.0 * $totalBlocks) / $timeWindowSeconds;
+        $networkHashrate = Block::estimateHashrate($avgDifficulty, $totalBlocks, (int) $timeWindowSeconds);
 
         $poolCounts = Block::query()
             ->select('pool_id', DB::raw('count(*) as block_count'))

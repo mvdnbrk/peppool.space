@@ -11,6 +11,7 @@ use App\Models\PoolStat;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class MiningController extends Controller
 {
@@ -55,23 +56,27 @@ class MiningController extends Controller
         $end = Carbon::parse($latestTimestamp);
         $start = $end->copy()->subMonth();
 
-        $stats = PoolStat::with('pool')
-            ->where('type', 'daily')
-            ->whereBetween('hashrate_timestamp', [$start, $end])
-            ->orderBy('hashrate_timestamp')
-            ->get()
-            ->groupBy(fn ($stat) => $stat->hashrate_timestamp->toIso8601String())
-            ->map(fn ($group, $timestamp) => [
-                'timestamp' => $timestamp,
-                'pools' => $group->map(fn ($stat) => [
-                    'name' => $stat->pool->name,
-                    'hashrate' => $stat->avg_hashrate,
-                ]),
-                'totalHashrate' => $group->sum('avg_hashrate'),
-            ])
-            ->values();
+        $cacheKey = 'mining_hashrate_history_'.md5($start->toDateTimeString().$end->toDateTimeString());
 
-        return response()->json($stats);
+        $data = Cache::remember($cacheKey, 600, function () use ($start, $end) {
+            return PoolStat::with('pool')
+                ->where('type', 'daily')
+                ->whereBetween('hashrate_timestamp', [$start, $end])
+                ->orderBy('hashrate_timestamp')
+                ->get()
+                ->groupBy(fn ($stat) => $stat->hashrate_timestamp->toIso8601String())
+                ->map(fn ($group, $timestamp) => [
+                    'timestamp' => $timestamp,
+                    'pools' => $group->map(fn ($stat) => [
+                        'name' => $stat->pool->name,
+                        'hashrate' => $stat->avg_hashrate,
+                    ]),
+                    'totalHashrate' => $group->sum('avg_hashrate'),
+                ])
+                ->values();
+        });
+
+        return response()->json($data);
     }
 
     public function blocks(): JsonResponse

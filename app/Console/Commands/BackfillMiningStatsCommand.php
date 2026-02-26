@@ -76,7 +76,7 @@ class BackfillMiningStatsCommand extends Command
         $avgDifficulty = (float) $blocksInWindow->avg('difficulty');
         $timeWindowSeconds = (float) abs($end->diffInSeconds($start));
 
-        $totalHashrate = ($avgDifficulty * 4294967296.0 * $count) / $timeWindowSeconds;
+        $totalHashrate = Block::estimateHashrate($avgDifficulty, $count, (int) $timeWindowSeconds);
 
         $poolCounts = $blocksInWindow->groupBy('pool_id');
 

@@ -46,4 +46,17 @@ class Block extends Model
     {
         return $this->belongsTo(Pool::class);
     }
+
+    /**
+     * Estimate Scrypt hashrate based on difficulty and time window.
+     * Formula: (AvgDifficulty * 2^32 * BlockCount) / TimeInSeconds
+     */
+    public static function estimateHashrate(float $avgDifficulty, int $blockCount, int $seconds): float
+    {
+        if ($seconds <= 0 || $blockCount <= 0) {
+            return 0.0;
+        }
+
+        return ($avgDifficulty * 4294967296.0 * $blockCount) / $seconds;
+    }
 }

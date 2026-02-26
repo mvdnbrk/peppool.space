@@ -13,6 +13,9 @@ class MiningPoolService
     /** @var Collection<int, Pool>|null */
     private ?Collection $pools = null;
 
+    /**
+     * Get pools, preferably from local memory or cache.
+     */
     private function getPools(): Collection
     {
         if ($this->pools === null) {
@@ -37,7 +40,6 @@ class MiningPoolService
 
             $pool = $this->identifyPool($scriptSig, $payoutAddress);
             if ($pool) {
-                // If identified by tag but address is different, we'll want to record the child address later
                 return $pool;
             }
         }
@@ -65,9 +67,8 @@ class MiningPoolService
             $decodedScript = @hex2bin($coinbaseScriptHex) ?: '';
         }
 
-        $pools = Pool::all();
-
-        foreach ($pools as $pool) {
+        // Using getPools() ensures we only query the DB once per command/request
+        foreach ($this->getPools() as $pool) {
             // Check addresses
             if (! empty($payoutAddress) && in_array($payoutAddress, $pool->addresses, true)) {
                 return $pool;
@@ -99,12 +100,13 @@ class MiningPoolService
             $addresses = $pool->addresses;
             $addresses[] = $address;
 
-            // Keep a reasonable limit of addresses (e.g., last 5 used)
             if (count($addresses) > 5) {
                 array_shift($addresses);
             }
 
             $pool->update(['addresses' => $addresses]);
+
+            // Refresh local memory and global cache
             $this->clearCache();
         }
     }

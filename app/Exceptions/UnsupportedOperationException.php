@@ -12,7 +12,7 @@ class UnsupportedOperationException extends RuntimeException
     {
         return new self(
             "The '{$method}' operation requires electrs-pepe. "
-            . 'Install it from https://github.com/mvdnbrk/electrs-pepe'
+            .'Install it from https://github.com/mvdnbrk/electrs-pepe'
         );
     }
 }
