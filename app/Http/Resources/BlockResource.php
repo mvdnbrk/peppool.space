@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -18,6 +20,10 @@ class BlockResource extends JsonResource
             'difficulty' => $this->difficulty,
             'nonce' => $this->nonce,
             'merkle_root' => $this->merkleroot,
+            'pool' => $this->pool ? [
+                'name' => $this->pool->name,
+                'slug' => $this->pool->slug,
+            ] : null,
         ];
     }
 }

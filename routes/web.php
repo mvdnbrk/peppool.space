@@ -21,6 +21,7 @@ Route::get('/about-pepecoin', AboutController::class)->name('about');
 Route::get('/wallet', WalletController::class)->name('wallet');
 Route::get('/sponsor', SponsorController::class)->name('sponsor');
 Route::get('/converter', [ConverterController::class, 'index'])->name('converter');
+Route::get('/mining', \App\Http\Controllers\MiningDashboardController::class)->name('mining.dashboard');
 
 Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 Route::post('/search', [SearchController::class, 'store'])->name('search.store');

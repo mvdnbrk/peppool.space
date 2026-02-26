@@ -10,3 +10,4 @@ Schedule::job(StorePepePrice::class)->everyFifteenMinutes();
 
 Schedule::command('pepe:sync:blocks')->everyMinute();
 Schedule::job(CalculateTotalSupply::class)->hourly();
+Schedule::job(\App\Jobs\CalculateMiningStats::class)->hourly();

@@ -26,6 +26,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('mining.dashboard') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
+                        Mining
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('converter') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
                         Converter
                     </a>

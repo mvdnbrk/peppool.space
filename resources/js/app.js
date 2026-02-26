@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 'pepe-price': () => import('./components/PepePrice.vue'),
                 'block-height': () => import('./components/BlockHeight.vue'),
                 'mempool-count': () => import('./components/MempoolCount.vue'),
+                'mining-pool-share': () => import('./components/MiningPoolShare.vue'),
+                'mining-hashrate-history': () => import('./components/MiningHashrateHistory.vue'),
             };
 
             // Mount standard [data-vue] components
