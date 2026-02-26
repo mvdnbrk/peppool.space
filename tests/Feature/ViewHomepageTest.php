@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Contracts\BlockchainServiceInterface;
 use App\Data\Blockchain\BlockchainInfoData;
-use App\Data\Blockchain\MempoolInfoData;
+use App\Data\Blockchain\MempoolData;
 use App\Models\Block;
-use App\Services\ElectrsPepeService;
 use App\Services\PepecoinExplorerService;
 use App\Services\PepecoinRpcService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -32,22 +32,20 @@ class ViewHomepageTest extends TestCase
         ]));
         $this->app->instance(PepecoinRpcService::class, $rpcMock);
 
+        // Mock Blockchain service
+        $blockchainMock = Mockery::mock(BlockchainServiceInterface::class);
+        $blockchainMock->shouldReceive('getMempool')->andReturn(new MempoolData(count: 10, vsize: 1000, totalFee: 100000000));
+        $blockchainMock->shouldReceive('getBlockTipHeight')->andReturn(655982);
+        $this->app->instance(BlockchainServiceInterface::class, $blockchainMock);
+
         // Mock Explorer service
         $explorerMock = Mockery::mock(PepecoinExplorerService::class);
-        $explorerMock->shouldReceive('getMempoolInfo')->andReturn(new MempoolInfoData(size: 10, bytes: 1000));
         $explorerMock->shouldReceive('getNetworkSubversion')->andReturn('/pepetoshi:1.1.0/');
         $explorerMock->shouldReceive('getNetworkConnectionsCount')->andReturn(8);
-        $explorerMock->shouldReceive('getMempoolTxIds')->andReturn(collect(['tx1', 'tx2']));
         $explorerMock->shouldReceive('getChainSize')->andReturn(1000000000);
-        $explorerMock->shouldReceive('getBlockTipHeight')->andReturn(655982);
         $explorerMock->shouldReceive('getDifficulty')->andReturn(1234.56);
         $explorerMock->shouldReceive('getHashrate')->andReturn(123456789);
         $this->app->instance(PepecoinExplorerService::class, $explorerMock);
-
-        // Mock Electrs service
-        $electrsMock = Mockery::mock(ElectrsPepeService::class);
-        $electrsMock->shouldReceive('getRecentMempoolTransactions')->andReturn(collect([]));
-        $this->app->instance(ElectrsPepeService::class, $electrsMock);
 
         $this->get('/')
             ->assertOk()
