@@ -17,9 +17,19 @@ class HomepageController extends Controller
     public function __invoke(PepecoinExplorerService $explorer, BlockchainServiceInterface $blockchain): View
     {
         try {
-            // Get most recent hashrate from stats table for a more accurate history-based number
-            $recentHashrate = PoolStat::where('type', 'daily')->latest('hashrate_timestamp')->first();
-            $hashrateValue = $recentHashrate?->avg_hashrate ?? $explorer->getHashrate();
+            // Get most recent hashrate sum from stats table
+            $latestPoint = PoolStat::where('type', 'daily')->latest('hashrate_timestamp')->first();
+            $hashrateValue = 0;
+            
+            if ($latestPoint) {
+                $hashrateValue = PoolStat::where('type', 'daily')
+                    ->where('hashrate_timestamp', $latestPoint->hashrate_timestamp)
+                    ->sum('avg_hashrate');
+            }
+
+            if ($hashrateValue <= 0) {
+                $hashrateValue = $explorer->getHashrate();
+            }
 
             return view('homepage', [
                 'mempool' => $blockchain->getMempool(),
