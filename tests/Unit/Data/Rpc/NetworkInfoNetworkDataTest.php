@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Data\Rpc;
 
-use App\Data\Rpc\NetworkInfoNetworkData;
+use App\Data\Blockchain\NetworkInfoNetworkData;
 use Tests\TestCase;
 
 final class NetworkInfoNetworkDataTest extends TestCase

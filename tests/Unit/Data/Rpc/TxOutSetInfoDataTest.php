@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Data\Rpc;
 
-use App\Data\Rpc\TxOutSetInfoData;
+use App\Data\Blockchain\TxOutSetInfoData;
 use Tests\TestCase;
 
 final class TxOutSetInfoDataTest extends TestCase

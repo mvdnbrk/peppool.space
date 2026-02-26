@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Services;
 
-use App\Data\Rpc\BlockchainInfoData;
-use App\Data\Rpc\NetworkInfoData;
-use App\Data\Rpc\TxOutSetInfoData;
-use App\Data\Rpc\ValidateAddressData;
+use App\Contracts\BlockchainServiceInterface;
+use App\Data\Blockchain\BlockchainInfoData;
+use App\Data\Blockchain\NetworkInfoData;
+use App\Data\Blockchain\TxOutSetInfoData;
+use App\Data\Blockchain\ValidateAddressData;
 use App\Services\PepecoinExplorerService;
 use App\Services\PepecoinRpcService;
 use Illuminate\Support\Facades\Cache;
@@ -27,6 +28,8 @@ final class PepecoinExplorerServiceTest extends TestCase
         Cache::flush();
 
         $rpc = Mockery::mock(PepecoinRpcService::class);
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+
         $rpc->shouldReceive('getNetworkInfo')
             ->once()
             ->andReturn(NetworkInfoData::from([
@@ -34,7 +37,7 @@ final class PepecoinExplorerServiceTest extends TestCase
                 'subversion' => '/pepetoshi:1.1.0/',
             ]));
 
-        $service = new PepecoinExplorerService($rpc);
+        $service = new PepecoinExplorerService($rpc, $blockchain);
 
         $this->assertSame(7, $service->getNetworkConnectionsCount());
     }
@@ -44,6 +47,8 @@ final class PepecoinExplorerServiceTest extends TestCase
         Cache::flush();
 
         $rpc = Mockery::mock(PepecoinRpcService::class);
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+
         $rpc->shouldReceive('getNetworkInfo')
             ->once()
             ->andReturn(NetworkInfoData::from([
@@ -51,7 +56,7 @@ final class PepecoinExplorerServiceTest extends TestCase
                 'subversion' => '/pepetoshi:1.1.0/',
             ]));
 
-        $service = new PepecoinExplorerService($rpc);
+        $service = new PepecoinExplorerService($rpc, $blockchain);
 
         $this->assertSame('/pepetoshi:1.1.0/', $service->getNetworkSubversion());
     }
@@ -63,6 +68,8 @@ final class PepecoinExplorerServiceTest extends TestCase
         $address = 'PValidAddress123';
 
         $rpc = Mockery::mock(PepecoinRpcService::class);
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+
         $rpc->shouldReceive('call')
             ->once()
             ->with('validateaddress', [$address])
@@ -74,7 +81,7 @@ final class PepecoinExplorerServiceTest extends TestCase
                 'iswatchonly' => false,
             ]);
 
-        $service = new PepecoinExplorerService($rpc);
+        $service = new PepecoinExplorerService($rpc, $blockchain);
 
         $dto = $service->validateAddress($address);
 
@@ -93,6 +100,8 @@ final class PepecoinExplorerServiceTest extends TestCase
         $address = 'PCacheTestAddress';
 
         $rpc = Mockery::mock(PepecoinRpcService::class);
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+
         $rpc->shouldReceive('call')
             ->once() // ensure only one RPC call due to caching
             ->with('validateaddress', [$address])
@@ -101,7 +110,7 @@ final class PepecoinExplorerServiceTest extends TestCase
                 'address' => $address,
             ]);
 
-        $service = new PepecoinExplorerService($rpc);
+        $service = new PepecoinExplorerService($rpc, $blockchain);
 
         $first = $service->validateAddress($address);
         $second = $service->validateAddress($address);
@@ -116,6 +125,8 @@ final class PepecoinExplorerServiceTest extends TestCase
         Cache::flush();
 
         $rpc = Mockery::mock(PepecoinRpcService::class);
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+
         $rpc->shouldReceive('getTxOutSetInfo')
             ->once()
             ->andReturn([
@@ -128,7 +139,7 @@ final class PepecoinExplorerServiceTest extends TestCase
                 'total_amount' => 123.45,
             ]);
 
-        $service = new PepecoinExplorerService($rpc);
+        $service = new PepecoinExplorerService($rpc, $blockchain);
 
         $dto = $service->getTxOutSetInfoData();
 
@@ -147,13 +158,15 @@ final class PepecoinExplorerServiceTest extends TestCase
         Cache::flush();
 
         $rpc = Mockery::mock(PepecoinRpcService::class);
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+
         $rpc->shouldReceive('getBlockchainInfo')
             ->once()
             ->andReturn(BlockchainInfoData::from([
                 'size_on_disk' => 987654321,
             ]));
 
-        $service = new PepecoinExplorerService($rpc);
+        $service = new PepecoinExplorerService($rpc, $blockchain);
 
         $this->assertSame(987654321, $service->getChainSize());
     }
@@ -166,13 +179,48 @@ final class PepecoinExplorerServiceTest extends TestCase
         $time = 1757323663;
 
         $rpc = Mockery::mock(PepecoinRpcService::class);
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+
         $rpc->shouldReceive('getMempoolEntry')
             ->once()
             ->with($txid)
             ->andReturn(['time' => $time]);
 
-        $service = new PepecoinExplorerService($rpc);
+        $service = new PepecoinExplorerService($rpc, $blockchain);
 
         $this->assertSame($time, $service->getMempoolEntryTime($txid));
+    }
+
+    public function test_get_recommended_fees_returns_estimates_from_blockchain_service(): void
+    {
+        Cache::flush();
+
+        $rpc = Mockery::mock(PepecoinRpcService::class);
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+
+        $blockchain->shouldReceive('getFeeEstimates')
+            ->once()
+            ->andReturn([
+                '1' => 10.0,
+                '6' => 5.0,
+                '12' => 2.0,
+                '144' => 1.0,
+            ]);
+
+        $rpc->shouldReceive('getNetworkInfo')
+            ->once()
+            ->andReturn(NetworkInfoData::from([
+                'relayfee' => 0.00001, // 0.01 sat/vB equivalent (0.01 RIBBITS/vB)
+            ]));
+
+        $service = new PepecoinExplorerService($rpc, $blockchain);
+
+        $fees = $service->getRecommendedFees();
+
+        $this->assertSame(10.0, $fees['fastestFee']);
+        $this->assertSame(5.0, $fees['halfHourFee']);
+        $this->assertSame(2.0, $fees['hourFee']);
+        $this->assertSame(1.0, $fees['economyFee']);
+        $this->assertSame(0.01, $fees['minimumFee']);
     }
 }

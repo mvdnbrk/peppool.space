@@ -2,10 +2,11 @@
 
 namespace Tests\Feature\Api;
 
+use App\Contracts\BlockchainServiceInterface;
 use App\Data\Blockchain\AddressData;
 use App\Data\Blockchain\TransactionData;
 use App\Data\Blockchain\UtxoData;
-use App\Services\ElectrsPepeService;
+use App\Exceptions\UnsupportedOperationException;
 use Illuminate\Support\Collection;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
@@ -42,12 +43,12 @@ class AddressShowTest extends TestCase
             ],
         ]);
 
-        $electrs = Mockery::mock(ElectrsPepeService::class);
-        $electrs->shouldReceive('getAddress')
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+        $blockchain->shouldReceive('getAddress')
             ->once()
             ->with($address)
             ->andReturn($mockData);
-        $this->app->instance(ElectrsPepeService::class, $electrs);
+        $this->app->instance(BlockchainServiceInterface::class, $blockchain);
 
         $this->get(route('api.address.show', ['address' => $address]))
             ->assertOk()
@@ -94,12 +95,12 @@ class AddressShowTest extends TestCase
             ],
         ], Collection::class);
 
-        $electrs = Mockery::mock(ElectrsPepeService::class);
-        $electrs->shouldReceive('getAddressTransactions')
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+        $blockchain->shouldReceive('getAddressTransactions')
             ->once()
             ->with($address)
             ->andReturn($mockData);
-        $this->app->instance(ElectrsPepeService::class, $electrs);
+        $this->app->instance(BlockchainServiceInterface::class, $blockchain);
 
         $this->get(route('api.address.transactions', ['address' => $address]))
             ->assertOk()
@@ -132,12 +133,12 @@ class AddressShowTest extends TestCase
             ],
         ], Collection::class);
 
-        $electrs = Mockery::mock(ElectrsPepeService::class);
-        $electrs->shouldReceive('getAddressUtxos')
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+        $blockchain->shouldReceive('getAddressUtxos')
             ->once()
             ->with($address)
             ->andReturn($mockData);
-        $this->app->instance(ElectrsPepeService::class, $electrs);
+        $this->app->instance(BlockchainServiceInterface::class, $blockchain);
 
         $this->get(route('api.address.utxo', ['address' => $address]))
             ->assertOk()
@@ -158,32 +159,20 @@ class AddressShowTest extends TestCase
     {
         $address = 'invalid-address';
 
-        $electrs = Mockery::mock(ElectrsPepeService::class);
-        $electrs->shouldReceive('getAddress')
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+        $blockchain->shouldReceive('getAddress')
             ->once()
             ->with($address)
-            ->andThrow(new \Illuminate\Http\Client\RequestException(
-                new \Illuminate\Http\Client\Response(
-                    new \GuzzleHttp\Psr7\Response(400)
-                )
-            ));
-        $electrs->shouldReceive('getAddressTransactions')
+            ->andThrow(new \Exception('Invalid address', 400));
+        $blockchain->shouldReceive('getAddressTransactions')
             ->once()
             ->with($address)
-            ->andThrow(new \Illuminate\Http\Client\RequestException(
-                new \Illuminate\Http\Client\Response(
-                    new \GuzzleHttp\Psr7\Response(400)
-                )
-            ));
-        $electrs->shouldReceive('getAddressUtxos')
+            ->andThrow(new \Exception('Invalid address', 400));
+        $blockchain->shouldReceive('getAddressUtxos')
             ->once()
             ->with($address)
-            ->andThrow(new \Illuminate\Http\Client\RequestException(
-                new \Illuminate\Http\Client\Response(
-                    new \GuzzleHttp\Psr7\Response(400)
-                )
-            ));
-        $this->app->instance(ElectrsPepeService::class, $electrs);
+            ->andThrow(new \Exception('Invalid address', 400));
+        $this->app->instance(BlockchainServiceInterface::class, $blockchain);
 
         $this->get(route('api.address.show', ['address' => $address]))
             ->assertStatus(400)
@@ -207,6 +196,26 @@ class AddressShowTest extends TestCase
                 'code' => 400,
                 'error' => 'invalid_address',
                 'message' => 'The provided address is invalid.',
+            ]);
+    }
+
+    #[Test]
+    public function it_returns_503_when_electrs_is_unavailable(): void
+    {
+        $address = 'PumNFmkevCTG6RTEc7W2piGTbQHMg2im2M';
+
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+        $blockchain->shouldReceive('getAddress')
+            ->once()
+            ->with($address)
+            ->andThrow(UnsupportedOperationException::electrsRequired('getAddress'));
+        $this->app->instance(BlockchainServiceInterface::class, $blockchain);
+
+        $this->get(route('api.address.show', ['address' => $address]))
+            ->assertStatus(503)
+            ->assertJson([
+                'code' => 503,
+                'error' => 'electrs_required',
             ]);
     }
 }
