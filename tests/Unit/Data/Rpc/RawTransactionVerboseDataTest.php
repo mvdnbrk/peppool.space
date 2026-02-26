@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Data\Rpc;
 
-use App\Data\Rpc\RawTransactionVerboseData;
-use App\Data\Rpc\RawVinData;
-use App\Data\Rpc\RawVoutData;
+use App\Data\Blockchain\RawTransactionVerboseData;
+use App\Data\Blockchain\RawVinData;
+use App\Data\Blockchain\RawVoutData;
 use Tests\TestCase;
 
 final class RawTransactionVerboseDataTest extends TestCase

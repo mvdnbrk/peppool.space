@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Data\Rpc;
 
-use App\Data\Rpc\ScriptPubKeyData;
+use App\Data\Blockchain\ScriptPubKeyData;
 use Tests\TestCase;
 
 final class ScriptPubKeyDataTest extends TestCase

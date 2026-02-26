@@ -1,0 +1,28 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Data\Blockchain\Casts;
+
+use Spatie\LaravelData\Casts\Cast;
+use Spatie\LaravelData\Support\Creation\CreationContext;
+use Spatie\LaravelData\Support\DataProperty;
+
+final class VsizeCast implements Cast
+{
+    /**
+     * @param  array<string,mixed>  $properties
+     */
+    public function cast(DataProperty $property, mixed $value, array $properties, CreationContext $context): mixed
+    {
+        if ($value !== null) {
+            return (int) $value;
+        }
+
+        if (array_key_exists('size', $properties)) {
+            return (int) $properties['size'];
+        }
+
+        return 0;
+    }
+}

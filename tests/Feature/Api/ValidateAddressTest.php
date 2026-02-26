@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Api;
 
-use App\Data\Rpc\ValidateAddressData;
+use App\Data\Blockchain\ValidateAddressData;
 use App\Services\PepecoinExplorerService;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;

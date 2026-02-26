@@ -3,9 +3,9 @@
 namespace App\Services;
 
 use App\Contracts\RpcClientInterface;
-use App\Data\Rpc\BlockchainInfoData;
-use App\Data\Rpc\MempoolInfoData;
-use App\Data\Rpc\NetworkInfoData;
+use App\Data\Blockchain\BlockchainInfoData;
+use App\Data\Blockchain\MempoolInfoData;
+use App\Data\Blockchain\NetworkInfoData;
 use App\Exceptions\RpcResponseException;
 use Exception;
 use Illuminate\Support\Collection;

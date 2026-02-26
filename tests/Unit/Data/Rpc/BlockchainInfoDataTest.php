@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Data\Rpc;
 
-use App\Data\Rpc\BlockchainInfoData;
+use App\Data\Blockchain\BlockchainInfoData;
 use Tests\TestCase;
 
 final class BlockchainInfoDataTest extends TestCase

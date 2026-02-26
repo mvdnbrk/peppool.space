@@ -1,19 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
-use App\Data\Electrs\TransactionData;
-use App\Services\ElectrsPepeService;
+use App\Contracts\BlockchainServiceInterface;
+use App\Data\Blockchain\TransactionData;
 use App\Services\PepecoinExplorerService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\View\View;
+use Throwable;
 
 class AddressController extends Controller
 {
     public function __construct(
         private readonly PepecoinExplorerService $explorer,
-        private readonly ElectrsPepeService $electrs,
+        private readonly BlockchainServiceInterface $blockchain,
     ) {}
 
     public function show(Request $request, string $address): View
@@ -26,13 +29,13 @@ class AddressController extends Controller
         }
 
         try {
-            $addressInfo = $this->electrs->getAddress($address);
-            $history = $this->electrs->getAddressTransactions($address);
+            $addressInfo = $this->blockchain->getAddress($address);
+            $history = $this->blockchain->getAddressTransactions($address);
 
             $transactions = $history->map(fn (TransactionData $tx) => [
                 'txid' => $tx->txid,
                 'time' => $tx->status->blockTime,
-                'confirmations' => $tx->status->confirmed ? ($this->explorer->getBlockTipHeight() - $tx->status->blockHeight + 1) : 0,
+                'confirmations' => $tx->status->confirmed ? ($this->blockchain->getBlockTipHeight() - $tx->status->blockHeight + 1) : 0,
                 'amount' => $this->calculateAddressAmount($address, $tx),
                 'is_incoming' => $this->isIncoming($address, $tx),
                 'is_coinbase' => (bool) ($tx->vin[0]->isCoinbase ?? false),
@@ -40,7 +43,7 @@ class AddressController extends Controller
 
             $page = request('page', 1);
             $paginatedTransactions = new LengthAwarePaginator(
-                $transactions->forPage($page, $perPage),
+                $transactions->forPage((int) $page, $perPage),
                 $transactions->count(),
                 $perPage,
                 $page,
@@ -56,7 +59,7 @@ class AddressController extends Controller
                 'transactions' => $paginatedTransactions,
             ]);
 
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             return view('address.show', [
                 'address' => $address,
                 'balance' => null,

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Data\Rpc;
 
-use App\Data\Rpc\UnspentOutputData;
+use App\Data\Blockchain\UnspentOutputData;
 use Tests\TestCase;
 
 final class UnspentOutputDataTest extends TestCase

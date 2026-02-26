@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Data\Electrs\TransactionData;
-use App\Services\ElectrsPepeService;
+use App\Contracts\BlockchainServiceInterface;
+use App\Data\Blockchain\TransactionData;
 use App\Services\PepecoinExplorerService;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
@@ -54,17 +54,17 @@ class ViewTransactionPageTest extends TestCase
             ],
         ]);
 
-        $electrs = Mockery::mock(ElectrsPepeService::class);
-        $electrs->shouldReceive('getTransaction')
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+        $blockchain->shouldReceive('getTransaction')
             ->once()
             ->with($txid)
             ->andReturn($mockData);
-
-        $explorer = Mockery::mock(PepecoinExplorerService::class);
-        $explorer->shouldReceive('getBlockTipHeight')
+        $blockchain->shouldReceive('getBlockTipHeight')
             ->andReturn(915965);
 
-        $this->app->instance(ElectrsPepeService::class, $electrs);
+        $explorer = Mockery::mock(PepecoinExplorerService::class);
+
+        $this->app->instance(BlockchainServiceInterface::class, $blockchain);
         $this->app->instance(PepecoinExplorerService::class, $explorer);
 
         $this->get(route('transaction.show', ['txid' => $txid]))
@@ -107,19 +107,19 @@ class ViewTransactionPageTest extends TestCase
             ],
         ]);
 
-        $electrs = Mockery::mock(ElectrsPepeService::class);
-        $electrs->shouldReceive('getTransaction')
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+        $blockchain->shouldReceive('getTransaction')
             ->once()
             ->with($txid)
             ->andReturn($mockData);
+        $blockchain->shouldReceive('getBlockTipHeight')
+            ->andReturn(915965);
 
         $explorer = Mockery::mock(PepecoinExplorerService::class);
-        $explorer->shouldReceive('getBlockTipHeight')
-            ->andReturn(915965);
         $explorer->shouldReceive('getMempoolEntryTime')
             ->andReturn(1771054926);
 
-        $this->app->instance(ElectrsPepeService::class, $electrs);
+        $this->app->instance(BlockchainServiceInterface::class, $blockchain);
         $this->app->instance(PepecoinExplorerService::class, $explorer);
 
         $this->get(route('transaction.show', ['txid' => $txid]))

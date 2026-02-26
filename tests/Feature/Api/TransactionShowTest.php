@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Api;
 
-use App\Data\Electrs\TransactionData;
-use App\Services\ElectrsPepeService;
+use App\Contracts\BlockchainServiceInterface;
+use App\Data\Blockchain\TransactionData;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -53,12 +53,12 @@ class TransactionShowTest extends TestCase
             ],
         ]);
 
-        $electrs = Mockery::mock(ElectrsPepeService::class);
-        $electrs->shouldReceive('getTransaction')
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+        $blockchain->shouldReceive('getTransaction')
             ->once()
             ->with($txid)
             ->andReturn($mockData);
-        $this->app->instance(ElectrsPepeService::class, $electrs);
+        $this->app->instance(BlockchainServiceInterface::class, $blockchain);
 
         $this->get(route('api.tx.show', ['txid' => $txid]))
             ->assertOk()
@@ -105,16 +105,16 @@ class TransactionShowTest extends TestCase
     {
         $txid = '2c603d097588bb7d520ffb8b270cc61865f52c1427504ab43678fc055d07c260';
 
-        $electrs = Mockery::mock(ElectrsPepeService::class);
-        $electrs->shouldReceive('getTransaction')
-            ->twice() // once for show, once for status
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+        $blockchain->shouldReceive('getTransaction')
+            ->once()
             ->with($txid)
-            ->andThrow(new \Illuminate\Http\Client\RequestException(
-                new \Illuminate\Http\Client\Response(
-                    new \GuzzleHttp\Psr7\Response(404)
-                )
-            ));
-        $this->app->instance(ElectrsPepeService::class, $electrs);
+            ->andThrow(new \Exception('Not found', 404));
+        $blockchain->shouldReceive('getTransactionStatus')
+            ->once()
+            ->with($txid)
+            ->andThrow(new \Exception('Not found', 404));
+        $this->app->instance(BlockchainServiceInterface::class, $blockchain);
 
         $this->get(route('api.tx.show', ['txid' => $txid]))
             ->assertStatus(404)
@@ -155,12 +155,12 @@ class TransactionShowTest extends TestCase
             ],
         ]);
 
-        $electrs = Mockery::mock(ElectrsPepeService::class);
-        $electrs->shouldReceive('getTransaction')
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+        $blockchain->shouldReceive('getTransactionStatus')
             ->once()
             ->with($txid)
-            ->andReturn($mockData);
-        $this->app->instance(ElectrsPepeService::class, $electrs);
+            ->andReturn($mockData->status);
+        $this->app->instance(BlockchainServiceInterface::class, $blockchain);
 
         $this->get(route('api.tx.status', ['txid' => $txid]))
             ->assertOk()
@@ -191,12 +191,12 @@ class TransactionShowTest extends TestCase
             ],
         ]);
 
-        $electrs = Mockery::mock(ElectrsPepeService::class);
-        $electrs->shouldReceive('getTransaction')
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+        $blockchain->shouldReceive('getTransactionStatus')
             ->once()
             ->with($txid)
-            ->andReturn($mockData);
-        $this->app->instance(ElectrsPepeService::class, $electrs);
+            ->andReturn($mockData->status);
+        $this->app->instance(BlockchainServiceInterface::class, $blockchain);
 
         $this->get(route('api.tx.status', ['txid' => $txid]))
             ->assertOk()
@@ -211,12 +211,12 @@ class TransactionShowTest extends TestCase
         $txid = '2c603d097588bb7d520ffb8b270cc61865f52c1427504ab43678fc055d07c261';
         $hex = '010000000536a007284bd52ee826680a7f43536472f1bcce1e76cd76b826b88c5884eddf1f0c0000006b483045022100bcdf40fb3b5ebfa2c158ac8d1a41c03eb3dba4e180b00e81836bafd56d946efd022005cc40e35022b614275c1e485c409599667cbd41f6e5d78f421cb260a020a24f01210255ea3f53ce3ed1ad2c08dfc23b211b15b852afb819492a9a0f3f99e5747cb5f0ffffffffee08cb90c4e84dd7952b2cfad81ed3b088f5b';
 
-        $electrs = Mockery::mock(ElectrsPepeService::class);
-        $electrs->shouldReceive('getRawTransaction')
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+        $blockchain->shouldReceive('getRawTransaction')
             ->once()
             ->with($txid)
             ->andReturn($hex);
-        $this->app->instance(ElectrsPepeService::class, $electrs);
+        $this->app->instance(BlockchainServiceInterface::class, $blockchain);
 
         $this->get(route('api.tx.hex', ['txid' => $txid]))
             ->assertOk()
@@ -231,12 +231,12 @@ class TransactionShowTest extends TestCase
         $hex = '01020304'; // Short hex for testing
         $binary = hex2bin($hex);
 
-        $electrs = Mockery::mock(ElectrsPepeService::class);
-        $electrs->shouldReceive('getRawTransaction')
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+        $blockchain->shouldReceive('getRawTransaction')
             ->once()
             ->with($txid)
             ->andReturn($hex);
-        $this->app->instance(ElectrsPepeService::class, $electrs);
+        $this->app->instance(BlockchainServiceInterface::class, $blockchain);
 
         $this->get(route('api.tx.raw', ['txid' => $txid]))
             ->assertOk()
@@ -250,12 +250,12 @@ class TransactionShowTest extends TestCase
         $hex = '0100000001abcdef';
         $txid = '2c603d097588bb7d520ffb8b270cc61865f52c1427504ab43678fc055d07c261';
 
-        $electrs = Mockery::mock(ElectrsPepeService::class);
-        $electrs->shouldReceive('broadcastTransaction')
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+        $blockchain->shouldReceive('broadcastTransaction')
             ->once()
             ->with($hex)
             ->andReturn($txid);
-        $this->app->instance(ElectrsPepeService::class, $electrs);
+        $this->app->instance(BlockchainServiceInterface::class, $blockchain);
 
         $this->call('POST', route('api.tx.broadcast'), content: $hex)
             ->assertOk()
@@ -286,16 +286,12 @@ class TransactionShowTest extends TestCase
     {
         $hex = '0100000001abcdef';
 
-        $electrs = Mockery::mock(ElectrsPepeService::class);
-        $electrs->shouldReceive('broadcastTransaction')
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+        $blockchain->shouldReceive('broadcastTransaction')
             ->once()
             ->with($hex)
-            ->andThrow(new \Illuminate\Http\Client\RequestException(
-                new \Illuminate\Http\Client\Response(
-                    new \GuzzleHttp\Psr7\Response(400, [], 'Missing inputs')
-                )
-            ));
-        $this->app->instance(ElectrsPepeService::class, $electrs);
+            ->andThrow(new \Exception('Missing inputs', 400));
+        $this->app->instance(BlockchainServiceInterface::class, $blockchain);
 
         $this->call('POST', route('api.tx.broadcast'), content: $hex)
             ->assertStatus(400)

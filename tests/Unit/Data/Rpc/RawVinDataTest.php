@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Data\Rpc;
 
-use App\Data\Rpc\RawVinData;
-use App\Data\Rpc\ScriptSigData;
+use App\Data\Blockchain\RawVinData;
+use App\Data\Blockchain\ScriptSigData;
 use Tests\TestCase;
 
 final class RawVinDataTest extends TestCase

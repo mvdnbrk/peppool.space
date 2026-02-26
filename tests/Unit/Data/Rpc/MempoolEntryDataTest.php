@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Data\Rpc;
 
-use App\Data\Rpc\MempoolEntryData;
+use App\Data\Blockchain\MempoolEntryData;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 

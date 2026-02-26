@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Data\Rpc;
 
-use App\Data\Rpc\ValidateAddressData;
+use App\Data\Blockchain\ValidateAddressData;
 use Tests\TestCase;
 
 final class ValidateAddressDataTest extends TestCase

@@ -1,23 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
-use App\Services\ElectrsPepeService;
+use App\Contracts\BlockchainServiceInterface;
 use App\Services\PepecoinExplorerService;
 use Illuminate\View\View;
 use Spatie\LaravelData\Optional;
+use Throwable;
 
 class TransactionController extends Controller
 {
     public function __construct(
-        private readonly ElectrsPepeService $electrs,
+        private readonly BlockchainServiceInterface $blockchain,
         private readonly PepecoinExplorerService $explorer,
     ) {}
 
     public function show(string $txid): View
     {
         try {
-            $tx = $this->electrs->getTransaction($txid);
+            $tx = $this->blockchain->getTransaction($txid);
 
             $inBlock = $tx->status->confirmed;
             $blockInfo = null;
@@ -27,7 +30,7 @@ class TransactionController extends Controller
                     'hash' => $tx->status->blockHash instanceof Optional ? null : $tx->status->blockHash,
                     'height' => $tx->status->blockHeight instanceof Optional ? null : $tx->status->blockHeight,
                     'time' => $tx->status->blockTime instanceof Optional ? null : $tx->status->blockTime,
-                    'confirmations' => $tx->status->blockHeight instanceof Optional ? 0 : max(1, $this->explorer->getBlockTipHeight() - $tx->status->blockHeight + 1),
+                    'confirmations' => $tx->status->blockHeight instanceof Optional ? 0 : max(1, $this->blockchain->getBlockTipHeight() - $tx->status->blockHeight + 1),
                 ];
             }
 
@@ -70,10 +73,10 @@ class TransactionController extends Controller
                 'totalOutput' => $tx->getTotalOutputValueInPep(),
                 'fee' => $tx->getFeeInPep(),
                 'isCoinbase' => (bool) ($tx->vin[0]->isCoinbase ?? false),
-                'blockTipHeight' => $this->explorer->getBlockTipHeight(),
+                'blockTipHeight' => $this->blockchain->getBlockTipHeight(),
             ]);
 
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             return view('transaction.show', [
                 'error' => 'Transaction not found: '.$e->getMessage(),
                 'txid' => $txid,

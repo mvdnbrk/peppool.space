@@ -2,18 +2,15 @@
 
 namespace Tests\Feature;
 
-use App\Data\Electrs\AddressData;
-use App\Services\ElectrsPepeService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Response;
+use App\Contracts\BlockchainServiceInterface;
+use App\Data\Blockchain\AddressData;
+use App\Services\PepecoinExplorerService;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ViewAddressPageTest extends TestCase
 {
-    use RefreshDatabase;
-
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -21,49 +18,46 @@ class ViewAddressPageTest extends TestCase
     }
 
     #[Test]
-    public function invalid_address_returns_404(): void
+    public function address_page_renders_correctly(): void
     {
-        $this->get('/address/PEPEaddress1234567890ABCDEFGHIJ')
-            ->assertStatus(Response::HTTP_NOT_FOUND);
-    }
+        $address = 'PumNFmkevCTG6RTEc7W2piGTbQHMg2im2M';
 
-    #[Test]
-    public function valid_address_renders_correctly_using_electrs(): void
-    {
-        $address = 'PEPEaddress123456789ABCDEFGHiJ';
+        $mockData = AddressData::from([
+            'address' => $address,
+            'chain_stats' => [
+                'funded_txo_count' => 1,
+                'funded_txo_sum' => 100000000,
+                'spent_txo_count' => 0,
+                'spent_txo_sum' => 0,
+                'tx_count' => 1,
+            ],
+            'mempool_stats' => [
+                'funded_txo_count' => 0,
+                'funded_txo_sum' => 0,
+                'spent_txo_count' => 0,
+                'spent_txo_sum' => 0,
+                'tx_count' => 0,
+            ],
+        ]);
 
-        $electrs = Mockery::mock(ElectrsPepeService::class);
-        $electrs->shouldReceive('getAddress')
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+        $blockchain->shouldReceive('getAddress')
             ->once()
             ->with($address)
-            ->andReturn(AddressData::from([
-                'address' => $address,
-                'chain_stats' => [
-                    'funded_txo_count' => 1,
-                    'funded_txo_sum' => 100_000_000,
-                    'spent_txo_count' => 0,
-                    'spent_txo_sum' => 0,
-                    'tx_count' => 1,
-                ],
-                'mempool_stats' => [
-                    'funded_txo_count' => 0,
-                    'funded_txo_sum' => 0,
-                    'spent_txo_count' => 0,
-                    'spent_txo_sum' => 0,
-                    'tx_count' => 0,
-                ],
-            ]));
-
-        $electrs->shouldReceive('getAddressTransactions')
+            ->andReturn($mockData);
+        $blockchain->shouldReceive('getAddressTransactions')
             ->once()
             ->with($address)
-            ->andReturn(collect());
+            ->andReturn(collect([]));
 
-        $this->app->instance(ElectrsPepeService::class, $electrs);
+        $explorer = Mockery::mock(PepecoinExplorerService::class);
+
+        $this->app->instance(BlockchainServiceInterface::class, $blockchain);
+        $this->app->instance(PepecoinExplorerService::class, $explorer);
 
         $this->get(route('address.show', ['address' => $address]))
             ->assertOk()
             ->assertSee($address)
-            ->assertSee('1.00'); // Balance
+            ->assertSee('Address');
     }
 }

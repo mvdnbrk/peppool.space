@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
+use App\Contracts\BlockchainServiceInterface;
 use App\Http\Controllers\Api\Concerns\HasApiResponses;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BlockResource;
 use App\Models\Block;
-use App\Services\PepecoinExplorerService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
@@ -15,18 +17,18 @@ class BlockController extends Controller
     use HasApiResponses;
 
     public function __construct(
-        private readonly PepecoinExplorerService $explorerService
+        private readonly BlockchainServiceInterface $blockchain,
     ) {}
 
     public function tipHeight(): Response
     {
-        return response($this->explorerService->getBlockTipHeight(), Response::HTTP_OK)
+        return response((string) $this->blockchain->getBlockTipHeight(), Response::HTTP_OK)
             ->header('Content-Type', 'text/plain');
     }
 
     public function tipHash(): Response
     {
-        return response($this->explorerService->getBlockTipHash(), Response::HTTP_OK)
+        return response($this->blockchain->getBlockTipHash(), Response::HTTP_OK)
             ->header('Content-Type', 'text/plain');
     }
 

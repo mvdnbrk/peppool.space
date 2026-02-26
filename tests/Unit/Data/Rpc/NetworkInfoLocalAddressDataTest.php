@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Data\Rpc;
 
-use App\Data\Rpc\NetworkInfoLocalAddressData;
+use App\Data\Blockchain\NetworkInfoLocalAddressData;
 use Tests\TestCase;
 
 final class NetworkInfoLocalAddressDataTest extends TestCase

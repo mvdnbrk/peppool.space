@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Data\Electrs\BlockData;
-use App\Data\Electrs\TransactionData;
-use App\Services\ElectrsPepeService;
+use App\Contracts\BlockchainServiceInterface;
+use App\Data\Blockchain\BlockData;
+use App\Data\Blockchain\TransactionData;
 use App\Services\PepecoinExplorerService;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
@@ -19,7 +19,7 @@ class ViewBlockPageTest extends TestCase
     }
 
     #[Test]
-    public function block_page_renders_correctly_using_electrs(): void
+    public function block_page_renders_correctly(): void
     {
         $height = 696874;
         $hash = 'e06fe3340f9afd0bf9675a498eeacb31530fd3afede31d9b110f10153e8715aa';
@@ -52,25 +52,22 @@ class ViewBlockPageTest extends TestCase
             'vout' => [['value' => 100000000, 'scriptpubkey' => 'abc']],
         ]);
 
-        $electrs = Mockery::mock(ElectrsPepeService::class);
-        $electrs->shouldReceive('getBlockHash')
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+        $blockchain->shouldReceive('getBlockHash')
             ->with($height)
             ->andReturn($hash);
-        $electrs->shouldReceive('getBlock')
+        $blockchain->shouldReceive('getBlock')
             ->with($hash)
             ->once()
             ->andReturn($blockData);
-        $electrs->shouldReceive('getBlockTransactions')
+        $blockchain->shouldReceive('getBlockTransactions')
             ->with($hash)
             ->once()
             ->andReturn(collect([$txData]));
-
-        $explorer = Mockery::mock(PepecoinExplorerService::class);
-        $explorer->shouldReceive('getBlockTipHeight')
+        $blockchain->shouldReceive('getBlockTipHeight')
             ->andReturn($height + 1);
 
-        $this->app->instance(ElectrsPepeService::class, $electrs);
-        $this->app->instance(PepecoinExplorerService::class, $explorer);
+        $this->app->instance(BlockchainServiceInterface::class, $blockchain);
 
         $this->get(route('block.show', ['hashOrHeight' => $height]))
             ->assertOk()

@@ -31,6 +31,7 @@ return [
 
     'electrs' => [
         'url' => env('ELECTRS_PEPE_URL', 'http://127.0.0.1:3002'),
+        'enabled' => env('ELECTRS_PEPE_ENABLED', true),
     ],
 
     /*

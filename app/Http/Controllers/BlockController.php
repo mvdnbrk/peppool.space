@@ -1,15 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
-use App\Services\ElectrsPepeService;
+use App\Contracts\BlockchainServiceInterface;
 use App\Services\PepecoinExplorerService;
 use Illuminate\View\View;
+use Throwable;
 
 class BlockController extends Controller
 {
     public function __construct(
-        private readonly ElectrsPepeService $electrs,
+        private readonly BlockchainServiceInterface $blockchain,
         private readonly PepecoinExplorerService $explorer,
     ) {}
 
@@ -17,8 +20,8 @@ class BlockController extends Controller
     {
         try {
             $blockHash = $this->resolveBlockHash($hashOrHeight);
-            $block = $this->electrs->getBlock($blockHash);
-            $transactions = $this->electrs->getBlockTransactions($blockHash);
+            $block = $this->blockchain->getBlock($blockHash);
+            $transactions = $this->blockchain->getBlockTransactions($blockHash);
 
             return view('block.show', [
                 'block' => [
@@ -33,9 +36,9 @@ class BlockController extends Controller
                 'blockHeight' => $block->height,
                 'blockHash' => $blockHash,
                 'prevBlockHash' => $block->height > 0 ? true : null,
-                'nextBlockHash' => $block->height < $this->explorer->getBlockTipHeight() ? true : null,
+                'nextBlockHash' => $block->height < $this->blockchain->getBlockTipHeight() ? true : null,
             ]);
-        } catch (\Exception $e) {
+        } catch (Throwable) {
             abort(404, 'Block not found');
         }
     }
@@ -43,7 +46,7 @@ class BlockController extends Controller
     private function resolveBlockHash(string $hashOrHeight): string
     {
         if (is_numeric($hashOrHeight)) {
-            return $this->electrs->getBlockHash((int) $hashOrHeight);
+            return $this->blockchain->getBlockHash((int) $hashOrHeight);
         }
 
         return $hashOrHeight;

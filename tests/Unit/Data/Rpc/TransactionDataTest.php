@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Data\Rpc;
 
-use App\Data\Rpc\TransactionData;
+use App\Data\Blockchain\RpcTransactionData;
 use Tests\TestCase;
 
-final class TransactionDataTest extends TestCase
+final class RpcTransactionDataTest extends TestCase
 {
     public function test_from_rpc_maps_fields(): void
     {
-        $dto = TransactionData::from([
+        $dto = RpcTransactionData::from([
             'txid' => 'abcd',
             'version' => 2,
             'size' => 225,
@@ -34,7 +34,7 @@ final class TransactionDataTest extends TestCase
 
     public function test_from_rpc_defaults_when_missing(): void
     {
-        $dto = TransactionData::from(['size' => 88]);
+        $dto = RpcTransactionData::from(['size' => 88]);
 
         $this->assertSame('', $dto->txid);
         $this->assertSame(0, $dto->version);

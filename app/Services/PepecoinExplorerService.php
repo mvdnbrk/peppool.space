@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
-use App\Data\Rpc\MempoolInfoData;
-use App\Data\Rpc\TxOutSetInfoData;
-use App\Data\Rpc\ValidateAddressData;
+use App\Contracts\BlockchainServiceInterface;
+use App\Data\Blockchain\TxOutSetInfoData;
+use App\Data\Blockchain\ValidateAddressData;
 use App\Models\Block;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
@@ -15,6 +16,7 @@ class PepecoinExplorerService
 {
     public function __construct(
         private readonly PepecoinRpcService $rpcService,
+        private readonly BlockchainServiceInterface $blockchain,
         private int $mempoolCacheTtl = 10,
         private int $difficultyCacheTtl = 180,
     ) {}
@@ -30,7 +32,7 @@ class PepecoinExplorerService
 
     public function getAverageBlockTime(int $blockWindow = 50): float
     {
-        return Cache::remember(
+        return (float) Cache::remember(
             $this->getCacheKey(__FUNCTION__.'_'.$blockWindow),
             Carbon::now()->addMinutes(10),
             function () use ($blockWindow): float {
@@ -51,34 +53,14 @@ class PepecoinExplorerService
 
                 $avg = $timeDifferences->average();
 
-                return $avg > 0 ? round($avg, 2) : 60.0;
+                return $avg > 0 ? round((float) $avg, 2) : 60.0;
             }
-        );
-    }
-
-    public function getBlockTipHeight(): int
-    {
-        return Cache::remember(
-            $this->getCacheKey(__FUNCTION__),
-            Carbon::now()->addSeconds(30),
-            fn (): int => $this->rpcService->getBlockCount()
-        );
-    }
-
-    public function getBlockTipHash(): string
-    {
-        return Cache::remember(
-            $this->getCacheKey(__FUNCTION__),
-            Carbon::now()->addSeconds(30),
-            fn (): string => $this->rpcService->getBlockHash(
-                $this->getBlockTipHeight()
-            )
         );
     }
 
     public function getDifficulty(): float
     {
-        return Cache::remember(
+        return (float) Cache::remember(
             $this->getCacheKey(__FUNCTION__),
             Carbon::now()->addSeconds($this->difficultyCacheTtl),
             function (): float {
@@ -89,7 +71,7 @@ class PepecoinExplorerService
 
     public function getHashrate(): float
     {
-        return Cache::remember(
+        return (float) Cache::remember(
             $this->getCacheKey(__FUNCTION__),
             Carbon::now()->addSeconds($this->difficultyCacheTtl),
             function (): float {
@@ -101,29 +83,9 @@ class PepecoinExplorerService
         );
     }
 
-    public function getMempoolInfo(): MempoolInfoData
-    {
-        return Cache::remember(
-            $this->getCacheKey(__FUNCTION__),
-            Carbon::now()->addSeconds($this->mempoolCacheTtl),
-            fn (): MempoolInfoData => $this->rpcService->getMempoolInfo()
-        );
-    }
-
-    public function getMempoolTxIds(): Collection
-    {
-        return Cache::remember(
-            $this->getCacheKey(__FUNCTION__),
-            Carbon::now()->addSeconds($this->mempoolCacheTtl),
-            function (): Collection {
-                return new Collection($this->rpcService->getRawMempool());
-            }
-        );
-    }
-
     public function getChainSize(): int
     {
-        return Cache::remember(
+        return (int) Cache::remember(
             $this->getCacheKey(__FUNCTION__),
             Carbon::now()->addHours(4),
             function (): int {
@@ -134,7 +96,7 @@ class PepecoinExplorerService
 
     public function getNetworkSubversion(): string
     {
-        return Cache::remember(
+        return (string) Cache::remember(
             $this->getCacheKey(__FUNCTION__),
             Carbon::now()->addDay(),
             function (): string {
@@ -145,7 +107,7 @@ class PepecoinExplorerService
 
     public function getNetworkConnectionsCount(): int
     {
-        return Cache::remember(
+        return (int) Cache::remember(
             $this->getCacheKey(__FUNCTION__),
             Carbon::now()->addMinutes(5),
             function (): int {
@@ -189,36 +151,9 @@ class PepecoinExplorerService
         );
     }
 
-    public function getFeeEstimates(): array
-    {
-        return Cache::remember(
-            $this->getCacheKey(__FUNCTION__),
-            Carbon::now()->addMinutes(1),
-            function (): array {
-                $targets = [1, 2, 3, 4, 5, 6, 10, 12, 20, 144, 1008];
-                $estimates = [];
-
-                foreach ($targets as $target) {
-                    try {
-                        $result = $this->rpcService->call('estimatesmartfee', [$target]);
-                        if (isset($result['feerate'])) {
-                            // Convert PEPE/kvB to RIBBITS/vB (sat/vB equivalent)
-                            // 0.001 PEPE/kvB = 1 RIBBIT/vB (assuming 1000 multiplier for display)
-                            $estimates[(string) $target] = round($result['feerate'] * 1000, 3);
-                        }
-                    } catch (\Throwable) {
-                        continue;
-                    }
-                }
-
-                return $estimates;
-            }
-        );
-    }
-
     public function getRecommendedFees(): array
     {
-        $estimates = $this->getFeeEstimates();
+        $estimates = $this->blockchain->getFeeEstimates();
         $network = $this->rpcService->getNetworkInfo();
         $minRelayFee = round($network->relayFee * 1000, 3);
 

@@ -1,21 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
+use App\Contracts\BlockchainServiceInterface;
+use App\Exceptions\RpcResponseException;
 use App\Http\Controllers\Api\Concerns\HasApiResponses;
 use App\Http\Controllers\Controller;
-use App\Services\ElectrsPepeService;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Throwable;
 
 class TransactionController extends Controller
 {
     use HasApiResponses;
 
     public function __construct(
-        private readonly ElectrsPepeService $electrs
+        private readonly BlockchainServiceInterface $blockchain,
     ) {}
 
     public function broadcast(Request $request): Response|JsonResponse
@@ -27,31 +31,31 @@ class TransactionController extends Controller
         }
 
         try {
-            return response($this->electrs->broadcastTransaction($hex), Response::HTTP_OK)
+            return response($this->blockchain->broadcastTransaction($hex), Response::HTTP_OK)
                 ->header('Content-Type', 'text/plain');
-        } catch (RequestException $e) {
+        } catch (Throwable $e) {
             return $this->errorResponse(
                 'broadcast_failed',
-                $e->response->body() ?: 'Failed to broadcast transaction.',
-                $e->getCode() ?: Response::HTTP_BAD_REQUEST
+                $e->getMessage() ?: 'Failed to broadcast transaction.',
+                Response::HTTP_BAD_REQUEST
             );
         }
     }
 
     public function show(string $txid): JsonResponse
     {
-        return $this->handleRequest($txid, fn ($id) => response()->json($this->electrs->getTransaction($id)));
+        return $this->handleRequest($txid, fn ($id) => response()->json($this->blockchain->getTransaction($id)));
     }
 
     public function status(string $txid): JsonResponse
     {
-        return $this->handleRequest($txid, fn ($id) => response()->json($this->electrs->getTransaction($id)->status));
+        return $this->handleRequest($txid, fn ($id) => response()->json($this->blockchain->getTransactionStatus($id)));
     }
 
     public function hex(string $txid): Response
     {
         return $this->handleRequest($txid, function ($id) {
-            return response($this->electrs->getRawTransaction($id), Response::HTTP_OK)
+            return response($this->blockchain->getRawTransaction($id), Response::HTTP_OK)
                 ->header('Content-Type', 'text/plain');
         });
     }
@@ -59,7 +63,7 @@ class TransactionController extends Controller
     public function raw(string $txid): mixed
     {
         return $this->handleRequest($txid, function ($id) {
-            $hex = $this->electrs->getRawTransaction($id);
+            $hex = $this->blockchain->getRawTransaction($id);
 
             return response(hex2bin($hex), Response::HTTP_OK)
                 ->header('Content-Type', 'application/octet-stream');
@@ -74,8 +78,18 @@ class TransactionController extends Controller
 
         try {
             return $callback($txid);
-        } catch (RequestException $e) {
-            if ($e->getCode() === Response::HTTP_NOT_FOUND) {
+        } catch (Throwable $e) {
+            $status = 0;
+
+            if ($e instanceof RequestException) {
+                $status = $e->getCode();
+            } elseif ($e instanceof RpcResponseException) {
+                $status = $e->httpStatus;
+            } else {
+                $status = (int) $e->getCode();
+            }
+
+            if ($status === Response::HTTP_NOT_FOUND || str_contains(strtolower($e->getMessage()), 'not found')) {
                 return $this->transactionNotFoundResponse();
             }
 

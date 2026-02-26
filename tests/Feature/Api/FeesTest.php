@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Api;
 
-use App\Data\Rpc\NetworkInfoData;
+use App\Data\Blockchain\NetworkInfoData;
 use App\Services\PepecoinRpcService;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;

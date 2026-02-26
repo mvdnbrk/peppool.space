@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Data\Rpc;
 
-use App\Data\Rpc\MempoolInfoData;
+use App\Data\Blockchain\MempoolInfoData;
 use Tests\TestCase;
 
 final class MempoolInfoDataTest extends TestCase
