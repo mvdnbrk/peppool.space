@@ -6,6 +6,7 @@ namespace App\Console\Commands;
 
 use App\Models\Block;
 use App\Services\MiningPoolService;
+use App\Services\PepecoinRpcService;
 use Illuminate\Console\Command;
 
 class TagMiningPoolsCommand extends Command
@@ -18,7 +19,8 @@ class TagMiningPoolsCommand extends Command
     protected $description = 'Identify mining pools for blocks already in the database';
 
     public function __construct(
-        private readonly MiningPoolService $miningPoolService
+        private readonly MiningPoolService $miningPoolService,
+        private readonly PepecoinRpcService $rpcService
     ) {
         parent::__construct();
     }
@@ -51,21 +53,44 @@ class TagMiningPoolsCommand extends Command
         $bar = $this->output->createProgressBar($total);
         $tagged = 0;
 
-        // Note: chunkById ignores any previous order by and uses the ID column.
         $query->chunkById(500, function ($blocks) use ($bar, &$tagged) {
             foreach ($blocks as $block) {
+                $pool = null;
+
+                // 1. Try with stored auxpow
                 if (! empty($block->auxpow)) {
                     $pool = $this->miningPoolService->identifyFromBlock(['auxpow' => $block->auxpow]);
-                    if ($pool) {
-                        $block->pool_id = $pool->id;
-                        $block->save();
-                        $tagged++;
+                }
 
-                        // Auto-discover historical addresses too
+                // 2. Fallback to RPC for full block (required for blocks < 42,000 or missing tx data)
+                if (! $pool) {
+                    try {
+                        $blockData = $this->rpcService->getBlock($block->hash, 2);
+                        $pool = $this->miningPoolService->identifyFromBlock($blockData);
+                    } catch (\Exception $e) {
+                        // Skip if RPC fails for this block
+                    }
+                }
+
+                if ($pool) {
+                    $block->pool_id = $pool->id;
+                    $block->save();
+                    $tagged++;
+
+                    // Capture payout address
+                    // For auxpow blocks, it's in the auxpow json. For standard blocks, it's in the first tx.
+                    $pepeAddress = null;
+                    if (! empty($block->auxpow)) {
                         $pepeAddress = $block->auxpow['tx']['vout'][0]['scriptPubKey']['addresses'][0] ?? null;
+                    } else {
+                        // Fallback logic for capturing standard block addresses if needed
+                    }
+
+                    if ($pepeAddress) {
                         $this->miningPoolService->recordPayoutAddress($pool, $pepeAddress);
                     }
                 }
+
                 $bar->advance();
             }
         }, 'height');
