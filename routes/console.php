@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\CalculateMiningStats;
 use App\Jobs\CalculateTotalSupply;
 use App\Jobs\FetchPepePrice;
 use App\Jobs\StorePepePrice;
@@ -10,4 +11,4 @@ Schedule::job(StorePepePrice::class)->everyFifteenMinutes();
 
 Schedule::command('pepe:sync:blocks')->everyMinute();
 Schedule::job(CalculateTotalSupply::class)->hourly();
-Schedule::job(\App\Jobs\CalculateMiningStats::class)->hourly();
+Schedule::job(CalculateMiningStats::class)->hourly();
