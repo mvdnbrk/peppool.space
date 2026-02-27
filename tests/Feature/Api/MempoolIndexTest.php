@@ -35,7 +35,7 @@ class MempoolIndexTest extends TestCase
     {
         // The controller now just lets BlockchainService handle fallbacks.
         // If BlockchainServiceInterface throws, the controller lets it bubble up (or handles generic throwable).
-        
+
         $blockchain = Mockery::mock(BlockchainServiceInterface::class);
         $blockchain->shouldReceive('getMempool')->once()->andThrow(new \Exception('Service down'));
         $this->app->instance(BlockchainServiceInterface::class, $blockchain);

@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Contracts\BlockchainServiceInterface;
 use App\Data\Blockchain\BlockData;
 use App\Data\Blockchain\TransactionData;
-use App\Services\PepecoinExplorerService;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;

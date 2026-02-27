@@ -8,10 +8,8 @@ use App\Contracts\BlockchainServiceInterface;
 use App\Data\Blockchain\AddressData;
 use App\Data\Blockchain\BlockData;
 use App\Data\Blockchain\MempoolData;
-use App\Data\Blockchain\RecentMempoolTransactionData;
 use App\Data\Blockchain\TransactionData;
 use App\Data\Blockchain\TransactionStatusData;
-use App\Data\Blockchain\UtxoData;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
@@ -39,9 +37,6 @@ class BlockchainService implements BlockchainServiceInterface
         });
     }
 
-    /**
-     * @return mixed
-     */
     private function resolve(callable $electrs, callable $rpc): mixed
     {
         if (! $this->isElectrsAvailable()) {
@@ -55,9 +50,6 @@ class BlockchainService implements BlockchainServiceInterface
         }
     }
 
-    /**
-     * @return mixed
-     */
     private function resolveElectrsOnly(callable $electrs): mixed
     {
         // Still try even if health check failed — let the exception propagate
