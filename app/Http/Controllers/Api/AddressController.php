@@ -26,35 +26,17 @@ class AddressController extends Controller
 
     public function show(string $address): JsonResponse
     {
-        try {
-            return response()->json($this->blockchain->getAddress($address));
-        } catch (UnsupportedOperationException $e) {
-            return $this->errorResponse('electrs_required', $e->getMessage(), Response::HTTP_SERVICE_UNAVAILABLE);
-        } catch (Throwable $e) {
-            return $this->handleAddressException($e);
-        }
+        return $this->handleRequest($address, fn ($addr) => response()->json($this->blockchain->getAddress($addr)));
     }
 
     public function transactions(string $address): JsonResponse
     {
-        try {
-            return response()->json($this->blockchain->getAddressTransactions($address));
-        } catch (UnsupportedOperationException $e) {
-            return $this->errorResponse('electrs_required', $e->getMessage(), Response::HTTP_SERVICE_UNAVAILABLE);
-        } catch (Throwable $e) {
-            return $this->handleAddressException($e);
-        }
+        return $this->handleRequest($address, fn ($addr) => response()->json($this->blockchain->getAddressTransactions($addr)));
     }
 
     public function utxo(string $address): JsonResponse
     {
-        try {
-            return response()->json($this->blockchain->getAddressUtxos($address));
-        } catch (UnsupportedOperationException $e) {
-            return $this->errorResponse('electrs_required', $e->getMessage(), Response::HTTP_SERVICE_UNAVAILABLE);
-        } catch (Throwable $e) {
-            return $this->handleAddressException($e);
-        }
+        return $this->handleRequest($address, fn ($addr) => response()->json($this->blockchain->getAddressUtxos($addr)));
     }
 
     public function validate(string $address): JsonResponse
@@ -62,23 +44,56 @@ class AddressController extends Controller
         return response()->json($this->explorer->validateAddress($address));
     }
 
-    private function handleAddressException(Throwable $e): JsonResponse
+    private function handleRequest(string $address, callable $callback): JsonResponse
     {
-        $status = 0;
-
-        if ($e instanceof RequestException) {
-            $status = $e->getCode();
-        } elseif ($e instanceof RpcResponseException) {
-            $status = $e->httpStatus;
-        } else {
-            $status = (int) $e->getCode();
+        try {
+            return $callback($address);
+        } catch (UnsupportedOperationException $e) {
+            return $this->errorResponse('electrs_required', $e->getMessage(), Response::HTTP_SERVICE_UNAVAILABLE);
+        } catch (RequestException $e) {
+            return $this->handleNetworkException($e);
+        } catch (RpcResponseException $e) {
+            return $this->handleRpcException($e);
+        } catch (Throwable $e) {
+            return $this->handleGenericException($e);
         }
+    }
+
+    private function handleGenericException(Throwable $e): JsonResponse
+    {
+        $status = (int) $e->getCode();
 
         if ($status === Response::HTTP_BAD_REQUEST || str_contains(strtolower($e->getMessage()), 'invalid')) {
             return $this->invalidAddressResponse();
         }
 
         if ($status === Response::HTTP_NOT_FOUND || str_contains(strtolower($e->getMessage()), 'not found')) {
+            return $this->addressNotFoundResponse();
+        }
+
+        throw $e;
+    }
+
+    private function handleNetworkException(RequestException $e): JsonResponse
+    {
+        if ($e->getCode() === Response::HTTP_BAD_REQUEST) {
+            return $this->invalidAddressResponse();
+        }
+
+        if ($e->getCode() === Response::HTTP_NOT_FOUND) {
+            return $this->addressNotFoundResponse();
+        }
+
+        throw $e;
+    }
+
+    private function handleRpcException(RpcResponseException $e): JsonResponse
+    {
+        if ($e->httpStatus === Response::HTTP_BAD_REQUEST) {
+            return $this->invalidAddressResponse();
+        }
+
+        if ($e->httpStatus === Response::HTTP_NOT_FOUND) {
             return $this->addressNotFoundResponse();
         }
 
