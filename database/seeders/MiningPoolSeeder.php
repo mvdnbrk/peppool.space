@@ -88,6 +88,48 @@ class MiningPoolSeeder extends Seeder
                 'addresses' => [],
                 'regexes' => ['CloverPool'],
             ],
+            [
+                'name' => 'Luxor Tech',
+                'link' => 'https://luxor.tech',
+                'addresses' => [],
+                'regexes' => ['LUXOR'],
+            ],
+            [
+                'name' => 'GoodLuckyPool',
+                'link' => null,
+                'addresses' => [],
+                'regexes' => ['GoodLuckyPool', 'GoodLucky'],
+            ],
+            [
+                'name' => 'OKMiner',
+                'link' => 'https://www.okminer.com',
+                'addresses' => [],
+                'regexes' => ['okminer'],
+            ],
+            [
+                'name' => 'SigmaPool',
+                'link' => 'https://sigmapool.com',
+                'addresses' => [],
+                'regexes' => ['SigmaPool.com'],
+            ],
+            [
+                'name' => 'DogeGogo',
+                'link' => 'https://dogegogo.com',
+                'addresses' => [],
+                'regexes' => ['dogegogo.com', 'dogepool.ai'],
+            ],
+            [
+                'name' => 'OneClickMiner',
+                'link' => 'https://oneclickminer.com',
+                'addresses' => [],
+                'regexes' => ['OneClickMiner.com'],
+            ],
+            [
+                'name' => 'HashPoolPro',
+                'link' => 'https://hashpoolpro.com',
+                'addresses' => [],
+                'regexes' => ['hashpoolpro.com'],
+            ],
         ];
 
         foreach ($pools as $pool) {
