@@ -78,16 +78,20 @@ class TransactionController extends Controller
 
         try {
             return $callback($txid);
-        } catch (Throwable $e) {
-            $status = 0;
-
-            if ($e instanceof RequestException) {
-                $status = $e->getCode();
-            } elseif ($e instanceof RpcResponseException) {
-                $status = $e->httpStatus;
-            } else {
-                $status = (int) $e->getCode();
+        } catch (RequestException $e) {
+            if ($e->getCode() === Response::HTTP_NOT_FOUND) {
+                return $this->transactionNotFoundResponse();
             }
+
+            throw $e;
+        } catch (RpcResponseException $e) {
+            if ($e->httpStatus === Response::HTTP_NOT_FOUND) {
+                return $this->transactionNotFoundResponse();
+            }
+
+            throw $e;
+        } catch (Throwable $e) {
+            $status = (int) $e->getCode();
 
             if ($status === Response::HTTP_NOT_FOUND || str_contains(strtolower($e->getMessage()), 'not found')) {
                 return $this->transactionNotFoundResponse();
