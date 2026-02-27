@@ -30,12 +30,8 @@ class AddressController extends Controller
             return response()->json($this->blockchain->getAddress($address));
         } catch (UnsupportedOperationException $e) {
             return $this->errorResponse('electrs_required', $e->getMessage(), Response::HTTP_SERVICE_UNAVAILABLE);
-        } catch (RequestException $e) {
-            return $this->handleNetworkException($e);
-        } catch (RpcResponseException $e) {
-            return $this->handleRpcException($e);
         } catch (Throwable $e) {
-            throw $e;
+            return $this->handleAddressException($e);
         }
     }
 
@@ -45,12 +41,8 @@ class AddressController extends Controller
             return response()->json($this->blockchain->getAddressTransactions($address));
         } catch (UnsupportedOperationException $e) {
             return $this->errorResponse('electrs_required', $e->getMessage(), Response::HTTP_SERVICE_UNAVAILABLE);
-        } catch (RequestException $e) {
-            return $this->handleNetworkException($e);
-        } catch (RpcResponseException $e) {
-            return $this->handleRpcException($e);
         } catch (Throwable $e) {
-            throw $e;
+            return $this->handleAddressException($e);
         }
     }
 
@@ -60,12 +52,8 @@ class AddressController extends Controller
             return response()->json($this->blockchain->getAddressUtxos($address));
         } catch (UnsupportedOperationException $e) {
             return $this->errorResponse('electrs_required', $e->getMessage(), Response::HTTP_SERVICE_UNAVAILABLE);
-        } catch (RequestException $e) {
-            return $this->handleNetworkException($e);
-        } catch (RpcResponseException $e) {
-            return $this->handleRpcException($e);
         } catch (Throwable $e) {
-            throw $e;
+            return $this->handleAddressException($e);
         }
     }
 
@@ -74,26 +62,23 @@ class AddressController extends Controller
         return response()->json($this->explorer->validateAddress($address));
     }
 
-    private function handleNetworkException(RequestException $e): JsonResponse
+    private function handleAddressException(Throwable $e): JsonResponse
     {
-        if ($e->getCode() === Response::HTTP_BAD_REQUEST) {
+        $status = 0;
+
+        if ($e instanceof RequestException) {
+            $status = $e->getCode();
+        } elseif ($e instanceof RpcResponseException) {
+            $status = $e->httpStatus;
+        } else {
+            $status = (int) $e->getCode();
+        }
+
+        if ($status === Response::HTTP_BAD_REQUEST || str_contains(strtolower($e->getMessage()), 'invalid')) {
             return $this->invalidAddressResponse();
         }
 
-        if ($e->getCode() === Response::HTTP_NOT_FOUND) {
-            return $this->addressNotFoundResponse();
-        }
-
-        throw $e;
-    }
-
-    private function handleRpcException(RpcResponseException $e): JsonResponse
-    {
-        if ($e->httpStatus === Response::HTTP_BAD_REQUEST) {
-            return $this->invalidAddressResponse();
-        }
-
-        if ($e->httpStatus === Response::HTTP_NOT_FOUND) {
+        if ($status === Response::HTTP_NOT_FOUND || str_contains(strtolower($e->getMessage()), 'not found')) {
             return $this->addressNotFoundResponse();
         }
 
