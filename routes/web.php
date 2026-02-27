@@ -6,7 +6,7 @@ use App\Http\Controllers\BlockController;
 use App\Http\Controllers\ConverterController;
 use App\Http\Controllers\DocumentationController;
 use App\Http\Controllers\HomepageController;
-use App\Http\Controllers\MiningDashboardController;
+use App\Http\Controllers\MiningController;
 use App\Http\Controllers\PriceController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SponsorController;
@@ -22,7 +22,11 @@ Route::get('/about-pepecoin', AboutController::class)->name('about');
 Route::get('/wallet', WalletController::class)->name('wallet');
 Route::get('/sponsor', SponsorController::class)->name('sponsor');
 Route::get('/converter', [ConverterController::class, 'index'])->name('converter');
-Route::get('/mining', MiningDashboardController::class)->name('mining.dashboard');
+
+Route::prefix('mining')->group(function () {
+    Route::get('/', [MiningController::class, 'index'])->name('mining.dashboard');
+    Route::get('/pool/{slug}', [MiningController::class, 'show'])->name('mining.pool');
+});
 
 Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 Route::post('/search', [SearchController::class, 'store'])->name('search.store');

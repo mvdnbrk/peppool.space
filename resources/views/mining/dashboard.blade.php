@@ -55,23 +55,32 @@
                 <thead>
                     <tr class="bg-gray-50 dark:bg-gray-900/50">
                         <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Pool Name</th>
+                        <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Blocks</th>
                         <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Website</th>
                         <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Payout Addresses</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-                    @foreach(App\Models\Pool::where('name', '!=', 'Unknown')->whereHas('blocks')->get() as $pool)
-                    <tr>
+                    @foreach(App\Models\Pool::where('name', '!=', 'Unknown')->whereHas('blocks')->withCount('blocks')->orderByDesc('blocks_count')->get() as $pool)
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                            {{ $pool->name }}
+                            <a href="{{ route('mining.pool', $pool->slug) }}" class="text-blue-600 dark:text-blue-400 hover:underline">
+                                {{ $pool->name }}
+                            </a>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                            {{ number_format($pool->blocks_count) }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 dark:text-blue-400">
                             <a href="{{ $pool->link }}" target="_blank" rel="noopener" class="hover:underline">{{ $pool->link }}</a>
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                            @foreach($pool->addresses as $address)
+                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 font-mono">
+                            @foreach(array_slice($pool->addresses, 0, 1) as $address)
                                 <code class="block">{{ $address }}</code>
                             @endforeach
+                            @if(count($pool->addresses) > 1)
+                                <span class="text-xs text-gray-400">+ {{ count($pool->addresses) - 1 }} more</span>
+                            @endif
                         </td>
                     </tr>
                     @endforeach

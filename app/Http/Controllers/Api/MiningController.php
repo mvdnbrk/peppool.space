@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MiningBlockResource;
 use App\Models\Block;
+use App\Models\Pool;
 use App\Models\PoolStat;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -88,5 +89,52 @@ class MiningController extends Controller
                 ->limit(10)
                 ->get()
         )->response();
+    }
+
+    public function pool(string $slug): JsonResponse
+    {
+        $pool = Pool::where('slug', $slug)->firstOrFail();
+
+        $latestTimestamp = PoolStat::where('pool_id', $pool->id)
+            ->where('type', 'daily')
+            ->max('hashrate_timestamp');
+
+        $latestStat = $latestTimestamp ? PoolStat::where('pool_id', $pool->id)
+            ->where('hashrate_timestamp', $latestTimestamp)
+            ->where('type', 'daily')
+            ->first() : null;
+
+        $recentBlocks = Block::where('pool_id', $pool->id)
+            ->orderByDesc('height')
+            ->paginate(25);
+
+        $end = $latestTimestamp ? Carbon::parse($latestTimestamp) : now();
+        $start = $end->copy()->subMonth();
+
+        $hashrateHistory = PoolStat::where('pool_id', $pool->id)
+            ->where('type', 'daily')
+            ->whereBetween('hashrate_timestamp', [$start, $end])
+            ->orderBy('hashrate_timestamp')
+            ->get()
+            ->map(fn ($stat) => [
+                'time' => $stat->hashrate_timestamp->timestamp,
+                'value' => (float) $stat->avg_hashrate,
+            ]);
+
+        return response()->json([
+            'pool' => [
+                'name' => $pool->name,
+                'slug' => $pool->slug,
+                'link' => $pool->link,
+                'addresses' => $pool->addresses,
+            ],
+            'latestStat' => $latestStat ? [
+                'hashrate' => (float) $latestStat->avg_hashrate,
+                'share' => (float) $latestStat->share,
+                'timestamp' => $latestStat->hashrate_timestamp->timestamp,
+            ] : null,
+            'blocks' => MiningBlockResource::collection($recentBlocks)->response()->getData(true),
+            'hashrateHistory' => $hashrateHistory,
+        ]);
     }
 }

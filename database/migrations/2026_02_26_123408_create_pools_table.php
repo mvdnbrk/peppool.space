@@ -15,7 +15,6 @@ return new class extends Migration
             $table->text('addresses'); // Stored as JSON
             $table->text('regexes');   // Stored as JSON
             $table->string('slug', 50)->unique();
-            $table->integer('unique_id')->nullable();
         });
     }
 

@@ -17,7 +17,6 @@ class Pool extends Model
         'addresses',
         'regexes',
         'slug',
-        'unique_id',
     ];
 
     protected function casts(): array
