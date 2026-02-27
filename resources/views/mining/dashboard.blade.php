@@ -11,17 +11,10 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <!-- Pool Distribution Pie Chart -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Mining Pool Share</h2>
-                <div class="flex items-center space-x-2">
-                    <!-- Future: Daily/Weekly Toggle -->
-                </div>
-            </div>
             <div class="p-6">
                 <div 
                     data-vue="mining-pool-share"
                     data-props='@json(["apiUrl" => route("api.mining.pools")])'
-                    class="min-h-[300px] flex items-center justify-center"
                 >
                     <div class="animate-pulse text-gray-400">Loading charts...</div>
                 </div>
@@ -30,14 +23,10 @@
 
         <!-- Hashrate History Line Chart -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Network Hashrate History</h2>
-            </div>
             <div class="p-6">
                 <div 
                     data-vue="mining-hashrate-history"
                     data-props='@json(["apiUrl" => route("api.mining.hashrate")])'
-                    class="min-h-[300px] flex items-center justify-center"
                 >
                     <div class="animate-pulse text-gray-400">Loading charts...</div>
                 </div>
@@ -64,14 +53,14 @@
                     @foreach(App\Models\Pool::where('name', '!=', 'Unknown')->whereHas('blocks')->withCount('blocks')->orderByDesc('blocks_count')->get() as $pool)
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                            <a href="{{ route('mining.pool', $pool->slug) }}" class="text-blue-600 dark:text-blue-400 hover:underline">
+                            <a href="{{ route('mining.pool', $pool->slug) }}" class="text-green-700 dark:text-green-400 hover:underline">
                                 {{ $pool->name }}
                             </a>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                             {{ number_format($pool->blocks_count) }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 dark:text-blue-400">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-700 dark:text-green-400">
                             <a href="{{ $pool->link }}" target="_blank" rel="noopener" class="hover:underline">{{ $pool->link }}</a>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 font-mono">

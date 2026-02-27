@@ -48,7 +48,12 @@ class MiningController extends Controller
 
     public function hashrate(Request $request): JsonResponse
     {
-        $latestTimestamp = PoolStat::where('type', 'daily')->max('hashrate_timestamp');
+        $type = $request->query('type', 'daily');
+        if (! in_array($type, ['daily', 'weekly'], true)) {
+            $type = 'daily';
+        }
+
+        $latestTimestamp = PoolStat::where('type', $type)->max('hashrate_timestamp');
 
         if (! $latestTimestamp) {
             return response()->json([]);
@@ -57,11 +62,11 @@ class MiningController extends Controller
         $end = Carbon::parse($latestTimestamp);
         $start = $end->copy()->subMonth();
 
-        $cacheKey = 'mining_hashrate_history_'.md5($start->toDateTimeString().$end->toDateTimeString());
+        $cacheKey = 'mining_hashrate_history_'.md5($start->toDateTimeString().$end->toDateTimeString().$type);
 
-        $data = Cache::remember($cacheKey, 600, function () use ($start, $end) {
+        $data = Cache::remember($cacheKey, 600, function () use ($start, $end, $type) {
             return PoolStat::with('pool')
-                ->where('type', 'daily')
+                ->where('type', $type)
                 ->whereBetween('hashrate_timestamp', [$start, $end])
                 ->orderBy('hashrate_timestamp')
                 ->get()
@@ -91,17 +96,22 @@ class MiningController extends Controller
         )->response();
     }
 
-    public function pool(string $slug): JsonResponse
+    public function pool(string $slug, Request $request): JsonResponse
     {
         $pool = Pool::where('slug', $slug)->firstOrFail();
 
+        $type = $request->query('type', 'daily');
+        if (! in_array($type, ['daily', 'weekly'], true)) {
+            $type = 'daily';
+        }
+
         $latestTimestamp = PoolStat::where('pool_id', $pool->id)
-            ->where('type', 'daily')
+            ->where('type', $type)
             ->max('hashrate_timestamp');
 
         $latestStat = $latestTimestamp ? PoolStat::where('pool_id', $pool->id)
             ->where('hashrate_timestamp', $latestTimestamp)
-            ->where('type', 'daily')
+            ->where('type', $type)
             ->first() : null;
 
         $recentBlocks = Block::where('pool_id', $pool->id)
@@ -112,7 +122,7 @@ class MiningController extends Controller
         $start = $end->copy()->subMonth();
 
         $hashrateHistory = PoolStat::where('pool_id', $pool->id)
-            ->where('type', 'daily')
+            ->where('type', $type)
             ->whereBetween('hashrate_timestamp', [$start, $end])
             ->orderBy('hashrate_timestamp')
             ->get()

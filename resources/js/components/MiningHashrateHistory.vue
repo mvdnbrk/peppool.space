@@ -1,17 +1,38 @@
 <template>
-  <div>
+  <div class="flex flex-col">
+    <!-- Header with Toggle -->
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Network Hashrate History</h2>
+      <div class="flex p-1 bg-gray-100 dark:bg-gray-900/50 rounded-lg">
+        <button
+          @click="type = 'daily'"
+          class="px-3 py-1 text-xs font-medium rounded-md transition-all duration-200 cursor-pointer"
+          :class="type === 'daily' ? 'bg-white dark:bg-gray-800 text-green-700 dark:text-green-400 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
+        >
+          Daily
+        </button>
+        <button
+          @click="type = 'weekly'"
+          class="px-3 py-1 text-xs font-medium rounded-md transition-all duration-200 cursor-pointer"
+          :class="type === 'weekly' ? 'bg-white dark:bg-gray-800 text-green-700 dark:text-green-400 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
+        >
+          Weekly
+        </button>
+      </div>
+    </div>
+
     <div v-if="isLoading" class="flex items-center justify-center h-64 text-gray-400">
-      <span>Loading hashrate history…</span>
+      <div class="animate-pulse">Loading hashrate history…</div>
     </div>
     <div v-else-if="error" class="flex items-center justify-center h-64 text-red-500">
       <span>{{ error }}</span>
     </div>
-    <div ref="chartContainer" class="lw-chart min-h-[300px]"></div>
+    <div v-show="!isLoading && !error" ref="chartContainer" class="lw-chart"></div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue'
 
 const props = defineProps({
   apiUrl: { type: String, required: true },
@@ -21,9 +42,10 @@ let chart
 let series
 const chartContainer = ref(null)
 
-const isLoading = ref(false)
+const isLoading = ref(true)
 const firstLoad = ref(true)
 const error = ref(null)
+const type = ref('daily')
 
 const getTheme = () => {
   const isDark = document.documentElement.classList.contains('dark')
@@ -31,16 +53,16 @@ const getTheme = () => {
 
   return isDark
     ? {
-        background: '#1f2937', // gray-800
+        background: '#0f172a', // slate-900
         textColor: '#e2e8f0',   // slate-200
-        gridColor: '#374151',   // gray-700
-        seriesColor: '#06b6d4', // cyan-500
+        gridColor: '#1f2937',   // gray-800
+        seriesColor: '#15803d', // green-700
       }
     : {
-        background: '#ffffff',
+        background: '#f9fafb',
         textColor: '#111827',   // gray-900
-        gridColor: '#f3f4f6',   // gray-100
-        seriesColor: '#0891b2', // cyan-600
+        gridColor: '#e5e7eb',   // gray-200
+        seriesColor: '#15803d', // green-700
       }
 }
 
@@ -76,7 +98,6 @@ const initChart = async () => {
   if (!chartContainer.value) return
   await nextTick()
   const width = chartContainer.value.clientWidth
-  const height = chartContainer.value.clientHeight || 300
   const theme = getTheme()
   const lib = await loadCdnLibrary()
   if (!lib || typeof lib.createChart !== 'function') {
@@ -86,10 +107,16 @@ const initChart = async () => {
   
   chart = lib.createChart(chartContainer.value, {
     width: width || 600,
-    height,
+    height: 400,
     layout: { background: { color: theme.background }, textColor: theme.textColor },
     grid: { vertLines: { visible: false }, horzLines: { color: theme.gridColor } },
-    timeScale: { timeVisible: true, secondsVisible: false },
+    timeScale: { 
+        timeVisible: true, 
+        secondsVisible: false,
+        rightOffset: 0,
+        fixLeftEdge: true,
+        fixRightEdge: true,
+    },
     rightPriceScale: { 
         scaleMargins: { top: 0.1, bottom: 0.1 },
         borderVisible: false,
@@ -108,11 +135,24 @@ const initChart = async () => {
   })
 }
 
+const handleResize = () => {
+  if (chart && chartContainer.value) {
+    const width = chartContainer.value.clientWidth
+    if (width > 0) {
+      chart.resize(width, 400)
+    }
+  }
+}
+
 const fetchSeries = async () => {
   if (!props.apiUrl) return
   try {
     if (firstLoad.value) isLoading.value = true
-    const res = await fetch(props.apiUrl)
+    
+    const url = new URL(props.apiUrl, window.location.origin)
+    url.searchParams.append('type', type.value)
+    
+    const res = await fetch(url.toString())
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const json = await res.json()
     
@@ -124,9 +164,14 @@ const fetchSeries = async () => {
     }))
     
     series.setData(normalized)
-    if (firstLoad.value && chart) {
-      chart.timeScale().fitContent()
-    }
+    
+    // Ensure the chart fits the container and data
+    requestAnimationFrame(() => {
+      handleResize()
+      if (chart) {
+        chart.timeScale().fitContent()
+      }
+    })
   } catch (e) {
     error.value = e.message
   } finally {
@@ -135,22 +180,51 @@ const fetchSeries = async () => {
   }
 }
 
+let resizeObserver
+
 onMounted(async () => {
   await initChart()
   await fetchSeries()
-  window.addEventListener('resize', () => {
-    if (chart && chartContainer.value) {
-      chart.resize(chartContainer.value.clientWidth, chartContainer.value.clientHeight)
+  window.addEventListener('resize', handleResize)
+  
+  if (window.ResizeObserver) {
+    resizeObserver = new ResizeObserver(() => {
+      handleResize()
+    })
+    if (chartContainer.value) {
+      resizeObserver.observe(chartContainer.value)
+    }
+  }
+
+  // Theme observer
+  const themeObserver = new MutationObserver(() => {
+    if (chart) {
+      const theme = getTheme()
+      chart.applyOptions({
+        layout: { background: { color: theme.background }, textColor: theme.textColor },
+        grid: { horzLines: { color: theme.gridColor } },
+      })
+      if (series) {
+        series.applyOptions({
+          lineColor: theme.seriesColor,
+          topColor: theme.seriesColor + '80',
+        })
+      }
     }
   })
+  themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
 })
+
+watch(type, fetchSeries)
 
 onUnmounted(() => {
   if (chart) { chart.remove(); chart = null }
   series = null
+  window.removeEventListener('resize', handleResize)
+  if (resizeObserver) resizeObserver.disconnect()
 })
 </script>
 
 <style scoped>
-.lw-chart { width: 100%; }
+.lw-chart { width: 100%; height: 400px; }
 </style>

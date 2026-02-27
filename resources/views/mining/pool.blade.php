@@ -8,7 +8,7 @@
             <div class="flex items-center space-x-3 mb-2">
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $pool->name }}</h1>
                 @if($pool->link)
-                    <a href="{{ $pool->link }}" target="_blank" rel="noopener" class="text-gray-400 hover:text-blue-500 transition-colors">
+                    <a href="{{ $pool->link }}" target="_blank" rel="noopener" class="text-gray-400 hover:text-green-700 dark:hover:text-green-400 transition-colors">
                         <x-icon-share class="w-5 h-5" />
                     </a>
                 @endif
@@ -29,9 +29,6 @@
 
     <!-- Hashrate History Chart -->
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden mb-8">
-        <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Hashrate History (30 Days)</h2>
-        </div>
         <div class="p-6">
             <div 
                 data-vue="pool-hashrate-chart"
@@ -47,7 +44,7 @@
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Blocks</h2>
-            <span class="px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold rounded-full">
+            <span class="px-3 py-1 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold rounded-full">
                 {{ $pool->blocks()->count() }} Total
             </span>
         </div>
@@ -65,13 +62,15 @@
                     @foreach($pool->blocks()->orderByDesc('height')->paginate(25) as $block)
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <a href="{{ route('block.show', $block->height) }}" class="text-blue-600 dark:text-blue-400 font-mono font-medium hover:underline">
-                                {{ number_format($block->height) }}
+                            <a href="{{ route('block.show', $block->height) }}" class="inline-flex items-center px-3 py-1 bg-green-100 dark:bg-green-900/50 rounded-md group hover:bg-green-200 dark:hover:bg-green-800/50 transition-colors">
+                                <span class="text-sm font-bold text-green-700 dark:text-green-400">
+                                    {{ $block->height }}
+                                </span>
                             </a>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <a href="{{ route('block.show', $block->hash) }}" class="text-gray-500 dark:text-gray-400 font-mono text-sm hover:text-blue-500 transition-colors">
-                                {{ Str::limit($block->hash, 20) }}
+                            <a href="{{ route('block.show', $block->hash) }}" class="text-gray-500 dark:text-gray-400 font-mono text-sm hover:text-green-700 dark:hover:text-green-400 transition-colors">
+                                {{ substr($block->hash, 0, 16) }}...{{ substr($block->hash, -8) }}
                             </a>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">

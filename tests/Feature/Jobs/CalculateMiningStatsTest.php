@@ -8,10 +8,8 @@ use App\Jobs\CalculateMiningStats;
 use App\Models\Block;
 use App\Models\Pool;
 use App\Models\PoolStat;
-use App\Services\PepecoinExplorerService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
-use Mockery;
 use Tests\TestCase;
 
 class CalculateMiningStatsTest extends TestCase
@@ -38,10 +36,7 @@ class CalculateMiningStatsTest extends TestCase
             'difficulty' => 1000,
         ]);
 
-        $explorer = Mockery::mock(PepecoinExplorerService::class);
-        
-        // Dispatch job
-        CalculateMiningStats::dispatchSync($explorer);
+        CalculateMiningStats::dispatchSync();
 
         // Check daily stats
         // Note: hashrate_timestamp is $end->startOfHour() which is $now->startOfHour()
@@ -53,7 +48,7 @@ class CalculateMiningStatsTest extends TestCase
             ->first();
         $this->assertNotNull($daily);
         $this->assertEquals(1.0, $daily->share);
-        
+
         // Formula: (1000 * 2^32 * 10) / 86400 (window is 24h)
         $expectedHashrate = (1000 * 4294967296.0 * 10) / 86400;
         $this->assertEqualsWithDelta($expectedHashrate, $daily->avg_hashrate, 0.0001);
@@ -64,12 +59,12 @@ class CalculateMiningStatsTest extends TestCase
             ->where('hashrate_timestamp', $timestamp)
             ->first();
         $this->assertNotNull($weekly);
-        
+
         // Formula: (1000 * 2^32 * 10) / 604800 (window is 7d)
         $expectedWeeklyHashrate = (1000 * 4294967296.0 * 10) / 604800;
         $this->assertEqualsWithDelta($expectedWeeklyHashrate, $weekly->avg_hashrate, 0.0001);
 
-        Carbon::setTestNow(); // Reset time
+        Carbon::setTestNow();
     }
 
     public function test_it_handles_multiple_pools_and_unknown(): void
@@ -79,7 +74,7 @@ class CalculateMiningStatsTest extends TestCase
 
         $now = Carbon::parse('2026-02-26 12:30:00');
         Carbon::setTestNow($now);
-        
+
         // 8 blocks for Pool A
         Block::factory()->count(8)->create([
             'pool_id' => $poolA->id,
@@ -92,13 +87,11 @@ class CalculateMiningStatsTest extends TestCase
             'created_at' => $now->copy()->subMinutes(10),
         ]);
 
-        $explorer = Mockery::mock(PepecoinExplorerService::class);
-        
-        CalculateMiningStats::dispatchSync($explorer);
+        CalculateMiningStats::dispatchSync();
 
         $this->assertEquals(0.8, PoolStat::where('pool_id', $poolA->id)->value('share'));
         $this->assertEquals(0.2, PoolStat::where('pool_id', $unknownPool->id)->value('share'));
 
-        Carbon::setTestNow(); // Reset time
+        Carbon::setTestNow();
     }
 }

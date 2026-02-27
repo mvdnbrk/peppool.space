@@ -7,7 +7,6 @@ namespace App\Jobs;
 use App\Models\Block;
 use App\Models\Pool;
 use App\Models\PoolStat;
-use App\Services\PepecoinExplorerService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -20,21 +19,29 @@ class CalculateMiningStats implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function handle(PepecoinExplorerService $explorer): void
+    public function __construct(
+        public readonly ?Carbon $referenceTime = null,
+    ) {}
+
+    public function handle(): void
     {
-        $latestBlock = Block::orderBy('height', 'desc')->first();
-        if (! $latestBlock) {
-            return;
+        if ($this->referenceTime) {
+            $end = $this->referenceTime;
+        } else {
+            $latestBlock = Block::orderBy('height', 'desc')->first();
+            if (! $latestBlock) {
+                return;
+            }
+            $end = $latestBlock->created_at;
         }
 
-        $referenceTime = $latestBlock->created_at;
         $unknownPool = Pool::where('slug', 'unknown')->first() ?? Pool::create(['slug' => 'unknown', 'name' => 'Unknown', 'addresses' => [], 'regexes' => []]);
 
-        $this->calculateForType('daily', $referenceTime->copy()->subDay(), $referenceTime, $explorer, $unknownPool->id);
-        $this->calculateForType('weekly', $referenceTime->copy()->subWeek(), $referenceTime, $explorer, $unknownPool->id);
+        $this->calculateForType('daily', $end->copy()->subDay(), $end, $unknownPool->id);
+        $this->calculateForType('weekly', $end->copy()->subWeek(), $end, $unknownPool->id);
     }
 
-    private function calculateForType(string $type, Carbon $start, Carbon $end, PepecoinExplorerService $explorer, int $unknownPoolId): void
+    private function calculateForType(string $type, Carbon $start, Carbon $end, int $unknownPoolId): void
     {
         $totalBlocks = Block::whereBetween('created_at', [$start, $end])->count();
         if ($totalBlocks === 0) {

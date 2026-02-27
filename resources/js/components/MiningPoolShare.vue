@@ -1,8 +1,33 @@
 <template>
-  <div class="w-full h-full flex flex-col items-center justify-center">
-    <div v-if="loading" class="animate-pulse text-gray-400">Loading pool data...</div>
-    <div v-else-if="stats.length === 0" class="text-gray-400 text-sm italic">No data available for the selected period.</div>
-    <div v-else class="flex flex-col md:flex-row items-center justify-around w-full max-w-2xl">
+  <div class="w-full h-full flex flex-col">
+    <!-- Header with Toggle -->
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Mining Pool Share</h2>
+      <div class="flex p-1 bg-gray-100 dark:bg-gray-900/50 rounded-lg">
+        <button
+          @click="type = 'daily'"
+          class="px-3 py-1 text-xs font-medium rounded-md transition-all duration-200 cursor-pointer"
+          :class="type === 'daily' ? 'bg-white dark:bg-gray-800 text-green-700 dark:text-green-400 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
+        >
+          Daily
+        </button>
+        <button
+          @click="type = 'weekly'"
+          class="px-3 py-1 text-xs font-medium rounded-md transition-all duration-200 cursor-pointer"
+          :class="type === 'weekly' ? 'bg-white dark:bg-gray-800 text-green-700 dark:text-green-400 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
+        >
+          Weekly
+        </button>
+      </div>
+    </div>
+
+    <div v-if="loading" class="flex-1 flex items-center justify-center min-h-[300px]">
+      <div class="animate-pulse text-gray-400">Loading pool data...</div>
+    </div>
+    <div v-else-if="stats.length === 0" class="flex-1 flex items-center justify-center min-h-[300px]">
+      <div class="text-gray-400 text-sm italic">No data available for the selected period.</div>
+    </div>
+    <div v-else class="flex flex-col md:flex-row items-center justify-around w-full max-w-2xl mx-auto">
       <!-- Donut Chart -->
       <div class="relative w-64 h-64 mb-8 md:mb-0 group">
         <svg viewBox="0 0 100 100" class="w-full h-full transform -rotate-90 drop-shadow-sm">
@@ -51,7 +76,7 @@
       <!-- Legend -->
       <div class="flex flex-col space-y-3 w-full md:w-64 px-4">
         <div 
-          v-for="stat in stats" 
+          v-for="(stat, index) in stats" 
           :key="stat.poolId" 
           class="flex items-center justify-between text-sm group cursor-default"
           @mouseenter="activePool = stat.name"
@@ -60,7 +85,7 @@
           <div class="flex items-center space-x-3 truncate">
             <div 
               class="w-3 h-3 rounded-full flex-shrink-0 transition-transform group-hover:scale-125" 
-              :style="{ backgroundColor: getColor(stat.name) }"
+              :style="{ backgroundColor: getColor(index, stat.name) }"
             ></div>
             <span 
               class="font-medium truncate transition-colors" 
@@ -79,7 +104,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 
 const props = defineProps({
   apiUrl: { type: String, required: true }
@@ -88,23 +113,29 @@ const props = defineProps({
 const stats = ref([])
 const loading = ref(true)
 const activePool = ref(null)
+const type = ref('daily')
 
-const poolColors = {
-  'ViaBTC': '#2ab1e2',
-  'F2Pool': '#345ced',
-  'AntPool': '#edae34',
-  'KuPool': '#24ae8f',
-  '00Hash': '#6366f1',
-  'Binance Pool': '#f3ba2f',
-  'EMCD': '#ff4d4d',
-  'Mining-Dutch': '#ff8c00',
-  'TrustPool': '#00c8ff',
-  'LitecoinPool': '#345ced',
-  'CloverPool': '#4ade80',
-  'Unknown': '#9ca3af'
+const palette = [
+  '#e11d48', // rose-600
+  '#db2777', // pink-600
+  '#c026d3', // fuchsia-600
+  '#9333ea', // purple-600
+  '#7c3aed', // violet-600
+  '#4f46e5', // indigo-600
+  '#2563eb', // blue-600
+  '#0284c7', // sky-600
+  '#0891b2', // cyan-600
+  '#0d9488', // teal-600
+  '#059669', // emerald-600
+  '#16a34a', // green-600
+  '#65a30d', // lime-600
+  '#ca8a04', // yellow-600
+]
+
+const getColor = (index, name) => {
+  if (name === 'Unknown' || name === 'Others') return '#9ca3af' // gray-400
+  return palette[index % palette.length]
 }
-
-const getColor = (name) => poolColors[name] || '#cbd5e1'
 
 const getActiveShare = computed(() => {
   if (!activePool.value) return 0
@@ -114,10 +145,9 @@ const getActiveShare = computed(() => {
 
 const slices = computed(() => {
   let accumulatedPercent = 0
-  // SVG circumference for r=40 is 2 * PI * 40 ≈ 251.327
   const circumference = 2 * Math.PI * 40
   
-  return stats.value.map(stat => {
+  return stats.value.map((stat, index) => {
     const percent = stat.share
     const dashLength = percent * circumference
     const startOffset = accumulatedPercent * circumference
@@ -125,7 +155,7 @@ const slices = computed(() => {
     
     return {
       name: stat.name,
-      color: getColor(stat.name),
+      color: getColor(index, stat.name),
       strokeDasharray: `${dashLength} ${circumference}`,
       strokeDashoffset: -startOffset
     }
@@ -133,8 +163,12 @@ const slices = computed(() => {
 })
 
 const fetchStats = async () => {
+  loading.value = true
   try {
-    const response = await fetch(props.apiUrl)
+    const url = new URL(props.apiUrl, window.location.origin)
+    url.searchParams.append('type', type.value)
+    
+    const response = await fetch(url.toString())
     const data = await response.json()
     // Group small pools into "Others" if we have too many
     if (data.length > 10) {
@@ -157,6 +191,7 @@ const fetchStats = async () => {
   }
 }
 
+watch(type, fetchStats)
 onMounted(fetchStats)
 </script>
 
