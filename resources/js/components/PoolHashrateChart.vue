@@ -21,11 +21,11 @@
       </div>
     </div>
 
-    <div v-if="isLoading" class="flex flex-col items-center justify-center h-64 text-gray-400">
+    <div v-if="isLoading" class="flex flex-col items-center justify-center h-[400px] text-gray-400">
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500 mb-4"></div>
       <span>Loading pool statistics...</span>
     </div>
-    <div v-else-if="error" class="flex items-center justify-center h-64 text-red-500 bg-red-50 dark:bg-red-900/10 rounded-lg">
+    <div v-else-if="error" class="flex items-center justify-center h-[400px] text-red-500 bg-red-50 dark:bg-red-900/10 rounded-lg">
       <div class="text-center">
         <p class="font-bold mb-1">Failed to load chart</p>
         <p class="text-sm opacity-75">{{ error }}</p>

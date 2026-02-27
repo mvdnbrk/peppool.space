@@ -33,7 +33,6 @@
             <div 
                 data-vue="pool-hashrate-chart"
                 data-props='@json(["apiUrl" => route("api.mining.pool", ["slug" => $pool->slug])])'
-                class="min-h-[400px] flex items-center justify-center"
             >
                 <div class="animate-pulse text-gray-400">Loading chart...</div>
             </div>

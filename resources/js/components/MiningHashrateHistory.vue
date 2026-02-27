@@ -21,10 +21,10 @@
       </div>
     </div>
 
-    <div v-if="isLoading" class="flex items-center justify-center h-64 text-gray-400">
+    <div v-if="isLoading" class="flex items-center justify-center h-[400px] text-gray-400">
       <div class="animate-pulse">Loading hashrate history…</div>
     </div>
-    <div v-else-if="error" class="flex items-center justify-center h-64 text-red-500">
+    <div v-else-if="error" class="flex items-center justify-center h-[400px] text-red-500">
       <span>{{ error }}</span>
     </div>
     <div v-show="!isLoading && !error" ref="chartContainer" class="lw-chart"></div>
