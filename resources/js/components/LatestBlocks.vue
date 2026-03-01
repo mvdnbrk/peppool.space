@@ -16,14 +16,13 @@
             </div>
             <div class="min-w-0 flex-1">
               <p class="text-sm font-medium text-gray-900 dark:text-white">
-                <span v-if="block.pool" class="text-gray-500 dark:text-gray-400 font-normal mr-1">{{ block.pool.name }}:</span>
                 {{ (block.id || block.hash || '').substring(0, 16) }}...{{ (block.id || block.hash || '').substring((block.id || block.hash || '').length - 8) }}
               </p>
-              <div class="flex items-center space-x-2">
+              <div class="flex items-center text-sm text-gray-500 dark:text-gray-400">
                 <Timestamp
                   :datetime="toIso(block.timestamp ?? block.time)"
-                  class="text-sm text-gray-500 dark:text-gray-400"
                 />
+                <span v-if="block.pool" class="ml-1">by {{ block.pool.name }}</span>
               </div>
             </div>
           </div>
