@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Block;
+use App\Services\MiningPoolService;
 use App\Services\PepecoinRpcService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -22,14 +23,13 @@ class SyncBlocksCommand extends Command
 
     protected $description = 'Sync blocks from Pepecoin blockchain to database (defaults to syncing new blocks only)';
 
-    private PepecoinRpcService $rpcService;
-
     private bool $shouldStop = false;
 
-    public function __construct(PepecoinRpcService $rpcService)
-    {
+    public function __construct(
+        private readonly PepecoinRpcService $rpcService,
+        private readonly MiningPoolService $miningPoolService
+    ) {
         parent::__construct();
-        $this->rpcService = $rpcService;
     }
 
     public function handle(): int
@@ -151,10 +151,20 @@ class SyncBlocksCommand extends Command
                     usleep($delay * 1000); // Convert ms to microseconds
                 }
 
+                // We use verbosity 1 to get block info and auxpow.
+                // If auxpow is missing, we might need verbosity 2 to get the coinbase of the Pepecoin block.
                 $blockData = $this->rpcService->getBlock($blockHash, 1);
+
+                $pool = $this->miningPoolService->identifyFromBlock($blockData);
+
+                if ($pool) {
+                    $pepeAddress = $blockData['tx'][0]['vout'][0]['scriptPubKey']['addresses'][0] ?? null;
+                    $this->miningPoolService->recordPayoutAddress($pool, $pepeAddress);
+                }
 
                 $blocksToInsert[] = [
                     'height' => $height,
+                    'pool_id' => $pool?->id,
                     'hash' => $blockHash,
                     'tx_count' => count($blockData['tx'] ?? []),
                     'size' => $blockData['size'] ?? 0,
@@ -183,7 +193,7 @@ class SyncBlocksCommand extends Command
                 DB::table('blocks')->upsert(
                     $blocksToInsert,
                     ['height'], // Unique columns
-                    ['hash', 'tx_count', 'size', 'difficulty', 'nonce', 'version', 'merkleroot', 'chainwork', 'auxpow', 'created_at'] // Columns to update
+                    ['pool_id', 'hash', 'tx_count', 'size', 'difficulty', 'nonce', 'version', 'merkleroot', 'chainwork', 'auxpow', 'created_at'] // Columns to update
                 );
             } catch (\Exception $e) {
                 $this->error('Failed to insert batch: '.$e->getMessage());

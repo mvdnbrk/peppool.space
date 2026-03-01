@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\BlockController;
 use App\Http\Controllers\Api\ChartPricesController;
 use App\Http\Controllers\Api\FeesController;
 use App\Http\Controllers\Api\MempoolController;
+use App\Http\Controllers\Api\MiningController;
 use App\Http\Controllers\Api\PricesController;
 use App\Http\Controllers\Api\TransactionController;
 use Illuminate\Support\Facades\Route;
@@ -57,5 +58,12 @@ Route::middleware('throttle:60,1')->name('api.')->group(function () {
         Route::get('/txids', [MempoolController::class, 'txids'])->name('txids');
         Route::get('/recent', [MempoolController::class, 'recent'])->name('recent');
         Route::get('/fee-estimates', [MempoolController::class, 'feeEstimates'])->name('fee-estimates');
+    });
+
+    Route::prefix('mining')->name('mining.')->group(function () {
+        Route::get('/pools', [MiningController::class, 'pools'])->name('pools');
+        Route::get('/pools/{slug}', [MiningController::class, 'pool'])->name('pool');
+        Route::get('/hashrate', [MiningController::class, 'hashrate'])->name('hashrate');
+        Route::get('/blocks', [MiningController::class, 'blocks'])->name('blocks');
     });
 });

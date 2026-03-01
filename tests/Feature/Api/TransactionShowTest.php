@@ -4,6 +4,9 @@ namespace Tests\Feature\Api;
 
 use App\Contracts\BlockchainServiceInterface;
 use App\Data\Blockchain\TransactionData;
+use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\Client\Response;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -105,15 +108,18 @@ class TransactionShowTest extends TestCase
     {
         $txid = '2c603d097588bb7d520ffb8b270cc61865f52c1427504ab43678fc055d07c260';
 
+        $response404 = new Response(new GuzzleResponse(404));
+        $exception404 = new RequestException($response404);
+
         $blockchain = Mockery::mock(BlockchainServiceInterface::class);
         $blockchain->shouldReceive('getTransaction')
             ->once()
             ->with($txid)
-            ->andThrow(new \Exception('Not found', 404));
+            ->andThrow($exception404);
         $blockchain->shouldReceive('getTransactionStatus')
             ->once()
             ->with($txid)
-            ->andThrow(new \Exception('Not found', 404));
+            ->andThrow($exception404);
         $this->app->instance(BlockchainServiceInterface::class, $blockchain);
 
         $this->get(route('api.tx.show', ['txid' => $txid]))

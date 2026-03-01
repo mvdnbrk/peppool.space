@@ -44,7 +44,7 @@
                     @endif
 
                     <!-- Price Link -->
-                    <a href="{{ route('price') }}" class="group hidden sm:flex items-center space-x-1 sm:space-x-2 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition-all duration-200 border border-green-200 hover:border-green-300">
+                    <a href="{{ route('price') }}" class="group hidden lg:flex items-center space-x-1 sm:space-x-2 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition-all duration-200 border border-green-200 hover:border-green-300">
                         <x-icon-chart class="w-3 h-3 sm:w-4 sm:h-4 text-green-600 group-hover:text-green-700" />
                         <span class="text-green-700 group-hover:text-green-800 font-medium text-xs sm:text-sm">Price</span>
                     </a>
@@ -52,6 +52,12 @@
                     <!-- Network Link -->
                     <a href="{{ route('network.index') }}" class="group hidden sm:flex items-center space-x-1 sm:space-x-2 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition-all duration-200 border border-green-200 hover:border-green-300">
                         <span class="text-green-700 group-hover:text-green-800 font-medium text-xs sm:text-sm">Network</span>
+                    </a>
+
+                    <!-- Mining Link -->
+                    <a href="{{ route('mining.dashboard') }}" class="group hidden sm:flex items-center space-x-1 sm:space-x-2 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition-all duration-200 border border-green-200 hover:border-green-300">
+                        <span class="text-green-700 group-hover:text-green-800 font-medium text-xs sm:text-sm">Mining</span>
+                    </a>
                     </a>
 
                     <!-- Wallet Link -->
