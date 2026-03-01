@@ -62,18 +62,16 @@ class MiningPoolService
             return null;
         }
 
-        $decodedScript = '';
-        if (! empty($coinbaseScriptHex)) {
-            $decodedScript = @hex2bin($coinbaseScriptHex) ?: '';
-        }
-
         $pools = $this->getPools();
 
-        // 1. Check tags first (more reliable)
-        if (! empty($decodedScript)) {
+        // 1. Check tags (Search hex for binary safety)
+        if (! empty($coinbaseScriptHex)) {
+            $coinbaseScriptHex = strtolower($coinbaseScriptHex);
+
             foreach ($pools as $pool) {
                 foreach ($pool->regexes as $tag) {
-                    if (str_contains(strtolower($decodedScript), strtolower((string) $tag))) {
+                    $tagHex = bin2hex((string) $tag);
+                    if (str_contains($coinbaseScriptHex, strtolower($tagHex))) {
                         return $pool;
                     }
                 }
