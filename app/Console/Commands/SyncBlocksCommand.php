@@ -151,9 +151,9 @@ class SyncBlocksCommand extends Command
                     usleep($delay * 1000); // Convert ms to microseconds
                 }
 
-                // We use verbosity 1 to get block info and auxpow.
-                // If auxpow is missing, we might need verbosity 2 to get the coinbase of the Pepecoin block.
-                $blockData = $this->rpcService->getBlock($blockHash, 1);
+                // We use verbosity 2 to get full transaction details (including coinbase).
+                // This is required for mining pool identification.
+                $blockData = $this->rpcService->getBlock($blockHash, 2);
 
                 $pool = $this->miningPoolService->identifyFromBlock($blockData);
 
