@@ -32,7 +32,7 @@
                 </li>
                 <li>
                     <a href="{{ route('nodes.index') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
-                        Nodes
+                        Network
                     </a>
                 </li>
                 <li>
