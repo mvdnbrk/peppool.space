@@ -14,7 +14,7 @@ class NodeController extends Controller
         $nodes = Node::where('is_online', true)->orderBy('last_seen_at', 'desc')->get();
 
         $stats = collect([
-            'total' => $nodes->count(),
+            'total' => Node::count(),
             'online' => $nodes->count(),
             'countries' => $nodes->groupBy('country')->map->count()->sortDesc()->take(5),
             'subversions' => $nodes->groupBy('subversion')->map->count()->sortDesc()->take(5),

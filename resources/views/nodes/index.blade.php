@@ -1,22 +1,21 @@
-<x-layout title="Active Nodes - peppool.space" og_description="Active Pepecoin (PEP) nodes globally.">
+<x-layout title="Network Status - peppool.space" og_description="Real-time overview of the Pepecoin network through our distributed infrastructure.">
     <div class="mb-6 md:mb-8 text-gray-600 dark:text-gray-300">
         <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-200 mb-2">Network Status</h1>
         <p class="text-sm md:text-base text-gray-500">Real-time overview of the Pepecoin network through our distributed infrastructure.</p>
     </div>
 
-        <!-- Stats Summary -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <x-stat-card label="Total Peers" iconBg="bg-blue-500">
-                <x-slot name="icon"><x-icon-nodes class="w-6 h-6 text-white" /></x-slot>
-                {{ number_format($stats->get('total')) }}
-            </x-stat-card>
-    
-            <x-stat-card label="Online Nodes" iconBg="bg-green-500">
-                <x-slot name="icon"><x-icon-check-circle class="w-6 h-6 text-white" /></x-slot>
-                {{ number_format($stats->get('online')) }}
-            </x-stat-card>
-    
-            <x-stat-card label="Top Country" iconBg="bg-purple-500">
+            <!-- Stats Summary -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <x-stat-card label="Network Discovery" iconBg="bg-blue-500">
+                    <x-slot name="icon"><x-icon-nodes class="w-6 h-6 text-white" /></x-slot>
+                    {{ number_format($stats->get('total')) }}
+                </x-stat-card>
+        
+                <x-stat-card label="Live Connections" iconBg="bg-green-500">
+                    <x-slot name="icon"><x-icon-check-circle class="w-6 h-6 text-white" /></x-slot>
+                    {{ number_format($stats->get('online')) }}
+                </x-stat-card>
+                    <x-stat-card label="Top Country" iconBg="bg-purple-500">
                 <x-slot name="icon"><x-icon-globe class="w-6 h-6 text-white" /></x-slot>
                 {{ $stats->get('countries')->keys()->first() ?? 'Unknown' }}
             </x-stat-card>
@@ -63,7 +62,7 @@
             <!-- Node List (Full Width) -->
     <div class="bg-white dark:bg-gray-900 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Recent Peers</h2>
+            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Live Connections</h2>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left">
