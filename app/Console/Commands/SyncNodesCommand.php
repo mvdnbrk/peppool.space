@@ -43,17 +43,28 @@ class SyncNodesCommand extends Command
 
         $allPeers = array_merge($this->fetchLocal(), $this->fetchRemote());
 
-        $uniquePeers = collect($allPeers)->unique('addr');
-        $this->info("Total unique peers found: {$uniquePeers->count()}");
+        // Pre-parse addresses to get IPs for grouping
+        $processedPeers = collect($allPeers)->map(function ($peer) {
+            $parsed = $this->parsePeerAddress($peer['addr']);
+            $peer['ip'] = $parsed['ip'];
+            $peer['port'] = $parsed['port'];
+
+            return $peer;
+        });
+
+        $groupedPeers = $processedPeers->groupBy('ip');
+        $this->info("Total unique peers found: {$groupedPeers->count()}");
 
         $synchronized = 0;
         $localized = 0;
 
-        foreach ($uniquePeers as $peerData) {
-            $parsed = $this->parsePeerAddress($peerData['addr']);
+        foreach ($groupedPeers as $ip => $peerGroup) {
+            $peerData = $peerGroup->first();
+            $newSources = $peerGroup->pluck('source')->unique()->sort()->values()->all();
 
-            $node = Node::firstOrNew(['ip' => $parsed['ip']]);
-            $node->port = $parsed['port'];
+            $node = Node::firstOrNew(['ip' => $ip]);
+            $node->sources = $newSources;
+            $node->port = $peerData['port'];
             $node->version = $peerData['version'] ?? null;
             $node->subversion = $peerData['subver'] ?? null;
             $node->is_online = true;
@@ -82,7 +93,13 @@ class SyncNodesCommand extends Command
         $this->info('Fetching peers from Local RPC...');
 
         try {
-            return $this->rpcService->call('getpeerinfo');
+            $peers = $this->rpcService->call('getpeerinfo');
+
+            return collect($peers)->map(function ($peer) {
+                $peer['source'] = 'peppool.space-01';
+
+                return $peer;
+            })->toArray();
         } catch (\Exception $e) {
             $this->error("Failed to fetch local peers: {$e->getMessage()}");
 
@@ -98,12 +115,13 @@ class SyncNodesCommand extends Command
         $allRemotePeers = [];
         $remoteNodes = config('pepecoin.remote_nodes', []);
 
-        foreach ($remoteNodes as $node) {
+        foreach ($remoteNodes as $index => $node) {
             if (empty($node['ip']) || empty($node['ssh_user']) || empty($node['cli_path'])) {
                 continue;
             }
 
-            $this->info("Fetching peers from remote node: {$node['name']}...");
+            $nodeName = $node['name'] ?? "node_{$index}";
+            $this->info("Fetching peers from remote node: {$nodeName}...");
 
             $sshCommand = sprintf(
                 'ssh -p %d %s@%s "%s getpeerinfo"',
@@ -116,7 +134,7 @@ class SyncNodesCommand extends Command
             $result = Process::run($sshCommand);
 
             if ($result->failed()) {
-                $this->warn("Failed to retrieve peers from {$node['name']}: {$result->errorOutput()}");
+                $this->warn("Failed to retrieve peers from {$nodeName}: {$result->errorOutput()}");
 
                 continue;
             }
@@ -124,13 +142,19 @@ class SyncNodesCommand extends Command
             $peers = json_decode($result->output(), true);
 
             if (! is_array($peers)) {
-                $this->warn("Failed to decode peers from {$node['name']}.");
+                $this->warn("Failed to decode peers from {$nodeName}.");
 
                 continue;
             }
 
-            $allRemotePeers = array_merge($allRemotePeers, $peers);
-            $this->info('Found '.count($peers)." peers on {$node['name']}.");
+            $peersWithSource = collect($peers)->map(function ($peer) use ($nodeName) {
+                $peer['source'] = $nodeName;
+
+                return $peer;
+            })->toArray();
+
+            $allRemotePeers = array_merge($allRemotePeers, $peersWithSource);
+            $this->info('Found '.count($peers)." peers on {$nodeName}.");
         }
 
         return $allRemotePeers;

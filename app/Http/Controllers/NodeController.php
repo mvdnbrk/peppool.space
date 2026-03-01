@@ -13,12 +13,13 @@ class NodeController extends Controller
     {
         $nodes = Node::where('is_online', true)->orderBy('last_seen_at', 'desc')->get();
 
-        $stats = [
+        $stats = collect([
             'total' => $nodes->count(),
             'online' => $nodes->where('is_online', true)->count(),
             'countries' => $nodes->groupBy('country')->map->count()->sortDesc()->take(5),
             'subversions' => $nodes->groupBy('subversion')->map->count()->sortDesc()->take(5),
-        ];
+            'version' => $nodes->groupBy('version')->map->count()->sortDesc()->keys()->first() ?? 'N/A',
+        ]);
 
         return view('nodes.index', [
             'nodes' => $nodes,

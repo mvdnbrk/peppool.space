@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('nodes', function (Blueprint $table) {
@@ -28,14 +25,12 @@ return new class extends Migration
             $table->decimal('longitude', 11, 8)->nullable();
             $table->string('isp')->nullable();
             $table->boolean('is_online')->default(true);
+            $table->json('sources')->nullable();
             $table->timestamp('last_seen_at')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('nodes');
