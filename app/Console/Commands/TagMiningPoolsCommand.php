@@ -9,6 +9,7 @@ use App\Models\Pool;
 use App\Services\MiningPoolService;
 use App\Services\PepecoinRpcService;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Builder;
 
 class TagMiningPoolsCommand extends Command
 {
@@ -36,27 +37,9 @@ class TagMiningPoolsCommand extends Command
             return self::FAILURE;
         }
 
-        $query = Block::query();
+        $query = $this->buildBlockQuery($unknownPool);
 
-        if ($this->option('all')) {
-            // Process everything
-        } elseif ($this->option('unknown')) {
-            // Process only those explicitly marked as Unknown
-            $query->where('pool_id', $unknownPool->id);
-        } else {
-            // Default: only process blocks that haven't been touched yet (NULL)
-            $query->whereNull('pool_id');
-        }
-
-        if ($this->option('from')) {
-            $query->where('height', '>=', (int) $this->option('from'));
-        }
-
-        if ($this->option('limit')) {
-            $query->limit((int) $this->option('limit'));
-        }
-
-        $total = $query->count();
+        $total = (clone $query)->count();
 
         if ($total === 0) {
             $this->info('No blocks to process.');
@@ -65,7 +48,7 @@ class TagMiningPoolsCommand extends Command
         }
 
         $isUnknownOnly = $this->option('unknown');
-        $this->info("Processing {$total} blocks" . ($isUnknownOnly ? ' (Local data only)...' : '...'));
+        $this->info("Processing {$total} blocks".($isUnknownOnly ? ' (Local data only)...' : '...'));
         $bar = $this->output->createProgressBar($total);
         $tagged = 0;
         $markedAsUnknown = 0;
@@ -126,10 +109,33 @@ class TagMiningPoolsCommand extends Command
 
         $bar->finish();
         $this->newLine();
-        $this->info("Tagging completed.");
+        $this->info('Tagging completed.');
         $this->info("- {$tagged} blocks identified and tagged.");
         $this->info("- {$markedAsUnknown} blocks transitioned to Unknown.");
 
         return self::SUCCESS;
+    }
+
+    private function buildBlockQuery(Pool $unknownPool): Builder
+    {
+        $query = Block::query();
+
+        if ($this->option('from')) {
+            $query->where('height', '>=', (int) $this->option('from'));
+        }
+
+        if ($this->option('limit')) {
+            $query->limit((int) $this->option('limit'));
+        }
+
+        if ($this->option('all')) {
+            return $query;
+        }
+
+        if ($this->option('unknown')) {
+            return $query->where('pool_id', $unknownPool->id);
+        }
+
+        return $query->whereNull('pool_id');
     }
 }
