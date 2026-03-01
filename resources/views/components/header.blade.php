@@ -49,6 +49,11 @@
                         <span class="text-green-700 group-hover:text-green-800 font-medium text-xs sm:text-sm">Price</span>
                     </a>
 
+                    <!-- Network Link -->
+                    <a href="{{ route('network.index') }}" class="group hidden sm:flex items-center space-x-1 sm:space-x-2 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition-all duration-200 border border-green-200 hover:border-green-300">
+                        <span class="text-green-700 group-hover:text-green-800 font-medium text-xs sm:text-sm">Network</span>
+                    </a>
+
                     <!-- Wallet Link -->
                     <a href="{{ route('wallet') }}" class="group hidden sm:flex items-center space-x-1 sm:space-x-2 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition-all duration-200 border border-green-200 hover:border-green-300">
                         <span class="text-green-700 group-hover:text-green-800 font-medium text-xs sm:text-sm">Wallet</span>

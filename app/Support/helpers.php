@@ -104,3 +104,12 @@ if (! function_exists('format_pepe')) {
         return $formatted;
     }
 }
+
+if (! function_exists('flag')) {
+    function flag(string $countryCode): string
+    {
+        return collect(str_split(strtoupper($countryCode)))
+            ->map(fn ($char) => mb_chr(ord($char) + 127397))
+            ->implode('');
+    }
+}

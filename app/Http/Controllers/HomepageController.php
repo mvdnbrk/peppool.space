@@ -18,10 +18,6 @@ class HomepageController extends Controller
         try {
             return view('homepage', [
                 'mempool' => $blockchain->getMempool(),
-                'network' => [
-                    'subversion' => $explorer->getNetworkSubversion(),
-                    'connectionCount' => $explorer->getNetworkConnectionsCount(),
-                ],
                 'chainSize' => Number::fileSize($explorer->getChainSize(), precision: 1),
                 'blockHeight' => $blockchain->getBlockTipHeight(),
                 'difficulty' => format_difficulty($explorer->getDifficulty()),
