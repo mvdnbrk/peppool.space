@@ -22,6 +22,25 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Remote Nodes Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for additional nodes to execute commands on.
+    |
+    */
+
+    'remote_nodes' => [
+        [
+            'name' => env('PEPECOIN_REMOTE_NODE_NAME'),
+            'ip' => env('PEPECOIN_REMOTE_NODE_IP'),
+            'ssh_port' => env('PEPECOIN_REMOTE_NODE_SSH_PORT', 22),
+            'ssh_user' => env('PEPECOIN_REMOTE_NODE_SSH_USER'),
+            'cli_path' => env('PEPECOIN_REMOTE_NODE_CLI_PATH'),
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Electrs Configuration
     |--------------------------------------------------------------------------
     |
