@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('blocks', function (Blueprint $table) {
-            $table->unsignedSmallInteger('pool_id')->nullable()->after('height')->index();
+            $table->unsignedSmallInteger('pool_id')->nullable()->after('auxpow')->index();
             $table->foreign('pool_id')->references('id')->on('pools')->onDelete('set null');
         });
     }
