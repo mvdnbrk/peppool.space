@@ -1,5 +1,3 @@
-@props(['network' => null])
-
 <footer class="bg-green-700 mt-16 relative text-white border-b-12 border-green-900">
     <div class="absolute -top-16 left-0 right-0 w-full h-16 overflow-hidden">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none" class="w-full h-full transform scale-x-[-1] rotate-180">
@@ -56,15 +54,6 @@
         <div class="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
             <div class="flex flex-col items-center md:items-start">
                 <p class="text-lg font-medium text-white">real-time pepecoin blockchain explorer</p>
-                @if(isset($network))
-                <div class="mt-1 flex items-center gap-2 text-sm text-green-100">
-                    @if(!empty($network['subversion']))
-                        <span>{{ $network['subversion'] }}</span>
-                    @endif
-                    <div class="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
-                    <span>{{ $network['connectionCount'] ?? 0 }} peers</span>
-                </div>
-                @endif
             </div>
         </div>
 
