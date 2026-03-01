@@ -28,12 +28,12 @@ class SyncNodesCommandTest extends TestCase
                     'addr' => '1.2.3.4:33874',
                     'version' => 70016,
                     'subver' => '/pepetoshi:1.1.0/',
-                ]
+                ],
             ]);
         $this->app->instance(PepecoinRpcService::class, $rpcMock);
 
         // Mock Location
-        $position = new Position();
+        $position = new Position;
         $position->countryName = 'Netherlands';
         $position->countryCode = 'NL';
         $position->continentName = 'Europe';
@@ -77,7 +77,7 @@ class SyncNodesCommandTest extends TestCase
                 'ssh_user' => 'ploi',
                 'ssh_port' => 22,
                 'cli_path' => 'pepecoin-cli',
-            ]
+            ],
         ]);
 
         // Mock Process for SSH
@@ -87,17 +87,17 @@ class SyncNodesCommandTest extends TestCase
                     'addr' => '9.10.11.12:33874',
                     'version' => 70016,
                     'subver' => '/pepetoshi:1.1.0/',
-                ]
+                ],
             ])),
         ]);
 
         // Mock Location
-        $position = new Position();
+        $position = new Position;
         $position->countryName = 'United States';
         $position->countryCode = 'US';
         $position->continentName = 'North America';
         $position->continentCode = 'NA';
-        
+
         Location::shouldReceive('setDriver')->andReturnSelf();
         Location::shouldReceive('get')->andReturn($position);
 

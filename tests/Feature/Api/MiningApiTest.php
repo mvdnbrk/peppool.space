@@ -17,7 +17,7 @@ class MiningApiTest extends TestCase
     public function test_it_returns_mining_pool_shares(): void
     {
         $pool = Pool::create(['name' => 'ViaBTC', 'slug' => 'viabtc', 'addresses' => [], 'regexes' => []]);
-        
+
         $now = now()->startOfHour();
         PoolStat::create([
             'hashrate_timestamp' => $now,
@@ -51,7 +51,7 @@ class MiningApiTest extends TestCase
         $this->get(route('api.mining.hashrate'))
             ->assertOk()
             ->assertJsonStructure([
-                '*' => ['timestamp', 'pools', 'totalHashrate']
+                '*' => ['timestamp', 'pools', 'totalHashrate'],
             ]);
     }
 
@@ -70,7 +70,7 @@ class MiningApiTest extends TestCase
                 'pool' => [
                     'name' => 'ViaBTC',
                     'slug' => 'viabtc',
-                ]
+                ],
             ]);
     }
 }

@@ -7,7 +7,6 @@ use App\Data\Blockchain\AddressData;
 use App\Data\Blockchain\TransactionData;
 use App\Data\Blockchain\UtxoData;
 use App\Exceptions\UnsupportedOperationException;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;

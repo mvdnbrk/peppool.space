@@ -19,7 +19,7 @@ class MiningPoolServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new MiningPoolService();
+        $this->service = new MiningPoolService;
         Cache::forget('mining_pools_list');
     }
 
@@ -34,7 +34,7 @@ class MiningPoolServiceTest extends TestCase
 
         // Mock coinbase script containing the tag
         $scriptHex = bin2hex('...ViaBTC...');
-        
+
         $identified = $this->service->identifyPool($scriptHex, 'some-address');
 
         $this->assertNotNull($identified);
@@ -90,7 +90,7 @@ class MiningPoolServiceTest extends TestCase
         ]);
 
         $newAddress = 'NewAddress123';
-        
+
         $this->service->recordPayoutAddress($pool, $newAddress);
 
         $pool->refresh();
