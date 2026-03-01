@@ -61,6 +61,14 @@ class TagMiningPoolsCommand extends Command
                 // 1. Try with stored auxpow (Fast, local)
                 if (! empty($block->auxpow)) {
                     $pool = $this->miningPoolService->identifyFromBlock(['auxpow' => $block->auxpow]);
+
+                    // If still not identified but we have the raw coinbase in our JSON, try searching the scriptSig directly
+                    if (! $pool && isset($block->auxpow['tx']['vin'][0]['coinbase'])) {
+                        $pool = $this->miningPoolService->identifyPool(
+                            $block->auxpow['tx']['vin'][0]['coinbase'],
+                            $block->auxpow['tx']['vout'][0]['scriptPubKey']['addresses'][0] ?? null
+                        );
+                    }
                 }
 
                 // 2. Fallback to RPC for full block (Slow, network)
