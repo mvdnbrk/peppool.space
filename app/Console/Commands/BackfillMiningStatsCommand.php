@@ -20,11 +20,13 @@ class BackfillMiningStatsCommand extends Command
     public function handle(): int
     {
         $days = (int) $this->option('days');
-        $this->info("Starting backfill for the last {$days} days...");
+        $this->info("Starting rolling backfill for the last {$days} days...");
 
-        $startDate = now()->subDays($days)->startOfHour();
+        $now = now()->startOfHour();
+        $targetStart = $now->copy()->subDays($days);
+        $fetchStart = $targetStart->copy()->subDays(7); // 7-day buffer for the first weekly rolling point
 
-        $startHeight = Block::where('created_at', '>=', $startDate)->min('height');
+        $startHeight = Block::where('created_at', '>=', $fetchStart)->min('height');
 
         if ($startHeight === null) {
             $this->error('Could not find a starting block for the requested date range.');
@@ -45,37 +47,56 @@ class BackfillMiningStatsCommand extends Command
 
         $unknownPoolId = Pool::where('slug', 'unknown')->first()?->id ?? 1;
 
-        // Group blocks by hour
-        $groupedByHour = $blocks->groupBy(function (Block $block) {
-            return $block->created_at->startOfHour()->toDateTimeString();
+        // Group blocks by Y-m-d H:00:00 for fast window aggregation
+        $blocksByHour = $blocks->groupBy(function (Block $block) {
+            return $block->created_at->format('Y-m-d H:00:00');
         });
 
-        $bar = $this->output->createProgressBar($groupedByHour->count());
+        $totalHours = $days * 24;
+        $bar = $this->output->createProgressBar($totalHours + 1);
 
-        foreach ($groupedByHour as $hourStr => $hourBlocks) {
-            $endOfHour = Carbon::parse($hourStr)->addHour();
-            $this->calculateStatsForGroup($hourBlocks, $endOfHour, $unknownPoolId);
+        for ($i = $totalHours; $i >= 0; $i--) {
+            $windowEnd = $targetStart->copy()->addHours($totalHours - $i);
+
+            // 1. Calculate Daily (24h) rolling average
+            $dailyBlocks = collect();
+            for ($j = 0; $j < 24; $j++) {
+                $hourKey = $windowEnd->copy()->subHours($j)->format('Y-m-d H:00:00');
+                if ($blocksByHour->has($hourKey)) {
+                    $dailyBlocks = $dailyBlocks->concat($blocksByHour->get($hourKey));
+                }
+            }
+            $this->calculateStatsForWindow($dailyBlocks, $windowEnd, $unknownPoolId, 'daily', 86400);
+
+            // 2. Calculate Weekly (7d) rolling average
+            $weeklyBlocks = collect();
+            for ($j = 0; $j < 168; $j++) {
+                $hourKey = $windowEnd->copy()->subHours($j)->format('Y-m-d H:00:00');
+                if ($blocksByHour->has($hourKey)) {
+                    $weeklyBlocks = $weeklyBlocks->concat($blocksByHour->get($hourKey));
+                }
+            }
+            $this->calculateStatsForWindow($weeklyBlocks, $windowEnd, $unknownPoolId, 'weekly', 604800);
+
             $bar->advance();
         }
 
         $bar->finish();
         $this->newLine();
-        $this->info('Backfill completed successfully.');
+        $this->info('Rolling backfill completed successfully.');
 
         return self::SUCCESS;
     }
 
-    private function calculateStatsForGroup($blocks, Carbon $endOfHour, int $unknownPoolId): void
+    private function calculateStatsForWindow($blocks, Carbon $endTimestamp, int $unknownPoolId, string $type, int $seconds): void
     {
         $count = $blocks->count();
         if ($count === 0) {
             return;
         }
 
-        // Use 1 hour (3600s) as the window for these snapshots
-        $timeWindow = 3600;
         $avgDifficulty = (float) $blocks->avg('difficulty');
-        $networkHashrate = Block::estimateHashrate($avgDifficulty, $count, $timeWindow);
+        $networkHashrate = Block::estimateHashrate($avgDifficulty, $count, $seconds);
 
         $poolCounts = $blocks->groupBy('pool_id');
 
@@ -86,9 +107,9 @@ class BackfillMiningStatsCommand extends Command
 
             PoolStat::updateOrCreate(
                 [
-                    'hashrate_timestamp' => $endOfHour,
+                    'hashrate_timestamp' => $endTimestamp,
                     'pool_id' => $effectivePoolId,
-                    'type' => 'daily', // Chart default
+                    'type' => $type,
                 ],
                 [
                     'avg_hashrate' => $poolHashrate,
