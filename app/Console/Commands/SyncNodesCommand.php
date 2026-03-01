@@ -12,18 +12,8 @@ use Stevebauman\Location\Facades\Location;
 
 class SyncNodesCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'pepe:sync:nodes';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Sync peer nodes from the Pepecoin RPC and resolve their geographic locations';
 
     public function __construct(
@@ -32,9 +22,6 @@ class SyncNodesCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     */
     public function handle(): int
     {
         $this->info('Starting global node synchronization...');
@@ -85,9 +72,6 @@ class SyncNodesCommand extends Command
         return self::SUCCESS;
     }
 
-    /**
-     * Fetch peers from the local RPC node.
-     */
     private function fetchLocal(): array
     {
         $this->info('Fetching peers from Local RPC...');
@@ -107,9 +91,6 @@ class SyncNodesCommand extends Command
         }
     }
 
-    /**
-     * Fetch peers from all configured remote nodes via SSH.
-     */
     private function fetchRemote(): array
     {
         $allRemotePeers = [];
@@ -160,9 +141,6 @@ class SyncNodesCommand extends Command
         return $allRemotePeers;
     }
 
-    /**
-     * Resolve and update geographic location for a node.
-     */
     private function fetchGeolocation(Node $node): bool
     {
         try {
@@ -192,9 +170,6 @@ class SyncNodesCommand extends Command
         return false;
     }
 
-    /**
-     * Localize any remaining nodes in the database missing location data.
-     */
     private function backfillLocationData(): void
     {
         $unlocalized = Node::whereNull('country_code')->get();
@@ -213,9 +188,6 @@ class SyncNodesCommand extends Command
         }
     }
 
-    /**
-     * Parse a peer address string into IP and Port components.
-     */
     private function parsePeerAddress(string $addr): array
     {
         if (str_starts_with($addr, '[')) {
