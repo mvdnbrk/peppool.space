@@ -80,7 +80,7 @@ class MiningPoolSeeder extends Seeder
                 'name' => 'LitecoinPool',
                 'link' => 'https://www.litecoinpool.org',
                 'addresses' => [],
-                'regexes' => ['LitecoinPool', 'litecoinpool.org'],
+                'regexes' => ['LitecoinPool', 'litecoinpool.org', '/LP/'],
             ],
             [
                 'name' => 'CloverPool',
