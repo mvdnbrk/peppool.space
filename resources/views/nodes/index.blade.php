@@ -71,9 +71,9 @@
                     <tr class="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs font-semibold uppercase tracking-wider">
                         <th class="px-6 py-3 w-10"></th>
                         <th class="px-6 py-3">Location</th>
-                        <th class="px-6 py-3">Client</th>
-                        <th class="px-6 py-3">ISP</th>
-                        <th class="px-6 py-3">Connection</th>
+                        <th class="px-6 py-3 hidden sm:table-cell">Client</th>
+                        <th class="px-6 py-3 hidden sm:table-cell">ISP</th>
+                        <th class="px-6 py-3 hidden sm:table-cell">Connection</th>
                         <th class="px-6 py-3 text-right">Last Seen</th>
                     </tr>
                 </thead>
@@ -93,7 +93,7 @@
                                 {{ $node->city ?? 'Unknown' }}{{ $node->region ? ', ' . $node->region : '' }}
                             </div>
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-6 py-4 hidden sm:table-cell">
                             <div class="text-sm text-gray-900 dark:text-gray-100">
                                 {{ $node->client_version }}
                             </div>
@@ -103,10 +103,10 @@
                             </div>
                             @endif
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 hidden sm:table-cell">
                             {{ $node->isp ?? 'Unknown' }}
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-6 py-4 hidden sm:table-cell">
                             <div class="flex flex-wrap gap-1">
                                 @foreach($node->sources ?? [] as $source)
                                 <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
