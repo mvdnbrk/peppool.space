@@ -7,6 +7,7 @@ use App\Http\Controllers\ConverterController;
 use App\Http\Controllers\DocumentationController;
 use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\MiningController;
+use App\Http\Controllers\NetworkController;
 use App\Http\Controllers\PriceController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SponsorController;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', HomepageController::class)->name('homepage');
 
 Route::get('/pepecoin-price', PriceController::class)->name('price');
+Route::get('/network', NetworkController::class)->name('network.index');
 Route::get('/about-pepecoin', AboutController::class)->name('about');
 Route::get('/wallet', WalletController::class)->name('wallet');
 Route::get('/sponsor', SponsorController::class)->name('sponsor');

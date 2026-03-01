@@ -1,6 +1,5 @@
 @props([
     'title' => 'Peppool Explorer',
-    'network' => null,
     'og_image' => 'default-card-large.png',
     'og_description' => 'Real-time Pepecoin blockchain explorer. View blocks, transactions, addresses, and more on the Pepecoin network.',
     'showPepePrice' => true,
@@ -41,7 +40,7 @@
         {{ $slot }}
     </main>
 
-    <x-footer :network="$network" />
+    <x-footer />
 
     <!-- Floating Theme Toggle -->
     <x-theme-toggle />

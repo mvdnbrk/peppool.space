@@ -6,7 +6,6 @@ namespace App\Http\Controllers;
 
 use App\Contracts\BlockchainServiceInterface;
 use App\Data\Blockchain\TransactionData;
-use App\Services\PepecoinExplorerService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\View\View;
@@ -15,7 +14,6 @@ use Throwable;
 class AddressController extends Controller
 {
     public function __construct(
-        private readonly PepecoinExplorerService $explorer,
         private readonly BlockchainServiceInterface $blockchain,
     ) {}
 

@@ -1,6 +1,5 @@
 <x-layout
     title="Peppool.space - Real-time Pepecoin Blockchain Explorer"
-    :network="$network"
     og_image="default-card-large.png"
     og_description="Fast, real-time Pepecoin blockchain explorer. Search blocks, transactions and addresses with live mempool, latest blocks, and network stats.">
 

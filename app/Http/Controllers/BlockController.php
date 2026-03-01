@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Contracts\BlockchainServiceInterface;
-use App\Services\PepecoinExplorerService;
 use Illuminate\View\View;
 use Throwable;
 
@@ -13,7 +12,6 @@ class BlockController extends Controller
 {
     public function __construct(
         private readonly BlockchainServiceInterface $blockchain,
-        private readonly PepecoinExplorerService $explorer,
     ) {}
 
     public function show(string $hashOrHeight): View
