@@ -29,7 +29,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('nodes.index') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
+                    <a href="{{ route('network.index') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
                         Network
                     </a>
                 </li>

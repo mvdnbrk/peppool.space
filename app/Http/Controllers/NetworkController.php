@@ -7,7 +7,7 @@ namespace App\Http\Controllers;
 use App\Models\Node;
 use Illuminate\View\View;
 
-class NodeController extends Controller
+class NetworkController extends Controller
 {
     public function __invoke(): View
     {
@@ -21,7 +21,7 @@ class NodeController extends Controller
             'version' => $nodes->groupBy('version')->map->count()->sortDesc()->keys()->first() ?? 'N/A',
         ]);
 
-        return view('nodes.index', [
+        return view('network.index', [
             'nodes' => $nodes,
             'stats' => $stats,
         ]);

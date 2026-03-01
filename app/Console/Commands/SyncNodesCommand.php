@@ -159,7 +159,9 @@ class SyncNodesCommand extends Command
                 ]);
 
                 // Avoid hitting free API rate limits (45 req/min)
-                usleep(500000);
+                if (! app()->runningUnitTests()) {
+                    usleep(500000);
+                }
 
                 return true;
             }
