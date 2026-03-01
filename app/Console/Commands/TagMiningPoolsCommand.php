@@ -48,12 +48,12 @@ class TagMiningPoolsCommand extends Command
         }
 
         $isUnknownOnly = $this->option('unknown');
-        $this->info("Processing {$total} blocks".($isUnknownOnly ? ' (Local data only)...' : '...'));
+        $this->info("Processing {$total} blocks...");
         $bar = $this->output->createProgressBar($total);
         $tagged = 0;
         $markedAsUnknown = 0;
 
-        $query->chunkById(500, function ($blocks) use ($bar, &$tagged, &$markedAsUnknown, $unknownPool, $isUnknownOnly) {
+        $query->chunkById(500, function ($blocks) use ($bar, &$tagged, &$markedAsUnknown, $unknownPool) {
             foreach ($blocks as $block) {
                 $pool = null;
                 $blockData = null;
@@ -64,8 +64,7 @@ class TagMiningPoolsCommand extends Command
                 }
 
                 // 2. Fallback to RPC for full block (Slow, network)
-                // We SKIP this if --unknown is passed to ensure the re-scan is instantaneous
-                if (! $pool && ! $isUnknownOnly) {
+                if (! $pool) {
                     try {
                         $blockData = $this->rpcService->getBlock($block->hash, 2);
                         $pool = $this->miningPoolService->identifyFromBlock($blockData);
