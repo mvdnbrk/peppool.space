@@ -35,4 +35,9 @@ trait HasApiResponses
     {
         return $this->errorResponse('invalid_txid', 'The provided transaction ID is invalid.', Response::HTTP_BAD_REQUEST);
     }
+
+    protected function tooManyTransactionsResponse(): JsonResponse
+    {
+        return $this->errorResponse('too_many_transactions', 'This address has too many transactions to be indexed by this server.', Response::HTTP_BAD_REQUEST);
+    }
 }

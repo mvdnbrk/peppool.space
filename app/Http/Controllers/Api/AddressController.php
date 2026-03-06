@@ -62,8 +62,13 @@ class AddressController extends Controller
     private function handleGenericException(Throwable $e): JsonResponse
     {
         $status = (int) $e->getCode();
+        $message = strtolower($e->getMessage());
 
-        if ($status === Response::HTTP_BAD_REQUEST || str_contains(strtolower($e->getMessage()), 'invalid')) {
+        if (str_contains($message, 'too many history entries')) {
+            return $this->tooManyTransactionsResponse();
+        }
+
+        if ($status === Response::HTTP_BAD_REQUEST || str_contains($message, 'invalid')) {
             return $this->invalidAddressResponse();
         }
 
@@ -77,6 +82,12 @@ class AddressController extends Controller
     private function handleNetworkException(RequestException $e): JsonResponse
     {
         if ($e->getCode() === Response::HTTP_BAD_REQUEST) {
+            $body = $e->response->body();
+
+            if (str_contains($body, 'Too many history entries')) {
+                return $this->tooManyTransactionsResponse();
+            }
+
             return $this->invalidAddressResponse();
         }
 
