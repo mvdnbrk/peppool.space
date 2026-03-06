@@ -138,17 +138,21 @@ class PepecoinExplorerService
 
     public function getMempoolEntryTime(string $txid): ?int
     {
-        return Cache::remember(
+        $value = Cache::remember(
             $this->getCacheKey(__FUNCTION__.'_'.$txid),
             Carbon::now()->addMinutes(10),
             function () use ($txid): ?int {
                 try {
-                    return $this->rpcService->getMempoolEntry($txid)['time'] ?? null;
+                    $entry = $this->rpcService->getMempoolEntry($txid);
+
+                    return isset($entry['time']) ? (int) $entry['time'] : null;
                 } catch (\Throwable) {
                     return null;
                 }
             }
         );
+
+        return $value === null ? null : (int) $value;
     }
 
     public function getRecommendedFees(): array
