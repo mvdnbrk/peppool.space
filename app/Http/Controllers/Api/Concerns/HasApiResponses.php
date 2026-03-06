@@ -38,6 +38,6 @@ trait HasApiResponses
 
     protected function tooManyTransactionsResponse(): JsonResponse
     {
-        return $this->errorResponse('too_many_transactions', 'This address has too many transactions to be indexed by this server.', Response::HTTP_BAD_REQUEST);
+        return $this->errorResponse('too_many_transactions', 'This address has too many transactions to be indexed by this server.', Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }
