@@ -28,7 +28,7 @@ class PepeSupplyCommand extends Command
         $this->line('Total PEPE supply');
         $this->line('-------------------');
         $this->line('Full:   '.Number::format($totalSupply, maxPrecision: 0));
-        $this->line('Approx: '.Number::abbreviate($totalSupply, maxPrecision: 0));
+        $this->line('Approx: '.Number::abbreviate($totalSupply, maxPrecision: 1));
 
         return self::SUCCESS;
     }
