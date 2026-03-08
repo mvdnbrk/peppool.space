@@ -81,11 +81,11 @@
     <script type="application/json" id="address-transactions-data">
         {!! json_encode([
             'address' => $address,
-            'transactions' => $transactions->items(),
-            'currentPage' => $transactions->currentPage(),
-            'perPage' => $transactions->perPage(),
-            'total' => $transactions->total(),
-            'lastPage' => $transactions->lastPage(),
+            'transactions' => $transactions,
+            'perPage' => $perPage,
+            'total' => $txCount,
+            'nextAfter' => $nextAfter,
+            'after' => $after,
             'txRoute' => route('transaction.show', ['txid' => '__TXID__'])
         ]) !!}
     </script>

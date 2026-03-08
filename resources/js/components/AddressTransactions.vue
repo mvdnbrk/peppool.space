@@ -148,61 +148,36 @@
     </div>
     
     <!-- Pagination -->
-    <div v-if="totalPages > 1" class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+    <div v-if="totalTransactions > currentPerPage || after" class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
       <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div class="text-sm text-gray-700 dark:text-gray-300">
-          Showing {{ ((currentPage - 1) * currentPerPage) + 1 }} to {{ Math.min(currentPage * currentPerPage, totalTransactions) }} of {{ totalTransactions }} results
+          Showing <span class="font-medium">{{ transactions.length }}</span> transactions
+          <span v-if="totalTransactions > 0"> of <span class="font-medium">{{ totalTransactions.toLocaleString() }}</span></span>
         </div>
         
-        <div class="flex items-center gap-1">
-          <!-- First Page -->
+        <div class="flex items-center gap-2">
+          <!-- Newer (Reset/Back) -->
           <button
-            @click="changePage(1)"
-            :disabled="currentPage === 1"
-            class="px-3 py-2 text-sm rounded border border-gray-300 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+            @click="navigateNewer"
+            :disabled="!after"
+            class="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer inline-flex items-center gap-1 transition-colors"
           >
-            First
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" role="img" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            Newer
           </button>
           
-          <!-- Previous -->
+          <!-- Older -->
           <button
-            @click="changePage(currentPage - 1)"
-            :disabled="currentPage === 1"
-            class="px-3 py-2 text-sm rounded border border-gray-300 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+            @click="navigateOlder"
+            :disabled="!nextAfter"
+            class="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer inline-flex items-center gap-1 transition-colors"
           >
-            ‹
-          </button>
-          
-          <!-- Page Numbers -->
-          <template v-for="page in visiblePages" :key="page">
-            <span v-if="page === '...'" class="px-3 py-2 text-sm text-gray-500">...</span>
-            <button
-              v-else
-              @click="changePage(page)"
-              :class="page === currentPage 
-                ? 'px-3 py-2 text-sm rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-300 dark:border-green-600 cursor-pointer' 
-                : 'px-3 py-2 text-sm rounded border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer'"
-            >
-              {{ page }}
-            </button>
-          </template>
-          
-          <!-- Next -->
-          <button
-            @click="changePage(currentPage + 1)"
-            :disabled="currentPage === totalPages"
-            class="px-3 py-2 text-sm rounded border border-gray-300 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
-          >
-            ›
-          </button>
-          
-          <!-- Last Page -->
-          <button
-            @click="changePage(totalPages)"
-            :disabled="currentPage === totalPages"
-            class="px-3 py-2 text-sm rounded border border-gray-300 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
-          >
-            Last
+            Older
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" role="img" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
           </button>
         </div>
       </div>
@@ -223,9 +198,9 @@ export default {
       transactions: [],
       currentFilter: 'all',
       currentPerPage: 25,
-      currentPage: 1,
       totalTransactions: 0,
-      totalPages: 1,
+      nextAfter: null,
+      after: null,
       address: '',
       txRoute: '',
       filters: [
@@ -246,46 +221,6 @@ export default {
         if (this.currentFilter === 'out') return !tx.is_incoming;
         return true;
       });
-    },
-    visiblePages() {
-      const pages = [];
-      const current = this.currentPage;
-      const total = this.totalPages;
-      
-      if (total <= 7) {
-        // Show all pages if 7 or fewer
-        for (let i = 1; i <= total; i++) {
-          pages.push(i);
-        }
-      } else {
-        // Always show first page
-        pages.push(1);
-        
-        if (current > 4) {
-          pages.push('...');
-        }
-        
-        // Show pages around current page
-        const start = Math.max(2, current - 1);
-        const end = Math.min(total - 1, current + 1);
-        
-        for (let i = start; i <= end; i++) {
-          if (i !== 1 && i !== total) {
-            pages.push(i);
-          }
-        }
-        
-        if (current < total - 3) {
-          pages.push('...');
-        }
-        
-        // Always show last page
-        if (total > 1) {
-          pages.push(total);
-        }
-      }
-      
-      return pages;
     }
   },
   mounted() {
@@ -294,28 +229,35 @@ export default {
   methods: {
     initializeFromElement() {
       try {
-        // Get data from JSON script tag
         const dataScript = document.getElementById('address-transactions-data');
-        if (!dataScript) {
-          console.error('AddressTransactions: Data script not found');
-          return;
-        }
+        if (!dataScript) return;
         
         const data = JSON.parse(dataScript.textContent);
         
         this.address = data.address || '';
         this.txRoute = data.txRoute || '';
         this.transactions = data.transactions || [];
-        this.currentPage = data.currentPage || 1;
-        this.currentPerPage = data.perPage || 10;
+        this.currentPerPage = data.perPage || 25;
         this.totalTransactions = data.total || 0;
-        this.totalPages = data.lastPage || 1;
+        this.nextAfter = data.nextAfter || null;
+        this.after = data.after || null;
 
-        // Keep localStorage in sync with current value
         localStorage.setItem('address_tx_per_page', this.currentPerPage);
         
       } catch (error) {
         console.error('AddressTransactions: Error parsing data', error);
+      }
+    },
+    navigateOlder() {
+      if (!this.nextAfter) return;
+      this.updateUrl({ after: this.nextAfter, page: null });
+    },
+    navigateNewer() {
+      // If we have history, use it. Otherwise reset.
+      if (window.history.length > 1 && document.referrer.includes(window.location.pathname)) {
+        window.history.back();
+      } else {
+        this.updateUrl({ after: null, page: null });
       }
     },
     rememberPerPage(perPage) {
@@ -335,17 +277,16 @@ export default {
     },
     changePerPage(perPage) {
       this.currentPerPage = perPage;
-      this.updateUrl({ per_page: perPage, page: 1 });
-    },
-    changePage(page) {
-      if (page < 1 || page > this.totalPages) return;
-      this.currentPage = page;
-      this.updateUrl({ page });
+      this.updateUrl({ per_page: perPage, after: null, page: null });
     },
     updateUrl(params) {
       const url = new URL(window.location);
       Object.keys(params).forEach(key => {
-        url.searchParams.set(key, params[key]);
+        if (params[key] === null) {
+          url.searchParams.delete(key);
+        } else {
+          url.searchParams.set(key, params[key]);
+        }
       });
       window.location.href = url.toString();
     },
@@ -366,7 +307,8 @@ export default {
     buildUrlForPerPage(perPage) {
       const url = new URL(window.location);
       url.searchParams.set('per_page', perPage);
-      url.searchParams.set('page', 1);
+      url.searchParams.delete('after');
+      url.searchParams.delete('page');
       return url.toString();
     }
   }

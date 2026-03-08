@@ -7,7 +7,6 @@ namespace App\Http\Controllers;
 use App\Contracts\BlockchainServiceInterface;
 use App\Data\Blockchain\TransactionData;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\View\View;
 use Throwable;
 
@@ -74,26 +73,16 @@ class AddressController extends Controller
                 'is_coinbase' => (bool) ($tx->vin[0]->isCoinbase ?? false),
             ])->values();
 
-            $paginatedTransactions = new LengthAwarePaginator(
-                $transactions,
-                $totalTxCount,
-                $perPage,
-                $page,
-                ['path' => $request->url(), 'query' => $request->query()]
-            );
-
-            // Append the cursor for the next page to the pagination links
-            if ($paginatedItems->isNotEmpty()) {
-                $paginatedTransactions->appends(['after' => $paginatedItems->last()->txid]);
-            }
-
             return view('address.show', [
                 'address' => $address,
                 'balance' => $addressInfo->getTotalBalance(),
                 'totalReceived' => $addressInfo->chainStats->getTotalReceived() + $addressInfo->mempoolStats->getTotalReceived(),
                 'totalSent' => $addressInfo->chainStats->getTotalSent() + $addressInfo->mempoolStats->getTotalSent(),
                 'txCount' => $totalTxCount,
-                'transactions' => $paginatedTransactions,
+                'transactions' => $transactions,
+                'nextAfter' => $paginatedItems->count() >= $perPage ? $paginatedItems->last()->txid : null,
+                'perPage' => $perPage,
+                'after' => $afterTxid,
             ]);
 
         } catch (Throwable $e) {
@@ -103,7 +92,10 @@ class AddressController extends Controller
                 'totalReceived' => null,
                 'totalSent' => null,
                 'txCount' => 0,
-                'transactions' => new LengthAwarePaginator([], 0, $perPage),
+                'transactions' => collect(),
+                'nextAfter' => null,
+                'perPage' => $perPage,
+                'after' => null,
                 'error' => 'Could not fetch address data: '.$e->getMessage(),
             ]);
         }

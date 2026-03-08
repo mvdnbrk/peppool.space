@@ -135,6 +135,6 @@ class ViewAddressPageTest extends TestCase
         $this->get(route('address.show', ['address' => $address, 'page' => 2, 'after' => $afterTxid, 'per_page' => 25]))
             ->assertOk()
             ->assertSee('tx26')
-            ->assertDontSee('tx25');
+            ->assertSee('tx50');
     }
 }
