@@ -11,5 +11,5 @@ Schedule::job(StorePepePrice::class)->everyFifteenMinutes();
 
 Schedule::command('pepe:sync:blocks')->everyMinute();
 Schedule::command('pepe:sync:nodes')->everyFifteenMinutes();
-Schedule::job(CalculateTotalSupply::class)->hourly();
+Schedule::job(CalculateTotalSupply::class)->everySixHours();
 Schedule::job(CalculateMiningStats::class)->hourly();
