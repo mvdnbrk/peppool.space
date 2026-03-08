@@ -20,7 +20,6 @@ class AddressController extends Controller
     {
         $allowedPerPage = [25, 50, 100];
         $perPage = in_array((int) $request->query('per_page'), $allowedPerPage, true) ? (int) $request->query('per_page') : 25;
-        $page = (int) $request->query('page', 1);
         $afterTxid = $request->query('after');
 
         if (strlen($address) < 26 || strlen($address) > 35) {
@@ -32,37 +31,21 @@ class AddressController extends Controller
             $totalTxCount = $addressInfo->chainStats->txCount + $addressInfo->mempoolStats->txCount;
 
             $allTransactions = collect();
-            $currentAfter = ($page > 1) ? $afterTxid : null;
-            $maxCalls = 20; // Safety limit to prevent excessive API calls
+            $currentAfter = $afterTxid;
+            $maxCalls = (int) ceil($perPage / 25);
             $calls = 0;
 
-            if ($page > 1 && $afterTxid) {
-                // Fast path: we have a cursor from a previous page
-                while ($allTransactions->count() < $perPage && $calls < $maxCalls) {
-                    $batch = $this->blockchain->getAddressTransactions($address, $currentAfter);
-                    if ($batch->isEmpty()) {
-                        break;
-                    }
-                    $allTransactions = $allTransactions->concat($batch);
-                    $currentAfter = $batch->last()->txid;
-                    $calls++;
+            while ($allTransactions->count() < $perPage && $calls < $maxCalls) {
+                $batch = $this->blockchain->getAddressTransactions($address, $currentAfter);
+                if ($batch->isEmpty()) {
+                    break;
                 }
-                $paginatedItems = $allTransactions->take($perPage);
-            } else {
-                // Iterative fetch to reach the requested page from the beginning
-                $tempAfter = null;
-                $needed = $page * $perPage;
-                while ($allTransactions->count() < $needed && $calls < $maxCalls) {
-                    $batch = $this->blockchain->getAddressTransactions($address, $tempAfter);
-                    if ($batch->isEmpty()) {
-                        break;
-                    }
-                    $allTransactions = $allTransactions->concat($batch);
-                    $tempAfter = $batch->last()->txid;
-                    $calls++;
-                }
-                $paginatedItems = $allTransactions->slice(($page - 1) * $perPage, $perPage);
+                $allTransactions = $allTransactions->concat($batch);
+                $currentAfter = $batch->last()->txid;
+                $calls++;
             }
+
+            $paginatedItems = $allTransactions->take($perPage);
 
             $transactions = $paginatedItems->map(fn (TransactionData $tx) => [
                 'txid' => $tx->txid,
