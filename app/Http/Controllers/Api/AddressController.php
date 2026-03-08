@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Services\PepecoinExplorerService;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Throwable;
 
@@ -29,9 +30,9 @@ class AddressController extends Controller
         return $this->handleRequest($address, fn ($addr) => response()->json($this->blockchain->getAddress($addr)));
     }
 
-    public function transactions(string $address): JsonResponse
+    public function transactions(Request $request, string $address): JsonResponse
     {
-        return $this->handleRequest($address, fn ($addr) => response()->json($this->blockchain->getAddressTransactions($addr)));
+        return $this->handleRequest($address, fn ($addr) => response()->json($this->blockchain->getAddressTransactions($addr, $request->query('after_txid'))));
     }
 
     public function utxo(string $address): JsonResponse

@@ -101,7 +101,7 @@ class AddressShowTest extends TestCase
         $blockchain = Mockery::mock(BlockchainServiceInterface::class);
         $blockchain->shouldReceive('getAddressTransactions')
             ->once()
-            ->with($address)
+            ->with($address, null)
             ->andReturn($mockData);
         $this->app->instance(BlockchainServiceInterface::class, $blockchain);
 
@@ -172,7 +172,7 @@ class AddressShowTest extends TestCase
             ->andThrow($exception400);
         $blockchain->shouldReceive('getAddressTransactions')
             ->once()
-            ->with($address)
+            ->with($address, null)
             ->andThrow($exception400);
         $blockchain->shouldReceive('getAddressUtxos')
             ->once()
@@ -222,6 +222,47 @@ class AddressShowTest extends TestCase
             ->assertJson([
                 'code' => 503,
                 'error' => 'electrs_required',
+            ]);
+    }
+
+    #[Test]
+    public function it_returns_address_transactions_with_after_txid(): void
+    {
+        $address = 'PumNFmkevCTG6RTEc7W2piGTbQHMg2im2M';
+        $afterTxid = '58ed78527f8c2fc7e745d18c72978e6aaeb450b4816472a841d2d6453b6accb1';
+
+        $mockData = TransactionData::collect([
+            [
+                'txid' => 'another-txid',
+                'version' => 1,
+                'locktime' => 916690,
+                'vin' => [],
+                'vout' => [],
+                'size' => 200,
+                'weight' => 800,
+                'fee' => 200000,
+                'status' => [
+                    'confirmed' => true,
+                    'block_height' => 916690,
+                    'block_hash' => 'hash',
+                    'block_time' => 1771080000,
+                ],
+            ],
+        ], Collection::class);
+
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+        $blockchain->shouldReceive('getAddressTransactions')
+            ->once()
+            ->with($address, $afterTxid)
+            ->andReturn($mockData);
+        $this->app->instance(BlockchainServiceInterface::class, $blockchain);
+
+        $this->get(route('api.address.transactions', ['address' => $address, 'after_txid' => $afterTxid]))
+            ->assertOk()
+            ->assertJson([
+                [
+                    'txid' => 'another-txid',
+                ],
             ]);
     }
 }

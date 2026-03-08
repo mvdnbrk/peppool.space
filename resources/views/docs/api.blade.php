@@ -246,9 +246,14 @@
             </x-api-section>
 
             <!-- Address Transactions Endpoint -->
-            <x-api-section method="GET" path="/address/:address/txs" :description="'Returns a list of transactions for a Pepecoin address.'" responseContentType="application/json">
+            <x-api-section method="GET" path="/address/:address/txs" :description="'Returns a list of transactions for a Pepecoin address. Returns up to 50 mempool transactions plus the first 25 confirmed transactions. More confirmed transactions can be requested using the <code>after_txid</code> query parameter.'" responseContentType="application/json">
                 <x-slot:example>
-                    <code>curl {{ route('api.address.transactions', ['address' => 'PumNFmkevCTG6RTEc7W2piGTbQHMg2im2M']) }}</code>
+                    <div class="whitespace-nowrap">
+                        <code>curl {{ route('api.address.transactions', ['address' => 'PumNFmkevCTG6RTEc7W2piGTbQHMg2im2M']) }}</code>
+                    </div>
+                    <div class="mt-2 whitespace-nowrap">
+                        <code>curl {{ route('api.address.transactions', ['address' => 'PumNFmkevCTG6RTEc7W2piGTbQHMg2im2M', 'after_txid' => 'dba43fd04b7ae3df8e5b596f2e7fab247c58629d622e3a5213f03a5a09684430']) }}</code>
+                    </div>
                 </x-slot:example>
                 <x-slot:response>
                     <pre class="text-xs md:text-sm overflow-x-auto"><code>[
