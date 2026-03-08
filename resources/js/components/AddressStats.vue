@@ -132,10 +132,10 @@ export default {
         
         this.stats = {
           txCount: (data.chain_stats.tx_count || 0) + (data.mempool_stats.tx_count || 0),
-          totalReceived: (data.chain_stats.funded_txo_sum || 0) + (data.mempool_stats.funded_txo_sum || 0),
-          totalSent: (data.chain_stats.spent_txo_sum || 0) + (data.mempool_stats.spent_txo_sum || 0),
-          balance: (data.chain_stats.funded_txo_sum || 0) - (data.chain_stats.spent_txo_sum || 0) + 
-                   (data.mempool_stats.funded_txo_sum || 0) - (data.mempool_stats.spent_txo_sum || 0)
+          totalReceived: ((data.chain_stats.funded_txo_sum || 0) + (data.mempool_stats.funded_txo_sum || 0)) / 100_000_000,
+          totalSent: ((data.chain_stats.spent_txo_sum || 0) + (data.mempool_stats.spent_txo_sum || 0)) / 100_000_000,
+          balance: ((data.chain_stats.funded_txo_sum || 0) - (data.chain_stats.spent_txo_sum || 0) +
+                   (data.mempool_stats.funded_txo_sum || 0) - (data.mempool_stats.spent_txo_sum || 0)) / 100_000_000
         };
 
         // Emit update so transactions component can pick it up if needed
