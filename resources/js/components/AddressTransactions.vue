@@ -222,7 +222,7 @@ export default {
     return {
       transactions: [],
       currentFilter: 'all',
-      currentPerPage: 10,
+      currentPerPage: 25,
       currentPage: 1,
       totalTransactions: 0,
       totalPages: 1,
@@ -233,7 +233,7 @@ export default {
         { key: 'in', label: 'Incoming' },
         { key: 'out', label: 'Outgoing' }
       ],
-      perPageOptions: [10, 25, 50, 100]
+      perPageOptions: [25, 50, 100]
     }
   },
   computed: {

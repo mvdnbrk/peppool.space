@@ -101,7 +101,7 @@ class ViewAddressPageTest extends TestCase
             ],
         ]);
 
-        $txs = collect(range(26, 35))->map(fn ($i) => TransactionData::from([
+        $txs = collect(range(26, 50))->map(fn ($i) => TransactionData::from([
             'txid' => "tx$i",
             'version' => 1,
             'locktime' => 0,
@@ -132,7 +132,7 @@ class ViewAddressPageTest extends TestCase
 
         $this->app->instance(BlockchainServiceInterface::class, $blockchain);
 
-        $this->get(route('address.show', ['address' => $address, 'page' => 2, 'after' => $afterTxid]))
+        $this->get(route('address.show', ['address' => $address, 'page' => 2, 'after' => $afterTxid, 'per_page' => 25]))
             ->assertOk()
             ->assertSee('tx26')
             ->assertDontSee('tx25');

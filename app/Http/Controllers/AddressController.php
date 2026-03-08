@@ -19,8 +19,8 @@ class AddressController extends Controller
 
     public function show(Request $request, string $address): View
     {
-        $allowedPerPage = [10, 25, 50, 100];
-        $perPage = in_array((int) $request->query('per_page'), $allowedPerPage, true) ? (int) $request->query('per_page') : 10;
+        $allowedPerPage = [25, 50, 100];
+        $perPage = in_array((int) $request->query('per_page'), $allowedPerPage, true) ? (int) $request->query('per_page') : 25;
         $page = (int) $request->query('page', 1);
         $afterTxid = $request->query('after');
 
