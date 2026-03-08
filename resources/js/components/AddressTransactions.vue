@@ -164,7 +164,11 @@ export default {
         if (!response.ok) return;
         const data = await response.json();
 
-        this.transactions = data.map(tx => this.mapTransaction(tx));
+        const mapped = data.slice(0, this.currentPerPage).map(tx => this.mapTransaction(tx));
+        this.transactions = mapped;
+
+        const lastConfirmed = [...mapped].reverse().find(tx => tx.confirmations > 0);
+        this.nextAfter = mapped.length >= this.currentPerPage && lastConfirmed ? lastConfirmed.txid : null;
       } catch (error) {
         console.error('AddressTransactions: Error fetching transactions', error);
       }
