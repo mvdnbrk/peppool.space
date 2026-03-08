@@ -25,7 +25,7 @@ class ThrottlingTest extends TestCase
             $route = app('router')->getRoutes()->getByName($routeName);
 
             $this->assertNotNull($route, "Route {$routeName} should exist");
-            $this->assertContains('throttle:60,1', $route->middleware(),
+            $this->assertContains('throttle:15,1', $route->middleware(),
                 "Route {$routeName} should have throttle middleware");
         }
     }

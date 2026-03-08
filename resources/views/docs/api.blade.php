@@ -18,7 +18,7 @@
 
         <div class="mb-6 md:mb-8 p-4 md:p-6 bg-yellow-50 dark:bg-white border border-yellow-200 dark:border-gray-200 rounded-lg">
             <h2 class="text-lg md:text-xl font-semibold mb-2 text-yellow-800">Rate Limiting</h2>
-            <p class="text-sm md:text-base text-yellow-700">All API endpoints are rate-limited to <strong>60 requests per minute</strong> per IP address.</p>
+            <p class="text-sm md:text-base text-yellow-700">All API endpoints are rate-limited to <strong>15 requests per minute</strong> per IP address.</p>
         </div>
 
         <!-- Endpoints -->
