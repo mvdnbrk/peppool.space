@@ -7,7 +7,7 @@
                 <x-slot:icon>
                     <x-icon-supply class="w-5 h-5 text-white" />
                 </x-slot:icon>
-                <span class="text-2xl">
+                <span class="text-xl">
                     @php
                         $supplyInt = (int) $supply;
                         $billions = intdiv($supplyInt, 1000000000);
@@ -25,7 +25,7 @@
                 <x-slot:icon>
                     <x-icon-chart class="w-5 h-5 text-white" />
                 </x-slot:icon>
-                <span class="text-2xl">
+                <span class="text-xl">
                     @php
                         $currencySymbol = $currency === 'EUR' ? '€' : '$';
                         if ($marketCap >= 1000000) {
@@ -48,13 +48,13 @@
                 <x-icon-pep-currency-sign class="w-5 h-5 text-white" />
             </x-slot:icon>
             <x-price-amount
-                class="text-2xl"
+                class="text-xl"
                 :value="$price"
                 :currency-symbol="$currency === 'EUR' ? '€' : '$'"
                 :currency-code="$currency"
                 precision="8"
                 dim-class="text-gray-700 dark:text-gray-500"
-                dim-size-class="text-xl"
+                dim-size-class="text-lg"
             />
         </x-stat-card>
     </div>
