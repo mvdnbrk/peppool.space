@@ -67,6 +67,7 @@ return [
         'default_rpc_port' => 33873,
         'default_p2p_port' => 33874,
         'address_prefix' => 'P',
+        'block_reward' => 10_000,
         'auxpow_start_block' => 42000,
         'bip_start_block' => 1000,
     ],

@@ -215,6 +215,6 @@ class PepecoinRpcService implements RpcClientInterface
 
     public function getTxOutSetInfo(): array
     {
-        return $this->call('gettxoutsetinfo', [], 300);
+        return $this->call('gettxoutsetinfo', [], 600);
     }
 }

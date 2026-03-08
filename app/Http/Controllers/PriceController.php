@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Services\PepecoinPriceService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class PriceController extends Controller
@@ -16,8 +15,7 @@ class PriceController extends Controller
         $currency = strtoupper($request->get('currency', 'USD'));
         $prices = $this->pricesService->getPrices();
         $price = (float) ($prices->get($currency) ?? 0);
-        // Only show supply if it's already cached; do not compute here
-        $supply = Cache::get('pepe:total_supply');
+        $supply = $this->pricesService->getTotalSupply() ?: null;
         $marketCap = $this->pricesService->getMarketCap($currency) ?: null;
 
         return view('price', [

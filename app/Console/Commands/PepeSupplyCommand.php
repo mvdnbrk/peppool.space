@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Jobs\CalculateTotalSupply;
 use App\Services\PepecoinPriceService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Number;
 
 class PepeSupplyCommand extends Command
@@ -21,10 +22,9 @@ class PepeSupplyCommand extends Command
     public function handle(): int
     {
         $this->info('Calculating total PEPE supply...');
-        // Always calculate fresh supply data
         CalculateTotalSupply::dispatchSync();
+        Cache::forget('pepe:total_supply');
 
-        // Read the freshly calculated supply directly from cache
         $totalSupply = $this->prices->getTotalSupply();
 
         $this->line('Total PEPE supply');

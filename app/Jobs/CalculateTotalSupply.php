@@ -6,8 +6,8 @@ use App\Services\PepecoinExplorerService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class CalculateTotalSupply implements ShouldQueue
 {
@@ -15,10 +15,17 @@ class CalculateTotalSupply implements ShouldQueue
 
     public function handle(PepecoinExplorerService $explorer): void
     {
-        Cache::put(
-            'pepe:total_supply',
-            $explorer->getTxOutSetInfoData()->totalAmount,
-            Carbon::now()->addHour()
-        );
+        try {
+            $data = $explorer->getTxOutSetInfoData();
+
+            Cache::forever('pepe:supply_checkpoint', [
+                'supply' => (int) $data->totalAmount,
+                'height' => $data->height,
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('CalculateTotalSupply: gettxoutsetinfo failed, keeping previous checkpoint.', [
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 }

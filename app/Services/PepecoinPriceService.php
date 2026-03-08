@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Jobs\CalculateTotalSupply;
+use App\Contracts\BlockchainServiceInterface;
 use App\Models\Price;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 class PepecoinPriceService
 {
     public function __construct(
+        private readonly BlockchainServiceInterface $blockchain,
         private int $priceCacheTtl = 300,
     ) {}
 
@@ -37,13 +38,24 @@ class PepecoinPriceService
         );
     }
 
-    public function getTotalSupply(bool $refresh = false): int
+    public function getTotalSupply(): int
     {
-        if ($refresh) {
-            CalculateTotalSupply::dispatch();
-        }
+        return Cache::remember('pepe:total_supply', 60, function (): int {
+            $checkpoint = Cache::get('pepe:supply_checkpoint');
 
-        return (int) Cache::get('pepe:total_supply', 0);
+            if (! $checkpoint) {
+                return 0;
+            }
+
+            try {
+                $currentHeight = $this->blockchain->getBlockTipHeight();
+                $blocksSince = max(0, $currentHeight - $checkpoint['height']);
+
+                return $checkpoint['supply'] + ($blocksSince * config('pepecoin.chain.block_reward'));
+            } catch (\Throwable) {
+                return $checkpoint['supply'];
+            }
+        });
     }
 
     public function getMarketCap(string $currency = 'USD'): float
