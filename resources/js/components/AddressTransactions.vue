@@ -5,28 +5,9 @@
       <div class="flex flex-col gap-3">
         <div class="flex flex-col gap-3 sm:grid sm:grid-cols-[1fr_auto] sm:items-center">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white sm:min-w-0 truncate">Transactions</h2>
-          <!-- Desktop Per Page -->
-          <div class="hidden sm:inline-flex sm:items-center sm:justify-end sm:gap-2 sm:flex-nowrap sm:whitespace-nowrap">
-            <span class="hidden md:inline text-sm text-gray-500 dark:text-gray-400">Per page:</span>
-            <div class="inline-flex gap-1 rounded-full bg-gray-950/5 p-1 dark:bg-white/10">
-              <a
-                v-for="perPage in perPageOptions"
-                :key="perPage"
-                :href="buildUrlForPerPage(perPage)"
-                @click="rememberPerPage(perPage)"
-                class="px-3 py-1 text-sm rounded-full font-medium cursor-pointer"
-                :class="perPage === currentPerPage
-                  ? 'bg-white ring ring-gray-950/5 dark:bg-gray-600 dark:ring-0 text-gray-900 dark:text-white'
-                  : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white'"
-              >
-                {{ perPage }}
-              </a>
-            </div>
-          </div>
-          <!-- Mobile Per Page -->
-          <div class="flex items-center gap-2 sm:hidden">
+          <div class="flex items-center gap-2 sm:justify-end">
             <span class="text-sm text-gray-500 dark:text-gray-400">Per page:</span>
-            <div class="flex gap-1 rounded-full bg-gray-950/5 p-1 dark:bg-white/10">
+            <div class="inline-flex gap-1 rounded-full bg-gray-950/5 p-1 dark:bg-white/10">
               <a
                 v-for="perPage in perPageOptions"
                 :key="perPage"
