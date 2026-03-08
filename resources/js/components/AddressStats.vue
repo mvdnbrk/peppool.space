@@ -13,7 +13,7 @@
         <div class="ml-5">
           <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Transactions</p>
           <div class="text-lg font-bold text-gray-900 dark:text-white">
-            {{ stats.txCount.toLocaleString() }}
+            {{ stats.txCount.toLocaleString('en-US') }}
           </div>
         </div>
       </div>
