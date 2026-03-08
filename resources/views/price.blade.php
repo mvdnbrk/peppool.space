@@ -8,13 +8,8 @@
                     <x-icon-supply class="w-5 h-5 text-white" />
                 </x-slot:icon>
                 <span class="text-xl">
-                    @php
-                        $supplyInt = (int) $supply;
-                        $billions = intdiv($supplyInt, 1000000000);
-                        $billionsText = strtolower(\Illuminate\Support\Number::format($billions, maxPrecision: 0) . ' Billion');
-                    @endphp
-                    {{ \Illuminate\Support\Number::format($supplyInt, maxPrecision: 0) }}
-                    <span class="ml-2 text-gray-700 dark:text-gray-200 text-base font-semibold">{{ $billionsText }}</span>
+                    {{ Number::format($supply, maxPrecision: 0) }}
+                    <span class="ml-2 text-gray-700 dark:text-gray-200 text-base font-semibold">{{ Number::abbreviate($supply, maxPrecision: 1) }}</span>
                 </span>
             </x-stat-card>
         @endif
@@ -26,17 +21,7 @@
                     <x-icon-chart class="w-5 h-5 text-white" />
                 </x-slot:icon>
                 <span class="text-xl">
-                    @php
-                        $currencySymbol = $currency === 'EUR' ? '€' : '$';
-                        if ($marketCap >= 1000000) {
-                            $formatted = number_format($marketCap / 1000000, 2) . 'M';
-                        } elseif ($marketCap >= 1000) {
-                            $formatted = number_format($marketCap / 1000, 2) . 'K';
-                        } else {
-                            $formatted = number_format($marketCap, 2);
-                        }
-                    @endphp
-                    {{ $currencySymbol }}&nbsp;{{ $formatted }}
+                    {{ $currency === 'EUR' ? '€' : '$' }}&nbsp;{{ Number::abbreviate($marketCap, maxPrecision: 2) }}
                     <span class="ml-2 text-gray-500 text-base">{{ $currency }}</span>
                 </span>
             </x-stat-card>
