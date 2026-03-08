@@ -76,14 +76,13 @@ if (! function_exists('cdn_asset')) {
 }
 
 if (! function_exists('format_pepe')) {
-    function format_pepe(float|string|null $amount): string
+    function format_pepe(float|string|null $amount, int $decimals = 8): string
     {
         if ($amount === null) {
             return '0.00';
         }
 
-        // Format with up to 8 decimals and commas
-        $formatted = number_format((float) $amount, 8, '.', ',');
+        $formatted = number_format((float) $amount, $decimals, '.', ',');
 
         // Strip trailing zeros from the decimal part
         if (str_contains($formatted, '.')) {
