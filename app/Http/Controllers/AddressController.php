@@ -80,7 +80,9 @@ class AddressController extends Controller
                 'totalSent' => $addressInfo->chainStats->getTotalSent() + $addressInfo->mempoolStats->getTotalSent(),
                 'txCount' => $totalTxCount,
                 'transactions' => $transactions,
-                'nextAfter' => $paginatedItems->count() >= $perPage ? $paginatedItems->last()->txid : null,
+                'nextAfter' => $paginatedItems->count() >= $perPage
+                    ? $paginatedItems->last(fn (TransactionData $tx) => $tx->status->confirmed)?->txid
+                    : null,
                 'perPage' => $perPage,
                 'after' => $afterTxid,
             ]);
