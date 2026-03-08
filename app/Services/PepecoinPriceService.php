@@ -47,14 +47,17 @@ class PepecoinPriceService
                 return 0;
             }
 
+            $blockReward = config('pepecoin.chain.block_reward');
+
             try {
                 $currentHeight = $this->blockchain->getBlockTipHeight();
                 $blocksSince = max(0, $currentHeight - $checkpoint['height']);
-
-                return $checkpoint['supply'] + ($blocksSince * config('pepecoin.chain.block_reward'));
+                $supply = $checkpoint['supply'] + ($blocksSince * $blockReward);
             } catch (\Throwable) {
-                return $checkpoint['supply'];
+                $supply = $checkpoint['supply'];
             }
+
+            return (int) (round($supply / $blockReward) * $blockReward);
         });
     }
 
