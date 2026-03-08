@@ -129,11 +129,20 @@ export default {
       after: null,
       address: '',
       txRoute: '',
-      perPageOptions: [25, 50, 100]
+      perPageOptions: [25, 50, 100],
+      pollingInterval: null
     }
   },
   mounted() {
     this.initializeFromElement();
+    if (!this.after) {
+      this.startPolling();
+    }
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
+  },
+  beforeUnmount() {
+    this.stopPolling();
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
   },
   methods: {
     initializeFromElement() {
@@ -155,6 +164,41 @@ export default {
 
       } catch (error) {
         console.error('AddressTransactions: Error parsing data', error);
+      }
+    },
+    async fetchTransactions() {
+      try {
+        // Only fetch if we are on the first page
+        if (this.after) return;
+
+        const response = await fetch(`/api/address/${this.address}/txs`);
+        if (!response.ok) throw new Error('Network response was not ok');
+        const data = await response.json();
+        
+        // We only update if we are on the first page
+        this.transactions = data;
+      } catch (error) {
+        console.error('AddressTransactions: Error fetching transactions', error);
+      }
+    },
+    startPolling() {
+      if (this.pollingInterval || this.after) return;
+      this.pollingInterval = setInterval(() => {
+        this.fetchTransactions();
+      }, 60000);
+    },
+    stopPolling() {
+      if (this.pollingInterval) {
+        clearInterval(this.pollingInterval);
+        this.pollingInterval = null;
+      }
+    },
+    handleVisibilityChange() {
+      if (document.hidden) {
+        this.stopPolling();
+      } else if (!this.after) {
+        this.fetchTransactions();
+        this.startPolling();
       }
     },
     navigateOlder() {

@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 'latest-blocks': () => import('./components/LatestBlocks.vue'),
                 'price-chart': () => import('./components/PriceChart.vue'),
                 'address-transactions': () => import('./components/AddressTransactions.vue'),
+                'address-stats': () => import('./components/AddressStats.vue'),
                 'currency-converter': () => import('./components/CurrencyConverter.vue'),
                 'transaction-details': () => import('./components/TransactionDetails.vue'),
                 'timestamp': () => import('./components/Timestamp.vue'),

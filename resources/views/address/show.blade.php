@@ -20,46 +20,16 @@
     </div>
 
     <!-- Address Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <x-stat-card icon-bg="bg-blue-500" label="Transactions">
-            <x-slot:icon>
-                <x-icon-document-text class="w-5 h-5 text-white" />
-            </x-slot:icon>
-            {{ number_format($txCount ?? 0) }}
-        </x-stat-card>
+    <script type="application/json" id="address-stats-data">
+        {!! json_encode([
+            'txCount' => $txCount,
+            'totalReceived' => $totalReceived,
+            'totalSent' => $totalSent,
+            'balance' => $balance,
+        ]) !!}
+    </script>
 
-        <x-stat-card icon-bg="bg-green-500" label="Total PEPE Received">
-            <x-slot:icon>
-                <x-icon-arrow-down class="w-5 h-5 text-white" />
-            </x-slot:icon>
-            @if($totalReceived !== null)
-                <x-pepe-amount :amount="$totalReceived" class="text-green-600" />
-            @else
-                <span class="text-sm text-gray-400 dark:text-gray-500">Unknown</span>
-            @endif
-        </x-stat-card>
-
-        <x-stat-card icon-bg="bg-red-500" label="Total PEPE Sent">
-            <x-slot:icon>
-                <x-icon-arrow-up class="w-5 h-5 text-white" />
-            </x-slot:icon>
-            @if(isset($totalSent) && $totalSent !== null)
-                <x-pepe-amount :amount="$totalSent" />
-            @else
-                <span class="text-sm text-gray-400 dark:text-gray-500">Unknown</span>
-            @endif
-        </x-stat-card>
-
-        <x-stat-card icon-bg="bg-green-500" label="PEPE Balance">
-            <x-slot:icon>
-                <x-icon-pep-currency-sign class="w-5 h-5 text-white" />
-            </x-slot:icon>
-            @if($balance !== null)
-                <x-pepe-amount :amount="$balance" />
-            @else
-                <span class="text-sm text-gray-400 dark:text-gray-500">Unknown</span>
-            @endif
-        </x-stat-card>
+    <div id="address-stats" data-vue="address-stats" data-props='{ "address": "{{ $address }}" }'>
     </div>
 
     @if(isset($showComingSoon) && $showComingSoon)
