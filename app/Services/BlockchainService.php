@@ -131,9 +131,9 @@ class BlockchainService implements BlockchainServiceInterface
         return $this->resolveElectrsOnly(fn () => $this->electrs->getAddress($address));
     }
 
-    public function getAddressTransactions(string $address): Collection
+    public function getAddressTransactions(string $address, ?string $afterTxid = null): Collection
     {
-        return $this->resolveElectrsOnly(fn () => $this->electrs->getAddressTransactions($address));
+        return $this->resolveElectrsOnly(fn () => $this->electrs->getAddressTransactions($address, $afterTxid));
     }
 
     public function getAddressUtxos(string $address): Collection

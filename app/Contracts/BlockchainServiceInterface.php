@@ -55,7 +55,7 @@ interface BlockchainServiceInterface
     public function getAddress(string $address): AddressData;
 
     /** @return Collection<int, TransactionData> */
-    public function getAddressTransactions(string $address): Collection;
+    public function getAddressTransactions(string $address, ?string $afterTxid = null): Collection;
 
     /** @return Collection<int, UtxoData> */
     public function getAddressUtxos(string $address): Collection;

@@ -84,9 +84,13 @@ class ElectrsPepeService implements BlockchainServiceInterface
     }
 
     /** @return Collection<int, TransactionData> */
-    public function getAddressTransactions(string $address): Collection
+    public function getAddressTransactions(string $address, ?string $afterTxid = null): Collection
     {
-        $response = Http::get("{$this->url}/address/{$address}/txs")
+        $url = $afterTxid
+            ? "{$this->url}/address/{$address}/txs/chain/{$afterTxid}"
+            : "{$this->url}/address/{$address}/txs";
+
+        $response = Http::get($url)
             ->throw()
             ->json();
 

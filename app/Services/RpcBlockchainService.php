@@ -154,7 +154,7 @@ class RpcBlockchainService implements BlockchainServiceInterface
         throw UnsupportedOperationException::electrsRequired('getAddress');
     }
 
-    public function getAddressTransactions(string $address): Collection
+    public function getAddressTransactions(string $address, ?string $afterTxid = null): Collection
     {
         throw UnsupportedOperationException::electrsRequired('getAddressTransactions');
     }
