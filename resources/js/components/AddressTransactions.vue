@@ -12,7 +12,6 @@
                 v-for="perPage in perPageOptions"
                 :key="perPage"
                 :href="buildUrlForPerPage(perPage)"
-                @click="rememberPerPage(perPage)"
                 class="px-3 py-1 text-sm rounded-full font-medium cursor-pointer"
                 :class="perPage === currentPerPage
                   ? 'bg-white ring ring-gray-950/5 dark:bg-gray-600 dark:ring-0 text-gray-900 dark:text-white'
@@ -50,22 +49,16 @@
             </div>
           </div>
           <div class="mt-2 sm:mt-0 text-sm font-medium text-right">
-            <div v-if="tx.is_incoming" class="flex items-center justify-end text-green-600">
-              <span class="text-green-600">
-                <span>{{ splitAmount(tx.amount).whole }}</span><span class="text-[0.85em] text-gray-500 dark:text-gray-400 font-normal">{{ splitAmount(tx.amount).decimal }}</span>
-                PEPE
-              </span>
-              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" role="img" aria-label="Received" focusable="false">
+            <div v-if="tx.is_incoming" class="flex items-baseline justify-end text-green-600">
+              <span>{{ formatPepe(tx.amount).whole }}</span><span class="text-[0.85em] text-gray-500 dark:text-gray-400 font-normal">{{ formatPepe(tx.amount).decimal }}</span>&nbsp;PEPE
+              <svg class="w-4 h-4 ml-1 self-center" fill="none" stroke="currentColor" viewBox="0 0 24 24" role="img" aria-label="Received" focusable="false">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
               </svg>
               <span class="sr-only">Received</span>
             </div>
-            <div v-else class="flex items-center justify-end text-red-600">
-              <span class="text-red-600">
-                <span>{{ splitAmount(tx.amount).whole }}</span><span class="text-[0.85em] text-gray-500 dark:text-gray-400 font-normal">{{ splitAmount(tx.amount).decimal }}</span>
-                PEPE
-              </span>
-              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" role="img" aria-label="Sent" focusable="false">
+            <div v-else class="flex items-baseline justify-end text-red-600">
+              <span>{{ formatPepe(tx.amount).whole }}</span><span class="text-[0.85em] text-gray-500 dark:text-gray-400 font-normal">{{ formatPepe(tx.amount).decimal }}</span>&nbsp;PEPE
+              <svg class="w-4 h-4 ml-1 self-center" fill="none" stroke="currentColor" viewBox="0 0 24 24" role="img" aria-label="Sent" focusable="false">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
               </svg>
               <span class="sr-only">Sent</span>
@@ -159,27 +152,39 @@ export default {
         this.totalTransactions = data.total || 0;
         this.nextAfter = data.nextAfter || null;
         this.after = data.after || null;
-
-        localStorage.setItem('address_tx_per_page', this.currentPerPage);
-
       } catch (error) {
         console.error('AddressTransactions: Error parsing data', error);
       }
     },
     async fetchTransactions() {
       try {
-        // Only fetch if we are on the first page
         if (this.after) return;
 
         const response = await fetch(`/api/address/${this.address}/txs`);
-        if (!response.ok) throw new Error('Network response was not ok');
+        if (!response.ok) return;
         const data = await response.json();
-        
-        // We only update if we are on the first page
-        this.transactions = data;
+
+        this.transactions = data.map(tx => this.mapTransaction(tx));
       } catch (error) {
         console.error('AddressTransactions: Error fetching transactions', error);
       }
+    },
+    mapTransaction(tx) {
+      const incoming = (tx.vout || [])
+        .filter(out => out.scriptpubkey_address === this.address)
+        .reduce((sum, out) => sum + (out.value || 0), 0);
+      const outgoing = (tx.vin || [])
+        .filter(vin => vin.prevout?.scriptpubkey_address === this.address)
+        .reduce((sum, vin) => sum + (vin.prevout?.value || 0), 0);
+
+      return {
+        txid: tx.txid,
+        time: tx.status?.block_time || null,
+        confirmations: tx.status?.confirmed ? 1 : 0,
+        amount: Math.abs(incoming - outgoing) / 100_000_000,
+        is_incoming: incoming > outgoing,
+        is_coinbase: !!(tx.vin?.[0]?.is_coinbase),
+      };
     },
     startPolling() {
       if (this.pollingInterval || this.after) return;
@@ -203,55 +208,22 @@ export default {
     },
     navigateOlder() {
       if (!this.nextAfter) return;
-      this.updateUrl({ after: this.nextAfter, page: null });
+      window.location.href = `${window.location.pathname}?per_page=${this.currentPerPage}&after=${this.nextAfter}`;
     },
     navigateNewer() {
-      if (window.history.length > 1 && document.referrer.includes(window.location.pathname)) {
-        window.history.back();
-      } else {
-        this.updateUrl({ after: null, page: null });
-      }
+      window.location.href = this.buildUrlForPerPage(this.currentPerPage);
     },
-    rememberPerPage(perPage) {
-      try {
-        if (this.perPageOptions.includes(perPage)) {
-          localStorage.setItem('address_tx_per_page', perPage);
-        }
-      } catch (_) {
-        // ignore storage errors
-      }
-    },
-    updateUrl(params) {
-      const url = new URL(window.location);
-      Object.keys(params).forEach(key => {
-        if (params[key] === null) {
-          url.searchParams.delete(key);
-        } else {
-          url.searchParams.set(key, params[key]);
-        }
-      });
-      window.location.href = url.toString();
-    },
-    formatAmount(amount) {
-      return new Intl.NumberFormat('en-US', {
+    formatPepe(amount) {
+      const formatted = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 6
       }).format(amount);
-    },
-    splitAmount(amount) {
-      const formatted = this.formatAmount(amount);
-      const parts = formatted.split('.');
-      return {
-        whole: parts[0],
-        decimal: parts[1] ? '.' + parts[1] : ''
-      };
+      const clean = formatted.replace(/0+$/, '').replace(/\.$/, '.00');
+      const parts = clean.split('.');
+      return { whole: parts[0], decimal: parts[1] ? '.' + parts[1] : '' };
     },
     buildUrlForPerPage(perPage) {
-      const url = new URL(window.location);
-      url.searchParams.set('per_page', perPage);
-      url.searchParams.delete('after');
-      url.searchParams.delete('page');
-      return url.toString();
+      return `${window.location.pathname}?per_page=${perPage}`;
     }
   }
 }

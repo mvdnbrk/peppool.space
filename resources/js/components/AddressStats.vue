@@ -32,7 +32,7 @@
         <div class="ml-5">
           <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total PEPE Received</p>
           <div class="text-lg font-bold text-gray-900 dark:text-white">
-            <PepeAmount :amount="stats.totalReceived" class="text-green-600" />
+            <span class="inline-flex flex-row flex-nowrap items-baseline text-green-600"><span class="shrink-0">{{ formatPepe(stats.totalReceived).whole }}</span><span class="text-[0.85em] text-gray-500 dark:text-gray-400 font-normal shrink">{{ formatPepe(stats.totalReceived).decimal }}</span></span>
           </div>
         </div>
       </div>
@@ -51,7 +51,7 @@
         <div class="ml-5">
           <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total PEPE Sent</p>
           <div class="text-lg font-bold text-gray-900 dark:text-white">
-            <PepeAmount :amount="stats.totalSent" />
+            <span class="inline-flex flex-row flex-nowrap items-baseline"><span class="shrink-0">{{ formatPepe(stats.totalSent).whole }}</span><span class="text-[0.85em] text-gray-500 dark:text-gray-400 font-normal shrink">{{ formatPepe(stats.totalSent).decimal }}</span></span>
           </div>
         </div>
       </div>
@@ -70,7 +70,7 @@
         <div class="ml-5">
           <p class="text-sm font-medium text-gray-500 dark:text-gray-400">PEPE Balance</p>
           <div class="text-lg font-bold text-gray-900 dark:text-white">
-            <PepeAmount :amount="stats.balance" />
+            <span class="inline-flex flex-row flex-nowrap items-baseline"><span class="shrink-0">{{ formatPepe(stats.balance).whole }}</span><span class="text-[0.85em] text-gray-500 dark:text-gray-400 font-normal shrink">{{ formatPepe(stats.balance).decimal }}</span></span>
           </div>
         </div>
       </div>
@@ -79,13 +79,8 @@
 </template>
 
 <script>
-import PepeAmount from './PepeAmount.vue';
-
 export default {
   name: 'AddressStats',
-  components: {
-    PepeAmount
-  },
   props: {
     address: {
       type: String,
@@ -160,6 +155,15 @@ export default {
         clearInterval(this.pollingInterval);
         this.pollingInterval = null;
       }
+    },
+    formatPepe(amount) {
+      const formatted = new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 6
+      }).format(amount);
+      const clean = formatted.replace(/0+$/, '').replace(/\.$/, '.00');
+      const parts = clean.split('.');
+      return { whole: parts[0], decimal: parts[1] ? '.' + parts[1] : '' };
     },
     handleVisibilityChange() {
       if (document.hidden) {
