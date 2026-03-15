@@ -13,7 +13,7 @@
         <img
             src="{{ $contentUrl }}"
             alt="Inscription #{{ number_format($inscription->number) }}"
-            class="max-w-full max-h-full object-contain"
+            class="w-full h-full object-cover [image-rendering:pixelated]"
             loading="lazy"
         />
     @elseif(str_starts_with($type, 'text/html'))
