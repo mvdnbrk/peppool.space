@@ -62,6 +62,6 @@ class ViewInscriptionPageTest extends TestCase
 
         $this->get(route('inscription.show', ['inscriptionId' => $inscriptionId]))
             ->assertOk()
-            ->assertSee('Not found');
+            ->assertSee('Inscription not found.');
     }
 }

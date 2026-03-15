@@ -27,7 +27,7 @@ class InscriptionController extends Controller
             ]);
         } catch (Throwable $e) {
             return view('inscription.show', [
-                'error' => config('app.debug') ? $e->getMessage() : 'Inscription not found.',
+                'error' => 'Inscription not found.',
                 'inscriptionId' => $inscriptionId,
             ]);
         }
