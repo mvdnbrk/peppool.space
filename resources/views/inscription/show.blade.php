@@ -1,7 +1,6 @@
 <x-layout
     title="Inscription #{{ isset($inscription) ? number_format($inscription->number) : 'Not Found' }} - peppool.space"
-    :og_description="(isset($inscription) ? 'Pepeinal #' . number_format($inscription->number) . ' — ' . $inscription->contentType : 'Inscription not found') . ' on peppool.space'"
-    og_image="pepecoin-inscription.png"
+    :og_description="(isset($inscription) ? 'Pepecoin Inscription #' . number_format($inscription->number) . ' — ' . $inscription->contentTypeForHumans() : 'Inscription not found') . ' on peppool.space'"
 >
         @if(isset($error))
             <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
