@@ -44,4 +44,20 @@ class SearchRedirectTest extends TestCase
         $this->post(route('search.store'), ['q' => $address])
             ->assertRedirect(route('address.show', ['address' => $address]));
     }
+
+    #[Test]
+    public function search_redirects_for_inscription_id_with_i_separator(): void
+    {
+        $inscriptionId = '5f48e29e693d92b1ba70f306b1fb4fb5a5dd2b272dd6130ab2df46ab4875e2f3i0';
+
+        $this->post(route('search.store'), ['q' => $inscriptionId])
+            ->assertRedirect(route('inscription.show', ['inscriptionId' => $inscriptionId]));
+    }
+
+    #[Test]
+    public function search_redirects_for_inscription_id_with_colon_separator(): void
+    {
+        $this->post(route('search.store'), ['q' => '5f48e29e693d92b1ba70f306b1fb4fb5a5dd2b272dd6130ab2df46ab4875e2f3:0'])
+            ->assertRedirect(route('inscription.show', ['inscriptionId' => '5f48e29e693d92b1ba70f306b1fb4fb5a5dd2b272dd6130ab2df46ab4875e2f3i0']));
+    }
 }

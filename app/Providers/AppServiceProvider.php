@@ -6,6 +6,7 @@ use App\Contracts\BlockchainServiceInterface;
 use App\Services\BlockchainService;
 use App\Services\ElectrsPepeService;
 use App\Services\PepecoinExplorerService;
+use App\Services\OrdinalsService;
 use App\Services\PepecoinPriceService;
 use App\Services\PepecoinRpcService;
 use App\Services\RpcBlockchainService;
@@ -22,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(BlockchainService::class);
         $this->app->singleton(PepecoinExplorerService::class);
         $this->app->singleton(PepecoinPriceService::class);
+        $this->app->singleton(OrdinalsService::class);
 
         $this->app->bind(BlockchainServiceInterface::class, BlockchainService::class);
     }
