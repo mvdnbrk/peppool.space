@@ -48,6 +48,13 @@ class SearchController extends Controller
             return redirect()->route('block.show', ['hashOrHeight' => $height]);
         }
 
+        // Inscription ID: <txid>i<index> (also accept <txid>:<index> shorthand)
+        if (preg_match('/^([0-9a-fA-F]{64})[i:](\d+)$/', $q, $matches)) {
+            $inscriptionId = strtolower($matches[1]) . 'i' . $matches[2];
+
+            return redirect()->route('inscription.show', ['inscriptionId' => $inscriptionId]);
+        }
+
         // 64-hex: could be block hash or txid.
         if (preg_match('/^[0-9a-fA-F]{64}$/', $q)) {
             $q = strtolower($q);

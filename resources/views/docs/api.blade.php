@@ -417,6 +417,45 @@
             </x-api-section>
         </div>
 
+            <!-- Inscription Endpoint -->
+            <x-api-section method="GET" path="/inscription/:inscription_id" :description="'Returns details about a Pepecoin inscription (Pepeinal). The inscription ID format is <code>&lt;txid&gt;i&lt;index&gt;</code>.'" responseContentType="application/json">
+                <x-slot:example>
+                    <code class="whitespace-nowrap">curl {{ secure_url('/api/inscription/') }}abc...defi0</code>
+                </x-slot:example>
+                <x-slot:response>
+                    <pre class="text-xs md:text-sm overflow-x-auto"><code>{
+  "id": "5f48e29e...e2f3i0",
+  "number": 17212333,
+  "address": "Pvkk9bUW8S4AK4cJeDDebnWJNADNCtxCHG",
+  "content_type": "image/png",
+  "content_length": 793,
+  "fee": 10210000,
+  "height": 956437,
+  "value": 100000,
+  "sat": null,
+  "satpoint": "5f48e29e...e2f3:0:0",
+  "timestamp": 1773570237,
+  "next": "1a560cb5...2bc5i0",
+  "previous": "8cc1647b...9df9i0"
+}</code></pre>
+                </x-slot:response>
+                <x-slot:fields>
+                    <x-api-field name="id" type="string" description="Unique inscription identifier (<txid>i<index>)" />
+                    <x-api-field name="number" type="integer" description="Sequential inscription number" />
+                    <x-api-field name="address" type="string" description="Current owner address" />
+                    <x-api-field name="content_type" type="string" description="MIME type of the inscription content" />
+                    <x-api-field name="content_length" type="integer" description="Content size in bytes" />
+                    <x-api-field name="fee" type="integer" description="Fee paid for the inscription transaction in ribbits" />
+                    <x-api-field name="height" type="integer" description="Block height where the inscription was created" />
+                    <x-api-field name="value" type="integer" description="Output value in ribbits" />
+                    <x-api-field name="sat" type="integer|null" description="Ordinal sat number the inscription is attached to" />
+                    <x-api-field name="satpoint" type="string" description="Satpoint location (txid:vout:offset)" />
+                    <x-api-field name="timestamp" type="integer" description="Unix timestamp of the inscription block" />
+                    <x-api-field name="next" type="string" description="Next inscription ID" />
+                    <x-api-field name="previous" type="string" description="Previous inscription ID" />
+                </x-slot:fields>
+            </x-api-section>
+
         <!-- Error Responses -->
         <div class="mt-8 p-6 bg-red-50 dark:bg-white border border-red-200 dark:border-gray-200 rounded-lg">
             <h2 class="text-xl font-semibold mb-4 text-red-800">Error Responses</h2>
@@ -442,7 +481,7 @@
                     </div>
                     <div>
                         <strong class="text-red-700 text-sm block">429 Too Many Requests</strong>
-                        <span class="text-red-600 text-xs">Rate limit exceeded (60 req/min)</span>
+                        <span class="text-red-600 text-xs">Rate limit exceeded (15 req/min)</span>
                     </div>
                     <div>
                         <strong class="text-red-700 text-sm block">500 Internal Error</strong>

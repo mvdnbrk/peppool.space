@@ -6,6 +6,7 @@ use App\Http\Controllers\BlockController;
 use App\Http\Controllers\ConverterController;
 use App\Http\Controllers\DocumentationController;
 use App\Http\Controllers\HomepageController;
+use App\Http\Controllers\InscriptionController;
 use App\Http\Controllers\MiningController;
 use App\Http\Controllers\NetworkController;
 use App\Http\Controllers\PriceController;
@@ -44,6 +45,14 @@ Route::get('/tx/{txid}', [TransactionController::class, 'show'])
 Route::get('/address/{address}', [AddressController::class, 'show'])
     ->name('address.show')
     ->where('address', '[PA92][1-9A-HJ-NP-Za-km-z]{25,33}');
+
+Route::get('/inscription/{inscriptionId}', [InscriptionController::class, 'show'])
+    ->name('inscription.show')
+    ->where('inscriptionId', '[0-9a-fA-F]{64}i\d+');
+
+Route::get('/content/{inscriptionId}', [InscriptionController::class, 'content'])
+    ->name('inscription.content')
+    ->where('inscriptionId', '[0-9a-fA-F]{64}i\d+');
 
 Route::get('/docs/api', DocumentationController::class)
     ->name('docs.api');

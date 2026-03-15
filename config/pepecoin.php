@@ -55,6 +55,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Ordinals (ord-pepecoin) Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for connecting to the ord-pepecoin indexer.
+    | Content and preview routes are proxied via nginx directly.
+    |
+    */
+
+    'ordinals' => [
+        'url' => env('ORD_PEPECOIN_URL', 'http://127.0.0.1:8383'),
+        'timeout' => env('ORD_PEPECOIN_TIMEOUT', 10),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Chain Configuration
     |--------------------------------------------------------------------------
     |

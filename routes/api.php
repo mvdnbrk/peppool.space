@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\FeesController;
 use App\Http\Controllers\Api\MempoolController;
 use App\Http\Controllers\Api\MiningController;
 use App\Http\Controllers\Api\PricesController;
+use App\Http\Controllers\Api\InscriptionController;
 use App\Http\Controllers\Api\TransactionController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,6 +48,10 @@ Route::middleware('throttle:15,1')->name('api.')->group(function () {
 
     Route::post('/tx', [TransactionController::class, 'broadcast'])
         ->name('tx.broadcast');
+
+    Route::get('/inscription/{inscriptionId}', [InscriptionController::class, 'show'])
+        ->name('inscription.show')
+        ->where('inscriptionId', '[0-9a-fA-F]{64}i\d+');
 
     // Internal-only signed endpoint for chart time series
     Route::get('/chart', ChartPricesController::class)
