@@ -5,8 +5,10 @@ namespace Tests\Feature;
 use App\Contracts\BlockchainServiceInterface;
 use App\Data\Blockchain\AddressData;
 use App\Data\Blockchain\TransactionData;
+use Illuminate\Http\Client\RequestException;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
 class ViewAddressPageTest extends TestCase
@@ -136,5 +138,23 @@ class ViewAddressPageTest extends TestCase
             ->assertOk()
             ->assertSee('tx26')
             ->assertSee('tx50');
+    }
+
+    #[Test]
+    public function address_with_invalid_checksum_returns_404(): void
+    {
+        $address = 'PbSMW1fhUMVWcEC6wNFjtiQtSfFhhNxmVm';
+
+        $blockchain = Mockery::mock(BlockchainServiceInterface::class);
+        $blockchain->shouldReceive('getAddress')
+            ->once()
+            ->with($address)
+            ->andThrow(new RequestException(
+                new \Illuminate\Http\Client\Response(new \GuzzleHttp\Psr7\Response(Response::HTTP_BAD_REQUEST))
+            ));
+        $this->app->instance(BlockchainServiceInterface::class, $blockchain);
+
+        $this->get(route('address.show', ['address' => $address]))
+            ->assertNotFound();
     }
 }

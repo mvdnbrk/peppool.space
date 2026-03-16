@@ -6,8 +6,10 @@ namespace App\Http\Controllers;
 
 use App\Contracts\BlockchainServiceInterface;
 use App\Data\Blockchain\TransactionData;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class AddressController extends Controller
@@ -70,19 +72,12 @@ class AddressController extends Controller
                 'after' => $afterTxid,
             ]);
 
-        } catch (Throwable $e) {
-            return view('address.show', [
-                'address' => $address,
-                'balance' => null,
-                'totalReceived' => null,
-                'totalSent' => null,
-                'txCount' => 0,
-                'transactions' => collect(),
-                'nextAfter' => null,
-                'perPage' => $perPage,
-                'after' => null,
-                'error' => 'Could not fetch address data: '.$e->getMessage(),
-            ]);
+        } catch (RequestException $e) {
+            abort(in_array($e->response->status(), [Response::HTTP_BAD_REQUEST, Response::HTTP_NOT_FOUND])
+                ? Response::HTTP_NOT_FOUND
+                : Response::HTTP_SERVICE_UNAVAILABLE);
+        } catch (Throwable) {
+            abort(Response::HTTP_SERVICE_UNAVAILABLE, 'Address data is temporarily unavailable.');
         }
     }
 

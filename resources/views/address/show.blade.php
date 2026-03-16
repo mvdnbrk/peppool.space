@@ -32,21 +32,7 @@
     <div id="address-stats" data-vue="address-stats" data-props='{ "address": "{{ $address }}" }'>
     </div>
 
-    @if(isset($showComingSoon) && $showComingSoon)
-        <x-notification type="coming-soon">
-            <div class="font-medium">Full address transaction history is coming soon!</div>
-            <div class="mt-1 text-sm">We're working on implementing comprehensive address lookups - check back soon for this feature.</div>
-        </x-notification>
-    @endif
-
-    @if(isset($error))
-        <x-notification type="error">
-            {{ $error }}
-        </x-notification>
-    @endif
-
     <!-- Transactions -->
-    @if(isset($transactions))
 
     <script type="application/json" id="address-transactions-data">
         {!! json_encode([
@@ -62,15 +48,5 @@
 
     <div id="address-transactions" data-vue="address-transactions">
     </div>
-    @else
-    <div class="bg-white dark:bg-gray-900 shadow rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
-        <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Transactions</h2>
-        </div>
-        <div class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
-            No transactions available.
-        </div>
-    </div>
-    @endif
 </div>
 </x-layout>
