@@ -4,10 +4,10 @@ use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\BlockController;
 use App\Http\Controllers\Api\ChartPricesController;
 use App\Http\Controllers\Api\FeesController;
+use App\Http\Controllers\Api\InscriptionController;
 use App\Http\Controllers\Api\MempoolController;
 use App\Http\Controllers\Api\MiningController;
 use App\Http\Controllers\Api\PricesController;
-use App\Http\Controllers\Api\InscriptionController;
 use App\Http\Controllers\Api\TransactionController;
 use Illuminate\Support\Facades\Route;
 

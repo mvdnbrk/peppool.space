@@ -71,5 +71,4 @@ class OrdinalsService
             ->get("{$this->url}/content/{$inscriptionId}")
             ->throw();
     }
-
 }

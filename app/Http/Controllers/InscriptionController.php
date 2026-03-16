@@ -26,7 +26,7 @@ class InscriptionController extends Controller
         return view('inscription.show', [
             'inscription' => $inscription,
             'inscriptionId' => $inscriptionId,
-            'contentUrl' => '/content/' . $inscriptionId,
+            'contentUrl' => '/content/'.$inscriptionId,
         ]);
     }
 

@@ -50,7 +50,7 @@ class SearchController extends Controller
 
         // Inscription ID: <txid>i<index> (also accept <txid>:<index> shorthand)
         if (preg_match('/^([0-9a-fA-F]{64})[i:](\d+)$/', $q, $matches)) {
-            $inscriptionId = strtolower($matches[1]) . 'i' . $matches[2];
+            $inscriptionId = strtolower($matches[1]).'i'.$matches[2];
 
             return redirect()->route('inscription.show', ['inscriptionId' => $inscriptionId]);
         }
