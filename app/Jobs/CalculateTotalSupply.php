@@ -13,6 +13,8 @@ class CalculateTotalSupply implements ShouldQueue
 {
     use Dispatchable, Queueable;
 
+    public int $timeout = 600;
+
     public function handle(PepecoinExplorerService $explorer): void
     {
         try {
