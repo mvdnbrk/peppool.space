@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Services\OrdinalsService;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -19,7 +20,7 @@ class InscriptionController extends Controller
     {
         try {
             $inscription = $this->ordinals->getInscription($inscriptionId);
-        } catch (\Illuminate\Http\Client\RequestException $e) {
+        } catch (RequestException $e) {
             throw new NotFoundHttpException('Inscription not found.');
         }
 
