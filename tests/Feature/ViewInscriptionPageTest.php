@@ -49,7 +49,7 @@ class ViewInscriptionPageTest extends TestCase
     }
 
     #[Test]
-    public function inscription_page_shows_error_when_not_found(): void
+    public function inscription_page_returns_404_when_not_found(): void
     {
         $inscriptionId = '0000000000000000000000000000000000000000000000000000000000000000i0';
 
@@ -57,11 +57,12 @@ class ViewInscriptionPageTest extends TestCase
         $ordinals->shouldReceive('getInscription')
             ->once()
             ->with($inscriptionId)
-            ->andThrow(new \Exception('Not found'));
+            ->andThrow(new \Illuminate\Http\Client\RequestException(
+                new \Illuminate\Http\Client\Response(new \GuzzleHttp\Psr7\Response(404))
+            ));
         $this->app->instance(OrdinalsService::class, $ordinals);
 
         $this->get(route('inscription.show', ['inscriptionId' => $inscriptionId]))
-            ->assertOk()
-            ->assertSee('Inscription not found.');
+            ->assertNotFound();
     }
 }
