@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\FetchBlockInscriptionCount;
 use App\Models\Block;
 use App\Services\MiningPoolService;
 use App\Services\PepecoinRpcService;
@@ -195,6 +196,10 @@ class SyncBlocksCommand extends Command
                     ['height'], // Unique columns
                     ['pool_id', 'hash', 'tx_count', 'size', 'difficulty', 'nonce', 'version', 'merkleroot', 'chainwork', 'auxpow', 'created_at'] // Columns to update
                 );
+
+                foreach ($blocksToInsert as $block) {
+                    FetchBlockInscriptionCount::dispatch($block['height']);
+                }
             } catch (\Exception $e) {
                 $this->error('Failed to insert batch: '.$e->getMessage());
             }

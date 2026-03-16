@@ -24,6 +24,7 @@ class Block extends Model
         'pool_id',
         'hash',
         'tx_count',
+        'inscription_count',
         'size',
         'difficulty',
         'nonce',
