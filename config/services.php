@@ -47,4 +47,8 @@ return [
     'coingecko' => [
         'base_url' => 'https://api.coingecko.com/api/v3/',
     ],
+
+    'horizon' => [
+        'token' => env('HORIZON_TOKEN'),
+    ],
 ];
