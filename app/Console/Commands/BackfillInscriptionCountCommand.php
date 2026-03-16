@@ -6,6 +6,7 @@ namespace App\Console\Commands;
 
 use App\Jobs\FetchBlockInscriptionCount;
 use App\Models\Block;
+use App\Services\OrdinalsService;
 use Illuminate\Console\Command;
 
 class BackfillInscriptionCountCommand extends Command
@@ -15,11 +16,20 @@ class BackfillInscriptionCountCommand extends Command
 
     protected $description = 'Backfill inscription counts for blocks where count is null';
 
-    public function handle(): int
+    public function handle(OrdinalsService $ordinals): int
     {
         $limit = (int) $this->option('limit');
 
+        try {
+            $ordHeight = $ordinals->getStatus()['height'];
+        } catch (\Throwable) {
+            $this->warn('Could not reach ord-pepecoin, skipping.');
+
+            return self::SUCCESS;
+        }
+
         $blocks = Block::whereNull('inscription_count')
+            ->where('height', '<=', $ordHeight)
             ->orderByDesc('height')
             ->limit($limit)
             ->pluck('height');
