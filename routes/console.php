@@ -13,4 +13,4 @@ Schedule::command('pepe:sync:blocks')->everyMinute();
 Schedule::command('pepe:sync:nodes')->everyFifteenMinutes();
 Schedule::job(CalculateTotalSupply::class)->everySixHours();
 Schedule::job(CalculateMiningStats::class)->hourly();
-// Schedule::command('pepe:backfill:inscription-counts')->everyFiveMinutes(); // disabled until ord-pepecoin #25 is fixed
+Schedule::command('pepe:backfill:inscription-counts')->everyFiveMinutes();
