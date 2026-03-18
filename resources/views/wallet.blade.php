@@ -1,4 +1,8 @@
-<x-layout title="Peppool Wallet: The Pepecoin wallet for everyone." og_image="peppool-wallet.png" og_description="The Pepecoin wallet for everyone. Manage your PEP, and more—all from your browser.">
+<x-layout
+    title="Peppool Wallet: The Pepecoin wallet for everyone."
+    og_image="peppool-wallet.png"
+    og_description="The Pepecoin wallet for everyone. Manage your PEP, and more—all from your browser."
+>
     <div class="max-w-none space-y-8 lg:space-y-12">
         <!-- Hero Section -->
         <div class="relative bg-white dark:bg-gray-900 shadow-2xs rounded-[2rem] border border-gray-200 dark:border-gray-700 my-16 md:my-24 lg:my-32">
@@ -9,7 +13,7 @@
                         <div class="inline-flex items-center gap-2 px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-bold uppercase tracking-wider">
                             Available Now
                         </div>
-                        
+
                         <div class="space-y-4">
                             <h1 class="text-4xl lg:text-6xl font-extrabold text-gray-900 dark:text-gray-100 leading-[1.1] tracking-tight">
                                 The <span class="text-green-700">Pepecoin</span> wallet for everyone.
@@ -35,7 +39,7 @@
                         </a>
                     </div>
                 </div>
-                
+
                 <!-- Eye Catcher (App View) -->
                 <div class="md:col-span-5 p-12 md:p-0 flex items-center justify-center md:justify-end md:pr-12 lg:pr-20">
                     <div class="relative w-full max-w-[260px] lg:max-w-[300px] md:scale-110 lg:scale-125 transform transition-all duration-700 z-20 group">
@@ -53,7 +57,7 @@
                                 <div class="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none"></div>
                             </div>
                         </div>
-                        
+
                         <!-- Floating decoration blobs -->
                         <div class="absolute -top-10 -right-10 w-24 h-24 bg-green-500/10 blur-3xl rounded-full -z-10 animate-pulse"></div>
                         <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-emerald-500/10 blur-3xl rounded-full -z-10 animate-pulse" style="animation-delay: 1s"></div>
