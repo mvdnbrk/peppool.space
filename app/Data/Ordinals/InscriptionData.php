@@ -6,9 +6,14 @@ namespace App\Data\Ordinals;
 
 use Illuminate\Support\Str;
 use Spatie\LaravelData\Attributes\MapInputName;
+use Spatie\LaravelData\Attributes\MapOutputName;
 use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Mappers\CamelCaseMapper;
+use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 use Spatie\LaravelData\Optional;
 
+#[MapInputName(CamelCaseMapper::class)]
+#[MapOutputName(SnakeCaseMapper::class)]
 final class InscriptionData extends Data
 {
     private const CONTENT_TYPE_LABELS = [
@@ -36,22 +41,20 @@ final class InscriptionData extends Data
         public string $id,
         public int $number,
         public string $address,
-        #[MapInputName('content_type')]
-        public string $contentType,
-        #[MapInputName('content_length')]
-        public int $contentLength,
+        public string $content_type,
+        public int $content_length,
         public int $fee,
         public int $height,
         public int $value,
         public string $satpoint,
         public int $timestamp,
-        public string|Optional $next,
-        public string|Optional $previous,
+        public string|Optional|null $next,
+        public string|Optional|null $previous,
     ) {}
 
     public function contentTypeForHumans(): string
     {
-        $baseType = Str::before($this->contentType, ';');
+        $baseType = Str::before($this->content_type, ';');
 
         return self::CONTENT_TYPE_LABELS[$baseType] ?? Str::upper(Str::afterLast($baseType, '/'));
     }

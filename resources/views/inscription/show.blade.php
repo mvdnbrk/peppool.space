@@ -30,12 +30,12 @@
 
                         <x-description-item label="Content Type">
                             {{ $inscription->contentTypeForHumans() }}
-                            <span class="text-gray-400 dark:text-gray-500">({{ $inscription->contentType }})</span>
+                            <span class="text-gray-400 dark:text-gray-500">({{ $inscription->content_type }})</span>
                         </x-description-item>
 
                         <x-description-item label="Content Size" :mono="true">
-                            {{ Number::fileSize($inscription->contentLength) }}
-                            <span class="text-gray-400 dark:text-gray-500">({{ Number::format($inscription->contentLength) }} bytes)</span>
+                            {{ Number::fileSize($inscription->content_length) }}
+                            <span class="text-gray-400 dark:text-gray-500">({{ Number::format($inscription->content_length) }} bytes)</span>
                         </x-description-item>
 
                         <x-description-item label="Creation Date">

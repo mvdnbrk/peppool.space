@@ -52,8 +52,8 @@ class InscriptionShowTest extends TestCase
                 'id' => $inscriptionId,
                 'number' => 17212333,
                 'address' => 'Pvkk9bUW8S4AK4cJeDDebnWJNADNCtxCHG',
-                'contentType' => 'image/png',
-                'contentLength' => 793,
+                'content_type' => 'image/png',
+                'content_length' => 793,
             ]);
     }
 
