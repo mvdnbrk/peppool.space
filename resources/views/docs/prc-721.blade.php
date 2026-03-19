@@ -36,6 +36,9 @@
             <section id="abstract">
                 <h2 class="text-xl md:text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Abstract</h2>
                 <p class="mb-4">
+                    This specification is developed as part of <a href="https://github.com/mvdnbrk/ord-pepecoin" class="text-green-700 dark:text-green-400 hover:underline" target="_blank">ord-pepecoin</a>, the reference indexer for Pepecoin inscriptions.
+                </p>
+                <p class="mb-4">
                     PRC-721 extends the existing Pepecoin inscription format (P2SH scriptSig with countdown) to support <strong>parent/child provenance</strong>, <strong>delegate inscriptions</strong>, <strong>structured properties</strong>, and <strong>compressed metadata</strong>, while maintaining full backwards compatibility with existing parsers and indexers.
                 </p>
                 <p class="mb-4">
