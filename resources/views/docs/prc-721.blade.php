@@ -401,6 +401,7 @@ OP_PUSHBYTES_2  "br"</code></pre>
             <section id="references">
                 <h2 class="text-xl md:text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">References</h2>
                 <ul class="list-disc ml-6 space-y-2">
+                    <li><a href="https://github.com/mvdnbrk/ord-pepecoin" class="text-green-700 dark:text-green-400 hover:underline" target="_blank">mvdnbrk/ord-pepecoin</a> — Ordinals indexer for Pepecoin</li>
                     <li><a href="https://github.com/ordinals/ord" class="text-green-700 dark:text-green-400 hover:underline" target="_blank">ordinals/ord</a> — Bitcoin inscription standard (Taproot/witness)</li>
                     <li><a href="https://github.com/apezord/ord-dogecoin" class="text-green-700 dark:text-green-400 hover:underline" target="_blank">apezord/ord-dogecoin</a> — P2SH scriptSig inscription indexer, fork of ordinals/ord v0.5. Basis for Pepecoin inscription support.</li>
                     <li>PRC-20 — Pepecoin fungible token standard (same mechanics as BRC-20 on Bitcoin and DRC-20 on Dogecoin, no formal spec exists for Pepecoin)</li>
