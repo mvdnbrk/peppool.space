@@ -13,24 +13,64 @@
             </div>
         </div>
 
-        <nav class="mb-12 p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-            <h2 class="text-lg font-bold mb-4 text-gray-900 dark:text-gray-100">Table of Contents</h2>
-            <ol class="list-decimal ml-6 space-y-2 text-sm">
-                <li><a href="#abstract" class="text-green-700 dark:text-green-400 hover:underline">Abstract</a></li>
-                <li><a href="#motivation" class="text-green-700 dark:text-green-400 hover:underline">Motivation</a></li>
-                <li><a href="#existing-format" class="text-green-700 dark:text-green-400 hover:underline">Existing Envelope Format</a></li>
-                <li><a href="#prc-721-extension" class="text-green-700 dark:text-green-400 hover:underline">PRC-721 Extension</a></li>
-                <li><a href="#defined-tags" class="text-green-700 dark:text-green-400 hover:underline">Defined Tags</a></li>
-                <li><a href="#multi-tx-chains" class="text-green-700 dark:text-green-400 hover:underline">Multi-Transaction Chains</a></li>
-                <li><a href="#compression" class="text-green-700 dark:text-green-400 hover:underline">Compression</a></li>
-                <li><a href="#script-sig-budget" class="text-green-700 dark:text-green-400 hover:underline">ScriptSig Space Budget</a></li>
-                <li><a href="#backwards-compatibility" class="text-green-700 dark:text-green-400 hover:underline">Backwards Compatibility</a></li>
-                <li><a href="#validation-rules" class="text-green-700 dark:text-green-400 hover:underline">Validation Rules</a></li>
-                <li><a href="#parser-pseudocode" class="text-green-700 dark:text-green-400 hover:underline">Parser Pseudocode</a></li>
-                <li><a href="#extensibility" class="text-green-700 dark:text-green-400 hover:underline">Extensibility</a></li>
-                <li><a href="#references" class="text-green-700 dark:text-green-400 hover:underline">References</a></li>
-            </ol>
-        </nav>
+        <div class="mb-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <nav class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                <h2 class="text-lg font-bold mb-4 text-gray-900 dark:text-gray-100">Table of Contents</h2>
+                <ol class="list-decimal ml-6 space-y-2 text-sm">
+                    <li><a href="#abstract" class="text-green-700 dark:text-green-400 hover:underline">Abstract</a></li>
+                    <li><a href="#motivation" class="text-green-700 dark:text-green-400 hover:underline">Motivation</a></li>
+                    <li><a href="#existing-format" class="text-green-700 dark:text-green-400 hover:underline">Existing Envelope Format</a></li>
+                    <li><a href="#prc-721-extension" class="text-green-700 dark:text-green-400 hover:underline">PRC-721 Extension</a></li>
+                    <li><a href="#defined-tags" class="text-green-700 dark:text-green-400 hover:underline">Defined Tags</a></li>
+                    <li><a href="#multi-tx-chains" class="text-green-700 dark:text-green-400 hover:underline">Multi-Transaction Chains</a></li>
+                    <li><a href="#compression" class="text-green-700 dark:text-green-400 hover:underline">Compression</a></li>
+                    <li><a href="#script-sig-budget" class="text-green-700 dark:text-green-400 hover:underline">ScriptSig Space Budget</a></li>
+                    <li><a href="#backwards-compatibility" class="text-green-700 dark:text-green-400 hover:underline">Backwards Compatibility</a></li>
+                    <li><a href="#validation-rules" class="text-green-700 dark:text-green-400 hover:underline">Validation Rules</a></li>
+                    <li><a href="#parser-pseudocode" class="text-green-700 dark:text-green-400 hover:underline">Parser Pseudocode</a></li>
+                    <li><a href="#extensibility" class="text-green-700 dark:text-green-400 hover:underline">Extensibility</a></li>
+                    <li><a href="#references" class="text-green-700 dark:text-green-400 hover:underline">References</a></li>
+                </ol>
+            </nav>
+            <div class="p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="border-b border-gray-200 dark:border-gray-600">
+                            <th class="py-2 px-4 font-bold">Feature</th>
+                            <th class="py-2 px-4 font-bold">Spec</th>
+                            <th class="py-2 px-4 font-bold">Indexer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-gray-100 dark:border-gray-700">
+                            <td class="py-2 px-4">Parent/child</td>
+                            <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
+                            <td class="py-2 px-4 text-gray-400">—</td>
+                        </tr>
+                        <tr class="border-b border-gray-100 dark:border-gray-700">
+                            <td class="py-2 px-4">Delegate</td>
+                            <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
+                            <td class="py-2 px-4 text-gray-400">—</td>
+                        </tr>
+                        <tr class="border-b border-gray-100 dark:border-gray-700">
+                            <td class="py-2 px-4">Metadata</td>
+                            <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
+                            <td class="py-2 px-4 text-gray-400">—</td>
+                        </tr>
+                        <tr class="border-b border-gray-100 dark:border-gray-700">
+                            <td class="py-2 px-4">Properties</td>
+                            <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
+                            <td class="py-2 px-4 text-gray-400">—</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-4">Body compression</td>
+                            <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
+                            <td class="py-2 px-4 text-gray-400">—</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
         <div class="space-y-12 text-gray-800 dark:text-gray-300">
             <section id="abstract">
@@ -44,9 +84,10 @@
                 <p class="mb-4">
                     Tags are appended <strong>after</strong> the body countdown reaches zero. Old parsers stop at countdown 0 and never see the tags — inscription numbers remain consistent across all indexer versions.
                 </p>
-                <p>
+                <p class="mb-6">
                     Inspired by <a href="https://github.com/ordinals/ord" class="text-green-700 dark:text-green-400 hover:underline" target="_blank">ordinals/ord</a>, but designed specifically for non-SegWit scriptSig chains. PRC-721 uses string tag keys (<code>"parent"</code>, <code>"delegate"</code>) rather than numeric tags to avoid collision with countdown integers, and introduces compression and space optimizations tailored to Pepecoin's 1650-byte scriptSig limit.
                 </p>
+
             </section>
 
             <section id="motivation">
