@@ -54,8 +54,11 @@ Route::get('/content/{inscriptionId}', [InscriptionController::class, 'content']
     ->name('inscription.content')
     ->where('inscriptionId', '[0-9a-fA-F]{64}i\d+');
 
-Route::get('/docs/api', DocumentationController::class)
+Route::get('/docs/api', [DocumentationController::class, 'api'])
     ->name('docs.api');
+
+Route::get('/docs/prc-721', [DocumentationController::class, 'prc721'])
+    ->name('docs.prc-721');
 
 Route::redirect('/about', '/about-pepecoin', Response::HTTP_MOVED_PERMANENTLY);
 Route::redirect('/api', '/docs/api', Response::HTTP_MOVED_PERMANENTLY);

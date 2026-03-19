@@ -49,6 +49,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('docs.prc-721') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
+                        PRC-721
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('sponsor') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
                         Sponsor
                     </a>
