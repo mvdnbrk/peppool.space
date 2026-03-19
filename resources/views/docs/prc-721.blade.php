@@ -15,7 +15,7 @@
 
         <nav class="mb-12 p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
             <h2 class="text-lg font-bold mb-4 text-gray-900 dark:text-gray-100">Table of Contents</h2>
-            <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm">
+            <ol class="list-decimal ml-6 space-y-2 text-sm">
                 <li><a href="#abstract" class="text-green-700 dark:text-green-400 hover:underline">Abstract</a></li>
                 <li><a href="#motivation" class="text-green-700 dark:text-green-400 hover:underline">Motivation</a></li>
                 <li><a href="#existing-format" class="text-green-700 dark:text-green-400 hover:underline">Existing Envelope Format</a></li>
@@ -24,7 +24,7 @@
                 <li><a href="#script-sig-budget" class="text-green-700 dark:text-green-400 hover:underline">ScriptSig Space Budget</a></li>
                 <li><a href="#backwards-compatibility" class="text-green-700 dark:text-green-400 hover:underline">Backwards Compatibility</a></li>
                 <li><a href="#indexer-implementation" class="text-green-700 dark:text-green-400 hover:underline">Indexer Implementation</a></li>
-            </ul>
+            </ol>
         </nav>
 
         <div class="space-y-12 text-gray-800 dark:text-gray-300">
@@ -115,7 +115,7 @@ OP_PUSHBYTES_36 &lt;delegate_id&gt;     # tag value: 32-byte txid LE + 4-byte vo
                 </div>
                 <p>Unknown tags MUST be ignored by parsers (forward compatibility).</p>
 
-                <h2 class="text-xl md:text-2xl font-bold mb-4 mt-12 text-gray-900 dark:text-gray-100" id="defined-tags">Defined Tags (v1)</h2>
+                <h2 class="text-xl md:text-2xl font-bold mb-4 mt-12 text-gray-900 dark:text-gray-100" id="defined-tags">Defined Tags</h2>
 
                 <div class="space-y-8">
                     <div>
