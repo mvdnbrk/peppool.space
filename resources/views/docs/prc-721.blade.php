@@ -20,10 +20,15 @@
                 <li><a href="#motivation" class="text-green-700 dark:text-green-400 hover:underline">Motivation</a></li>
                 <li><a href="#existing-format" class="text-green-700 dark:text-green-400 hover:underline">Existing Envelope Format</a></li>
                 <li><a href="#prc-721-extension" class="text-green-700 dark:text-green-400 hover:underline">PRC-721 Extension</a></li>
+                <li><a href="#defined-tags" class="text-green-700 dark:text-green-400 hover:underline">Defined Tags</a></li>
+                <li><a href="#multi-tx-chains" class="text-green-700 dark:text-green-400 hover:underline">Multi-Transaction Chains</a></li>
                 <li><a href="#compression" class="text-green-700 dark:text-green-400 hover:underline">Compression</a></li>
                 <li><a href="#script-sig-budget" class="text-green-700 dark:text-green-400 hover:underline">ScriptSig Space Budget</a></li>
                 <li><a href="#backwards-compatibility" class="text-green-700 dark:text-green-400 hover:underline">Backwards Compatibility</a></li>
-                <li><a href="#indexer-implementation" class="text-green-700 dark:text-green-400 hover:underline">Indexer Implementation</a></li>
+                <li><a href="#validation-rules" class="text-green-700 dark:text-green-400 hover:underline">Validation Rules</a></li>
+                <li><a href="#parser-pseudocode" class="text-green-700 dark:text-green-400 hover:underline">Parser Pseudocode</a></li>
+                <li><a href="#extensibility" class="text-green-700 dark:text-green-400 hover:underline">Extensibility</a></li>
+                <li><a href="#references" class="text-green-700 dark:text-green-400 hover:underline">References</a></li>
             </ol>
         </nav>
 
@@ -119,42 +124,58 @@ OP_PUSHBYTES_36 &lt;delegate_id&gt;     # tag value: 32-byte txid LE + 4-byte vo
 
                 <div class="space-y-8">
                     <div>
-                        <h3 class="text-lg font-bold mb-2"><code>parent</code> — Parent Inscription</h3>
+                        <h4 class="text-lg font-bold mb-2"><code>parent</code> — Parent Inscription</h4>
                         <p class="mb-4">Links this inscription as a child of an existing inscription (provenance/collections).</p>
                         <ul class="list-disc ml-6 space-y-1 mb-4">
                             <li><strong>Key:</strong> <code>"parent"</code> (6 bytes)</li>
-                            <li><strong>Value:</strong> 36 bytes — inscription ID (32-byte txid LE + 4-byte output index LE)</li>
+                            <li><strong>Value:</strong> 36 bytes — inscription ID (32-byte txid little-endian + 4-byte output index little-endian)</li>
                             <li><strong>Repeatable:</strong> Yes — an inscription may have multiple parents</li>
+                            <li><strong>Validation:</strong> The <strong>first reveal transaction</strong> in the inscription's chain MUST spend the parent inscription's UTXO as one of its inputs. The tag alone is not sufficient — the indexer must verify the spend (cryptographic provenance).</li>
                         </ul>
-                        <p class="mb-4"><strong>Validation:</strong> The <strong>first reveal transaction</strong> in the inscription's chain MUST spend the parent inscription's UTXO as one of its inputs. The tag alone is not sufficient — the indexer must verify the spend (cryptographic provenance).</p>
+                        <div class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm md:text-base mb-4">
+<pre><code>OP_PUSHBYTES_6  "parent"
+OP_PUSHBYTES_36 &lt;32-byte txid LE&gt;&lt;4-byte vout LE&gt;</code></pre>
+                        </div>
                     </div>
 
                     <div>
-                        <h3 class="text-lg font-bold mb-2"><code>delegate</code> — Delegate Inscription</h3>
+                        <h4 class="text-lg font-bold mb-2"><code>delegate</code> — Delegate Inscription</h4>
                         <p class="mb-4">Points to another inscription whose content should be served in place of this one. Useful for collections where many inscriptions share the same visual content.</p>
                         <ul class="list-disc ml-6 space-y-1 mb-4">
                             <li><strong>Key:</strong> <code>"delegate"</code> (8 bytes)</li>
-                            <li><strong>Value:</strong> 36 bytes — inscription ID (32-byte txid LE + 4-byte output index LE)</li>
+                            <li><strong>Value:</strong> 36 bytes — inscription ID (32-byte txid little-endian + 4-byte output index little-endian)</li>
                             <li><strong>Repeatable:</strong> No — only the first <code>"delegate"</code> tag is used</li>
+                            <li><strong>Behavior:</strong> When serving <code>/content/&lt;id&gt;</code>, if the inscription has a delegate, the indexer serves the delegate's content and content type instead.</li>
                         </ul>
+                        <div class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm md:text-base mb-4">
+<pre><code>OP_PUSHBYTES_8  "delegate"
+OP_PUSHBYTES_36 &lt;32-byte txid LE&gt;&lt;4-byte vout LE&gt;</code></pre>
+                        </div>
                     </div>
 
                     <div>
-                        <h3 class="text-lg font-bold mb-2"><code>metadata</code> — Arbitrary Metadata</h3>
-                        <p class="mb-4">Attach arbitrary structured data to an inscription using CBOR encoding. Metadata is intended for protocol-specific data not necessarily for display.</p>
+                        <h4 class="text-lg font-bold mb-2"><code>metadata</code> — Arbitrary Metadata</h4>
+                        <p class="mb-4">Attach arbitrary structured data to an inscription using CBOR encoding. Metadata is intended for protocol-specific or metaprotocol data (e.g., PRC-20 state) that external tools may consume. It is <strong>not</strong> used by the indexer for display — use <code>"properties"</code> for that.</p>
                         <ul class="list-disc ml-6 space-y-1 mb-4">
                             <li><strong>Key:</strong> <code>"metadata"</code>, <code>"metadata;br"</code> (Brotli-compressed)</li>
                             <li><strong>Value:</strong> CBOR or JSON encoded bytes</li>
+                            <li><strong>Repeatable:</strong> No — first occurrence wins, duplicates are ignored</li>
                             <li><strong>Size:</strong> Recommended under 1 KB</li>
                         </ul>
+                        <p class="mb-4">CBOR is preferred for efficiency. JSON is also accepted — the parser distinguishes by checking the first byte: <code>{</code> or <code>[</code> indicates JSON, otherwise CBOR. This allows simple inscribers to attach metadata without a CBOR library, at the cost of a few extra bytes.</p>
+                        <div class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm md:text-base mb-4">
+<pre><code>OP_PUSHBYTES_8  "metadata"
+OP_PUSHDATA1    &lt;CBOR or JSON bytes&gt;</code></pre>
+                        </div>
                     </div>
 
                     <div>
-                        <h3 class="text-lg font-bold mb-2"><code>properties</code> — Protocol-Level Properties</h3>
-                        <p class="mb-4">Structured fields that the indexer treats as first-class attributes (e.g., <code>title</code>, <code>traits</code>). Indexers use this for display and filtering.</p>
+                        <h4 class="text-lg font-bold mb-2"><code>properties</code> — Protocol-Level Properties</h4>
+                        <p class="mb-4">Structured fields that the indexer treats as first-class attributes of the inscription. Separate from <code>"metadata"</code> so the indexer knows exactly where to find protocol-recognized fields without parsing through arbitrary user data.</p>
                         <ul class="list-disc ml-6 space-y-1 mb-4">
                             <li><strong>Key:</strong> <code>"properties"</code>, <code>"properties;br"</code> (Brotli-compressed)</li>
-                            <li><strong>Value:</strong> CBOR-encoded bytes only</li>
+                            <li><strong>Value:</strong> CBOR-encoded bytes only (RFC 8949) — JSON is not accepted</li>
+                            <li><strong>Repeatable:</strong> No — first occurrence wins</li>
                         </ul>
                         <div class="overflow-x-auto my-6 bg-white dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
                             <table class="w-full text-left border-collapse">
@@ -179,32 +200,51 @@ OP_PUSHBYTES_36 &lt;delegate_id&gt;     # tag value: 32-byte txid LE + 4-byte vo
                                 </tbody>
                             </table>
                         </div>
+                        <div class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm md:text-base mb-4">
+<pre><code>OP_PUSHBYTES_10 "properties"
+OP_PUSHDATA1    &lt;CBOR bytes&gt;</code></pre>
+                        </div>
+
+                        <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 p-4 rounded-lg mt-4">
+                            <h5 class="font-bold text-yellow-800 dark:text-yellow-400 mb-2">Why both <code>metadata</code> and <code>properties</code>?</h5>
+                            <ul class="list-disc ml-6 space-y-1 text-sm text-yellow-800 dark:text-yellow-400">
+                                <li><strong>Properties</strong> contain the <strong>public identity</strong> of the inscription — name and traits. Indexers and explorers use this directly for display and filtering.</li>
+                                <li><strong>Metadata</strong> is for <strong>protocol data</strong> — arbitrary key/value pairs consumed by external tools or metaprotocols, not necessarily part of the visual identity.</li>
+                            </ul>
+                        </div>
                     </div>
 
                     <div>
-                        <h3 class="text-lg font-bold mb-2"><code>content-encoding</code> — Body Compression</h3>
-                        <p class="mb-4">Indicates that the inscription body is compressed (e.g., <code>br</code> or <code>gzip</code>).</p>
+                        <h4 class="text-lg font-bold mb-2"><code>content-encoding</code> — Body Compression</h4>
+                        <p class="mb-4">Indicates that the inscription body is compressed. The indexer decompresses the body before serving <code>/content/</code>.</p>
                         <ul class="list-disc ml-6 space-y-1 mb-4">
                             <li><strong>Key:</strong> <code>"content-encoding"</code> (16 bytes)</li>
-                            <li><strong>Value:</strong> UTF-8 string — <code>"br"</code> or <code>"gzip"</code></li>
+                            <li><strong>Value:</strong> UTF-8 string — <code>"br"</code> (Brotli) or <code>"gzip"</code></li>
+                            <li><strong>Repeatable:</strong> No — first occurrence wins</li>
                         </ul>
-                        <p class="mt-4">The indexer serves the compressed bytes with the corresponding HTTP <code>Content-Encoding</code> header.</p>
+                        <div class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm md:text-base mb-4">
+<pre><code>OP_PUSHBYTES_16 "content-encoding"
+OP_PUSHBYTES_2  "br"</code></pre>
+                        </div>
+                        <p class="mt-4">The indexer does <strong>not</strong> decompress the body. It stores the compressed bytes as-is and serves them with the corresponding HTTP <code>Content-Encoding</code> header (e.g., <code>Content-Encoding: br</code>). The browser handles decompression natively. This avoids decompression bomb risks at the server level.</p>
                     </div>
                 </div>
 
                 <h2 class="text-xl md:text-2xl font-bold mb-4 mt-12 text-gray-900 dark:text-gray-100" id="multi-tx-chains">Multi-Transaction Chains</h2>
                 <p class="mb-4">For inscriptions that span multiple reveal transactions:</p>
                 <ul class="list-disc ml-6 space-y-2">
-                    <li>The <strong>body chunks</strong> are distributed across all transactions in the chain</li>
-                    <li>The <strong>tag trailer</strong> goes exclusively in the <strong>final reveal transaction</strong></li>
+                    <li>The <strong>body chunks</strong> are distributed across all transactions in the chain (as today)</li>
+                    <li>The <strong>tag trailer</strong> (tags) goes exclusively in the <strong>final reveal transaction</strong>, after the last body chunk (countdown 0)</li>
                     <li>The <strong>parent UTXO</strong> (if any) is spent as an input in the <strong>first reveal transaction</strong></li>
+                    <li>If the final reveal transaction has no tags after countdown 0, the inscription has no PRC-721 features (standard inscription)</li>
+                    <li>Parent spend validation only applies to the first reveal transaction — intermediate chain transactions are not checked</li>
                 </ul>
             </section>
 
             <section id="compression">
                 <h2 class="text-xl md:text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Compression</h2>
                 <h3 class="text-lg font-bold mb-3">The <code>;br</code> Suffix Pattern</h3>
-                <p class="mb-4">Instead of using a separate encoding tag, PRC-721 encodes the compression method directly in the tag key name using a <code>;br</code> suffix:</p>
+                <p class="mb-4">Instead of using a separate encoding tag (which costs additional bytes), PRC-721 encodes the compression method directly in the tag key name using a <code>;br</code> suffix:</p>
                 <div class="overflow-x-auto mb-6 bg-white dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
                     <table class="w-full text-left border-collapse">
                         <thead>
@@ -222,80 +262,149 @@ OP_PUSHBYTES_36 &lt;delegate_id&gt;     # tag value: 32-byte txid LE + 4-byte vo
                             </tr>
                             <tr class="border-b border-gray-100 dark:border-gray-700">
                                 <td class="py-2 px-4"><code>"metadata;br"</code></td>
-                                <td class="py-2 px-4">Brotli CBOR</td>
+                                <td class="py-2 px-4">Brotli-compressed CBOR</td>
                                 <td class="py-2 px-4">Compressed protocol data</td>
                             </tr>
                             <tr class="border-b border-gray-100 dark:border-gray-700">
                                 <td class="py-2 px-4"><code>"properties"</code></td>
                                 <td class="py-2 px-4">Raw CBOR</td>
-                                <td class="py-2 px-4">Structured identity</td>
+                                <td class="py-2 px-4">Structured identity (title, traits)</td>
                             </tr>
                             <tr>
                                 <td class="py-2 px-4"><code>"properties;br"</code></td>
-                                <td class="py-2 px-4">Brotli CBOR</td>
-                                <td class="py-2 px-4">Compressed identity</td>
+                                <td class="py-2 px-4">Brotli-compressed CBOR</td>
+                                <td class="py-2 px-4">Compressed structured identity</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+                <h3 class="text-lg font-bold mb-3">Parser Behavior</h3>
+                <ol class="list-decimal ml-6 space-y-2 mb-6">
+                    <li>If the tag key ends with <code>";br"</code>, decompress the value with Brotli before decoding CBOR</li>
+                    <li>If decompression fails, ignore the tag (inscription remains valid)</li>
+                    <li>Tags without the suffix are raw CBOR — no decompression attempted</li>
+                </ol>
+                <h3 class="text-lg font-bold mb-3">Inscriber Behavior</h3>
+                <p class="mb-2">The inscriber should:</p>
+                <ol class="list-decimal ml-6 space-y-2 mb-6">
+                    <li>Encode the data as CBOR</li>
+                    <li>Attempt Brotli compression</li>
+                    <li>Compare raw vs compressed size</li>
+                    <li>Use the tag name (<code>"properties"</code> vs <code>"properties;br"</code>) that produces the smallest result</li>
+                </ol>
+                <h3 class="text-lg font-bold mb-3">Constraints</h3>
+                <ul class="list-disc ml-6 space-y-1 mb-6">
+                    <li>Maximum uncompressed size: 4,000 bytes</li>
+                    <li>Maximum compression ratio: 30:1 (to prevent decompression bombs)</li>
+                </ul>
             </section>
 
             <section id="script-sig-budget">
                 <h2 class="text-xl md:text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">ScriptSig Space Budget</h2>
                 <p class="mb-4">
-                    Pepecoin uses P2SH scriptSig inscriptions without SegWit. The <code>IsStandard</code> policy limits scriptSig to <strong>1650 bytes</strong>. After signature and redeem script overhead, roughly <strong>1500 bytes</strong> are available for inscription payload per reveal transaction.
+                    Pepecoin uses P2SH scriptSig inscriptions without SegWit. The <code>IsStandard</code> policy limits scriptSig to <strong>1650 bytes</strong>. After signature and redeem script overhead (~150 bytes), roughly <strong>1500 bytes</strong> are available for inscription payload per reveal transaction.
+                </p>
+                <h3 class="text-lg font-bold mb-3">Chunk packing</h3>
+                <p class="mb-4">
+                    Body data is split into 240-byte chunks. Each chunk encodes as 242 bytes (1-byte <code>OP_PUSHDATA1</code> prefix + 240 bytes data + 1-byte countdown number), fitting <strong>~6 chunks per reveal</strong> — approximately <strong>1,440 bytes of body data per reveal transaction</strong>.
+                </p>
+                <h3 class="text-lg font-bold mb-3">Practical example</h3>
+                <p class="mb-4">
+                    A 10 KB image requires ~42 chunks across ~7 reveal transactions. A 50 KB image needs ~35 reveals. Multi-reveal chains are the norm on Pepecoin, not the exception.
                 </p>
                 <p>
-                    PRC-721 tags (parent, properties, metadata) are appended after the final body chunk. They add minimal overhead, often fitting in the same final reveal transaction.
+                    PRC-721 tags (parent, properties, metadata) are appended after the final body chunk. They add at most 1–2 extra reveals to a chain that is already many transactions long. Compression (<code>";br"</code> suffix) helps keep this overhead minimal.
                 </p>
             </section>
 
             <section id="backwards-compatibility">
                 <h2 class="text-xl md:text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Backwards Compatibility</h2>
+                <h3 class="text-lg font-bold mb-3">Practical context</h3>
                 <p class="mb-4">
-                    PRC-721 is designed to be maximally backwards compatible. Old parsers (without tag support) will process the body countdown to 0 and <strong>stop reading</strong> — they never see the tag trailer.
+                    In practice, indexer divergence already exists in the Pepecoin inscription ecosystem. The <code>ordpep</code> indexer supports 520-byte push data (the maximum allowed by consensus), while older apezord-based parsers assume 240-byte chunks. Any inscription using larger pushes already produces different results across indexers. The <code>ordpep</code> indexer is currently the only actively maintained Pepecoin inscription indexer — there is no fragmented ecosystem to break.
                 </p>
-                <p>
-                    Inscription numbers remain consistent across all indexer versions because PRC-721 inscriptions are never skipped; only the additional metadata is ignored by older parsers.
+                <h3 class="text-lg font-bold mb-3">Old parsers reading PRC-721 inscriptions</h3>
+                <p class="mb-4">
+                    Old parsers (without tag support) will process the body countdown to 0 and <strong>stop reading</strong> — they never see the tag trailer. Inscription numbers remain consistent across all indexer versions.
+                </p>
+                <h3 class="text-lg font-bold mb-3">New parsers reading old inscriptions</h3>
+                <p class="mb-4">
+                    New parsers will parse the body countdown to 0 as normal, find no remaining pushes, and index the inscription with no parent/delegate metadata. 100% compatible.
+                </p>
+                <h3 class="text-lg font-bold mb-3">Inscription number consistency</h3>
+                <p class="mb-4">
+                    Inscription numbers remain consistent across old and new indexers. Old parsers never skip PRC-721 inscriptions — they just don't extract the metadata.
                 </p>
             </section>
 
-            <section id="indexer-implementation">
-                <h2 class="text-xl md:text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Indexer Implementation</h2>
-                <p class="mb-4">New tables required for indexing PRC-721 metadata:</p>
-                <div class="overflow-x-auto mb-6 bg-white dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b border-gray-200 dark:border-gray-600">
-                                <th class="py-2 px-4 font-bold">Table</th>
-                                <th class="py-2 px-4 font-bold">Key</th>
-                                <th class="py-2 px-4 font-bold">Value</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="border-b border-gray-100 dark:border-gray-700">
-                                <td class="py-2 px-4"><code>INSCRIPTION_ID_TO_PARENT</code></td>
-                                <td class="py-2 px-4">InscriptionId</td>
-                                <td class="py-2 px-4">Vec&lt;InscriptionId&gt;</td>
-                            </tr>
-                            <tr class="border-b border-gray-100 dark:border-gray-700">
-                                <td class="py-2 px-4"><code>PARENT_TO_CHILDREN</code></td>
-                                <td class="py-2 px-4">InscriptionId</td>
-                                <td class="py-2 px-4">Vec&lt;InscriptionId&gt;</td>
-                            </tr>
-                            <tr class="border-b border-gray-100 dark:border-gray-700">
-                                <td class="py-2 px-4"><code>INSCRIPTION_ID_TO_DELEGATE</code></td>
-                                <td class="py-2 px-4">InscriptionId</td>
-                                <td class="py-2 px-4">InscriptionId</td>
-                            </tr>
-                            <tr>
-                                <td class="py-2 px-4"><code>INSCRIPTION_ID_TO_METADATA</code></td>
-                                <td class="py-2 px-4">InscriptionId</td>
-                                <td class="py-2 px-4">Vec&lt;u8&gt; (raw CBOR)</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <section id="validation-rules">
+                <h2 class="text-xl md:text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Validation Rules</h2>
+                <h3 class="text-lg font-bold mb-3">Parent Validation</h3>
+                <p class="mb-4">A conforming indexer MUST verify parent/child relationships cryptographically:</p>
+                <ol class="list-decimal ml-6 space-y-2 mb-6">
+                    <li>Parse the <code>"parent"</code> tag from the tag trailer</li>
+                    <li>Check that the <strong>first reveal transaction</strong> in the child's chain has the parent inscription's UTXO as one of its inputs</li>
+                    <li>Only if both conditions are met, record the parent/child relationship</li>
+                </ol>
+                <p class="mb-4">The tag alone is <strong>not</strong> proof of parentage — anyone can write a tag. The UTXO spend proves ownership of the parent inscription at the time the child was created.</p>
+
+                <h3 class="text-lg font-bold mb-3">Delegate Resolution</h3>
+                <p class="mb-4">When serving inscription content:</p>
+                <ol class="list-decimal ml-6 space-y-2 mb-6">
+                    <li>Check if the inscription has a <code>"delegate"</code> tag</li>
+                    <li>If yes, look up the delegate inscription</li>
+                    <li>If the delegate itself has a delegate, follow the chain (recursive resolution)</li>
+                    <li>Serve the final delegate's content and content type</li>
+                    <li>If a delegate doesn't exist or has been burned, fall back to the original inscription's own content (if any)</li>
+                    <li>Enforce a maximum recursion depth of 10 to prevent infinite loops (A → B → A). If exceeded, serve the original inscription's content.</li>
+                </ol>
+            </section>
+
+            <section id="parser-pseudocode">
+                <h2 class="text-xl md:text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Parser Pseudocode</h2>
+                <div class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm md:text-base mb-4">
+<pre><code>parse(sig_scripts):
+  pushes = decode_all_push_data(sig_scripts)
+
+  # Standard envelope parsing
+  assert pushes[0] == "ord"
+  npieces = to_number(pushes[1])
+  content_type = pushes[2]
+
+  # Body countdown
+  body = []
+  i = 3
+  for countdown in (npieces-1)..0:
+    assert to_number(pushes[i]) == countdown
+    body.append(pushes[i+1])
+    i += 2
+
+  # PRC-721 tag trailer (optional)
+  tags = {}
+  while i + 1 &lt; len(pushes):
+    key = to_string(pushes[i])
+    value = pushes[i+1]
+    tags[key].append(value)    # support repeated tags
+    i += 2
+
+  return Inscription { content_type, body, tags }</code></pre>
                 </div>
+            </section>
+
+            <section id="extensibility">
+                <h2 class="text-xl md:text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Extensibility</h2>
+                <p>
+                    New tags can be added without a protocol upgrade — old parsers and old PRC-721 parsers will simply ignore unknown tags. Tag keys are UTF-8 strings, values are raw bytes with interpretation defined per tag.
+                </p>
+            </section>
+
+            <section id="references">
+                <h2 class="text-xl md:text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">References</h2>
+                <ul class="list-disc ml-6 space-y-2">
+                    <li><a href="https://github.com/ordinals/ord" class="text-green-700 dark:text-green-400 hover:underline" target="_blank">ordinals/ord</a> — Bitcoin inscription standard (Taproot/witness)</li>
+                    <li><a href="https://github.com/apezord/ord-dogecoin" class="text-green-700 dark:text-green-400 hover:underline" target="_blank">apezord/ord-dogecoin</a> — P2SH scriptSig inscription indexer, fork of ordinals/ord v0.5. Basis for Pepecoin inscription support.</li>
+                    <li>PRC-20 — Pepecoin fungible token standard (same mechanics as BRC-20 on Bitcoin and DRC-20 on Dogecoin, no formal spec exists for Pepecoin)</li>
+                </ul>
             </section>
         </div>
     </article>
