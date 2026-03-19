@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Data\Ordinals\InscriptionData;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
 class OrdinalsService
@@ -76,7 +77,7 @@ class OrdinalsService
         return count($response['inscriptions'] ?? []);
     }
 
-    public function getContent(string $inscriptionId): \Illuminate\Http\Client\Response
+    public function getContent(string $inscriptionId): Response
     {
         return Http::timeout(config('pepecoin.ordinals.timeout', 10))
             ->get("{$this->url}/content/{$inscriptionId}")
