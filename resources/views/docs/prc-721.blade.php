@@ -4,8 +4,8 @@
             <h1 class="text-2xl md:text-4xl font-bold text-gray-900 dark:text-gray-300 mb-3 md:mb-4">PRC-721: Extended Inscription Envelope for Pepecoin</h1>
             <div class="flex flex-wrap items-center gap-4 text-sm mb-6">
                 <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded font-medium">Status: Draft</span>
-                <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded font-medium">Version: 1.1</span>
-                <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded font-medium">Date: 2026-03-19</span>
+                <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded font-medium">Version: 1.2</span>
+                <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded font-medium">Date: 2026-03-22</span>
                 <a href="https://github.com/mvdnbrk/ord-pepecoin" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors font-medium">
                     <x-icon-github class="h-4 w-4" />
                     <span>View on GitHub</span>
@@ -43,27 +43,27 @@
                     </thead>
                     <tbody>
                         <tr class="border-b border-gray-100 dark:border-gray-700">
-                            <td class="py-2 px-4">Parent/child</td>
+                            <td class="py-2 px-4"><a href="#tag-parent" class="text-green-700 dark:text-green-400 hover:underline">Parent/child</a></td>
+                            <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
+                            <td class="py-2 px-4 text-yellow-600 dark:text-yellow-400 italic">in progress</td>
+                        </tr>
+                        <tr class="border-b border-gray-100 dark:border-gray-700">
+                            <td class="py-2 px-4"><a href="#tag-delegate" class="text-green-700 dark:text-green-400 hover:underline">Delegate</a></td>
+                            <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
+                            <td class="py-2 px-4 text-yellow-600 dark:text-yellow-400 italic">in progress</td>
+                        </tr>
+                        <tr class="border-b border-gray-100 dark:border-gray-700">
+                            <td class="py-2 px-4"><a href="#tag-metadata" class="text-green-700 dark:text-green-400 hover:underline">Metadata</a></td>
                             <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
                             <td class="py-2 px-4 text-gray-400">—</td>
                         </tr>
                         <tr class="border-b border-gray-100 dark:border-gray-700">
-                            <td class="py-2 px-4">Delegate</td>
-                            <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
-                            <td class="py-2 px-4 text-gray-400">—</td>
-                        </tr>
-                        <tr class="border-b border-gray-100 dark:border-gray-700">
-                            <td class="py-2 px-4">Metadata</td>
-                            <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
-                            <td class="py-2 px-4 text-gray-400">—</td>
-                        </tr>
-                        <tr class="border-b border-gray-100 dark:border-gray-700">
-                            <td class="py-2 px-4">Properties</td>
+                            <td class="py-2 px-4"><a href="#tag-properties" class="text-green-700 dark:text-green-400 hover:underline">Properties</a></td>
                             <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
                             <td class="py-2 px-4 text-gray-400">—</td>
                         </tr>
                         <tr>
-                            <td class="py-2 px-4">Body compression</td>
+                            <td class="py-2 px-4"><a href="#tag-content-encoding" class="text-green-700 dark:text-green-400 hover:underline">Body compression</a></td>
                             <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
                             <td class="py-2 px-4 text-gray-400">—</td>
                         </tr>
@@ -168,7 +168,7 @@ OP_PUSHBYTES_36 &lt;delegate_id&gt;     # tag value: 32-byte txid LE + 4-byte vo
 
                 <div class="space-y-8">
                     <div>
-                        <h4 class="text-lg font-bold mb-2"><code>parent</code> — Parent Inscription</h4>
+                        <h4 class="text-lg font-bold mb-2" id="tag-parent"><code>parent</code> — Parent Inscription</h4>
                         <p class="mb-4">Links this inscription as a child of an existing inscription (provenance/collections).</p>
                         <ul class="list-disc ml-6 space-y-1 mb-4">
                             <li><strong>Key:</strong> <code>"parent"</code> (6 bytes)</li>
@@ -183,22 +183,31 @@ OP_PUSHBYTES_36 &lt;32-byte txid LE&gt;&lt;4-byte vout LE&gt;</code></pre>
                     </div>
 
                     <div>
-                        <h4 class="text-lg font-bold mb-2"><code>delegate</code> — Delegate Inscription</h4>
+                        <h4 class="text-lg font-bold mb-2" id="tag-delegate"><code>delegate</code> — Delegate Inscription</h4>
                         <p class="mb-4">Points to another inscription whose content should be served in place of this one. Useful for collections where many inscriptions share the same visual content.</p>
                         <ul class="list-disc ml-6 space-y-1 mb-4">
                             <li><strong>Key:</strong> <code>"delegate"</code> (8 bytes)</li>
                             <li><strong>Value:</strong> 36 bytes — inscription ID (32-byte txid little-endian + 4-byte output index little-endian)</li>
                             <li><strong>Repeatable:</strong> No — only the first <code>"delegate"</code> tag is used</li>
-                            <li><strong>Behavior:</strong> When serving <code>/content/&lt;id&gt;</code>, if the inscription has a delegate, the indexer serves the delegate's content and content type instead.</li>
+                            <li><strong>Behavior:</strong> When serving <code>/content/&lt;id&gt;</code>, if the inscription has a delegate, the indexer serves the delegate's content and content type. If the delegate is missing, returns 404.</li>
                         </ul>
                         <div class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm md:text-base mb-4">
 <pre><code>OP_PUSHBYTES_8  "delegate"
 OP_PUSHBYTES_36 &lt;32-byte txid LE&gt;&lt;4-byte vout LE&gt;</code></pre>
                         </div>
+                        <p class="mb-4">A delegate inscription has no body — it is empty (<code>npieces=0</code>):</p>
+                        <div class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm md:text-base mb-4">
+<pre><code># Delegate inscription (no body)
+OP_PUSHBYTES_3  "ord"
+OP_PUSHBYTES_0                    # npieces = 0
+OP_PUSHBYTES_0                    # empty content_type
+OP_PUSHBYTES_8  "delegate"
+OP_PUSHBYTES_36 &lt;delegate_id&gt;</code></pre>
+                        </div>
                     </div>
 
                     <div>
-                        <h4 class="text-lg font-bold mb-2"><code>metadata</code> — Arbitrary Metadata</h4>
+                        <h4 class="text-lg font-bold mb-2" id="tag-metadata"><code>metadata</code> — Arbitrary Metadata</h4>
                         <p class="mb-4">Attach arbitrary structured data to an inscription using CBOR encoding. Metadata is intended for protocol-specific or metaprotocol data (e.g., PRC-20 state) that external tools may consume. It is <strong>not</strong> used by the indexer for display — use <code>"properties"</code> for that.</p>
                         <ul class="list-disc ml-6 space-y-1 mb-4">
                             <li><strong>Key:</strong> <code>"metadata"</code>, <code>"metadata;br"</code> (Brotli-compressed)</li>
@@ -214,7 +223,7 @@ OP_PUSHDATA1    &lt;CBOR or JSON bytes&gt;</code></pre>
                     </div>
 
                     <div>
-                        <h4 class="text-lg font-bold mb-2"><code>properties</code> — Protocol-Level Properties</h4>
+                        <h4 class="text-lg font-bold mb-2" id="tag-properties"><code>properties</code> — Protocol-Level Properties</h4>
                         <p class="mb-4">Structured fields that the indexer treats as first-class attributes of the inscription. Separate from <code>"metadata"</code> so the indexer knows exactly where to find protocol-recognized fields without parsing through arbitrary user data.</p>
                         <ul class="list-disc ml-6 space-y-1 mb-4">
                             <li><strong>Key:</strong> <code>"properties"</code>, <code>"properties;br"</code> (Brotli-compressed)</li>
@@ -259,7 +268,7 @@ OP_PUSHDATA1    &lt;CBOR bytes&gt;</code></pre>
                     </div>
 
                     <div>
-                        <h4 class="text-lg font-bold mb-2"><code>content-encoding</code> — Body Compression</h4>
+                        <h4 class="text-lg font-bold mb-2" id="tag-content-encoding"><code>content-encoding</code> — Body Compression</h4>
                         <p class="mb-4">Indicates that the inscription body is compressed. The indexer decompresses the body before serving <code>/content/</code>.</p>
                         <ul class="list-disc ml-6 space-y-1 mb-4">
                             <li><strong>Key:</strong> <code>"content-encoding"</code> (16 bytes)</li>
@@ -396,12 +405,11 @@ OP_PUSHBYTES_2  "br"</code></pre>
                 <p class="mb-4">When serving inscription content:</p>
                 <ol class="list-decimal ml-6 space-y-2 mb-6">
                     <li>Check if the inscription has a <code>"delegate"</code> tag</li>
-                    <li>If yes, look up the delegate inscription</li>
-                    <li>If the delegate itself has a delegate, follow the chain (recursive resolution)</li>
-                    <li>Serve the final delegate's content and content type</li>
-                    <li>If a delegate doesn't exist or has been burned, fall back to the original inscription's own content (if any)</li>
-                    <li>Enforce a maximum recursion depth of 10 to prevent infinite loops (A → B → A). If exceeded, serve the original inscription's content.</li>
+                    <li>If yes, look up the delegate inscription (single level — no recursive resolution)</li>
+                    <li>Serve the delegate's content and content type</li>
+                    <li>If the delegate does not exist, return 404</li>
                 </ol>
+                <p class="mb-4">Delegate chaining is not supported — the delegate target must be a content inscription, not another delegate. The indexer resolves only one level.</p>
             </section>
 
             <section id="parser-pseudocode">
