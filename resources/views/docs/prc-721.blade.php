@@ -93,7 +93,7 @@
             <section id="motivation">
                 <h2 class="text-xl md:text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Motivation</h2>
                 <p class="mb-4">
-                    Pepecoin inscriptions ("pepinals") currently support basic content embedding via the <code>"ord"</code> countdown envelope. This is sufficient for standalone inscriptions but lacks:
+                    Pepecoin inscriptions currently support basic content embedding via the <code>"ord"</code> countdown envelope. This is sufficient for standalone inscriptions but lacks:
                 </p>
                 <ul class="list-disc ml-6 space-y-2 mb-4">
                     <li><strong>Provenance</strong> — no way to link child inscriptions to a parent (e.g., items in a collection)</li>
