@@ -60,12 +60,12 @@
                         <tr class="border-b border-gray-100 dark:border-gray-700">
                             <td class="py-2 px-4"><a href="#tag-properties" class="text-green-700 dark:text-green-400 hover:underline">Properties</a></td>
                             <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
-                            <td class="py-2 px-4 text-gray-400">—</td>
+                            <td class="py-2 px-4 text-yellow-600 dark:text-yellow-400 italic">in progress</td>
                         </tr>
                         <tr>
                             <td class="py-2 px-4"><a href="#tag-content-encoding" class="text-green-700 dark:text-green-400 hover:underline">Body compression</a></td>
                             <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
-                            <td class="py-2 px-4 text-gray-400">—</td>
+                            <td class="py-2 px-4 text-yellow-600 dark:text-yellow-400 italic">in progress</td>
                         </tr>
                     </tbody>
                 </table>
