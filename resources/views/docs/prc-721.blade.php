@@ -36,21 +36,21 @@
                 <table class="w-full text-left border-collapse text-sm">
                     <thead>
                         <tr class="border-b border-gray-200 dark:border-gray-600">
-                            <th class="py-2 px-4 font-bold">Feature</th>
-                            <th class="py-2 px-4 font-bold">Spec</th>
-                            <th class="py-2 px-4 font-bold">Indexer</th>
+                            <th class="py-2 px-4 font-bold text-gray-900 dark:text-gray-100">Feature</th>
+                            <th class="py-2 px-4 font-bold text-gray-900 dark:text-gray-100">Spec</th>
+                            <th class="py-2 px-4 font-bold text-gray-900 dark:text-gray-100">Indexer</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr class="border-b border-gray-100 dark:border-gray-700">
                             <td class="py-2 px-4"><a href="#tag-parent" class="text-green-700 dark:text-green-400 hover:underline">Parent/child</a></td>
                             <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
-                            <td class="py-2 px-4 text-yellow-600 dark:text-yellow-400 italic">in progress</td>
+                            <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
                         </tr>
                         <tr class="border-b border-gray-100 dark:border-gray-700">
                             <td class="py-2 px-4"><a href="#tag-delegate" class="text-green-700 dark:text-green-400 hover:underline">Delegate</a></td>
                             <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
-                            <td class="py-2 px-4 text-yellow-600 dark:text-yellow-400 italic">in progress</td>
+                            <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
                         </tr>
                         <tr class="border-b border-gray-100 dark:border-gray-700">
                             <td class="py-2 px-4"><a href="#tag-metadata" class="text-green-700 dark:text-green-400 hover:underline">Metadata</a></td>
@@ -60,12 +60,12 @@
                         <tr class="border-b border-gray-100 dark:border-gray-700">
                             <td class="py-2 px-4"><a href="#tag-properties" class="text-green-700 dark:text-green-400 hover:underline">Properties</a></td>
                             <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
-                            <td class="py-2 px-4 text-yellow-600 dark:text-yellow-400 italic">in progress</td>
+                            <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
                         </tr>
                         <tr>
                             <td class="py-2 px-4"><a href="#tag-content-encoding" class="text-green-700 dark:text-green-400 hover:underline">Body compression</a></td>
                             <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
-                            <td class="py-2 px-4 text-yellow-600 dark:text-yellow-400 italic">in progress</td>
+                            <td class="py-2 px-4 text-green-600 dark:text-green-400">&#10003;</td>
                         </tr>
                     </tbody>
                 </table>
