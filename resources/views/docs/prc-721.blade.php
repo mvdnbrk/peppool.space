@@ -4,8 +4,8 @@
             <h1 class="text-2xl md:text-4xl font-bold text-gray-900 dark:text-gray-300 mb-3 md:mb-4">PRC-721: Extended Inscription Envelope for Pepecoin</h1>
             <div class="flex flex-wrap items-center gap-4 text-sm mb-6">
                 <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded font-medium">Status: Draft</span>
-                <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded font-medium">Version: 1.2</span>
-                <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded font-medium">Date: 2026-03-22</span>
+                <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded font-medium">Version: 1.3</span>
+                <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded font-medium">Date: 2026-03-24</span>
                 <a href="https://github.com/mvdnbrk/ord-pepecoin" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors font-medium">
                     <x-icon-github class="h-4 w-4" />
                     <span>View on GitHub</span>
@@ -230,29 +230,61 @@ OP_PUSHDATA1    &lt;CBOR or JSON bytes&gt;</code></pre>
                             <li><strong>Value:</strong> CBOR-encoded bytes only (RFC 8949) — JSON is not accepted</li>
                             <li><strong>Repeatable:</strong> No — first occurrence wins</li>
                         </ul>
+
+                        <p class="mb-4">The properties CBOR map uses <strong>integer keys</strong> for compactness:</p>
+
                         <div class="overflow-x-auto my-6 bg-white dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
                             <table class="w-full text-left border-collapse">
                                 <thead>
                                     <tr class="border-b border-gray-200 dark:border-gray-600">
                                         <th class="py-2 px-4 font-bold">Key</th>
+                                        <th class="py-2 px-4 font-bold">CBOR integer key</th>
                                         <th class="py-2 px-4 font-bold">Type</th>
                                         <th class="py-2 px-4 font-bold">Description</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr class="border-b border-gray-100 dark:border-gray-700">
-                                        <td class="py-2 px-4"><code>title</code></td>
+                                        <td class="py-2 px-4">title</td>
+                                        <td class="py-2 px-4"><code>0</code></td>
                                         <td class="py-2 px-4">string</td>
-                                        <td class="py-2 px-4">Inscription title (displayed by indexer)</td>
+                                        <td class="py-2 px-4">Inscription title</td>
                                     </tr>
                                     <tr>
-                                        <td class="py-2 px-4"><code>traits</code></td>
-                                        <td class="py-2 px-4">map</td>
-                                        <td class="py-2 px-4">Collection traits for filtering</td>
+                                        <td class="py-2 px-4">traits</td>
+                                        <td class="py-2 px-4"><code>1</code></td>
+                                        <td class="py-2 px-4">map&lt;string, value&gt;</td>
+                                        <td class="py-2 px-4">Inscription traits</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
+
+                        <p class="mb-4">
+                            Trait values may be <strong>strings</strong>, <strong>booleans</strong>, <strong>integers</strong>, or <strong>null</strong>. Other CBOR types (floats, bytes, arrays, maps) are rejected — the entire <code>properties</code> tag is ignored if any trait value uses an unsupported type. Trait names must be unique — duplicate names invalidate the <code>properties</code> tag. Trait order is preserved — indexers and explorers display traits in the order they appear in the CBOR map, allowing inscribers to control display priority.
+                        </p>
+
+                        <p class="mb-2 text-sm font-bold">Example CBOR value (diagnostic notation):</p>
+                        <div class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm md:text-base mb-4">
+<pre><code>{0: "Rare Pepe #42", 1: {"background": "gold", "eyes": "laser", "mouth": "grin", "accessory": "crown", "level": 42, "rare": true, "extra": null}}</code></pre>
+                        </div>
+
+                        <p class="mb-2 text-sm font-bold">Equivalent JSON for readability:</p>
+                        <div class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm md:text-base mb-4">
+<pre><code>{
+  "title": "Rare Pepe #42",
+  "traits": {
+    "background": "gold",
+    "eyes": "laser",
+    "mouth": "grin",
+    "accessory": "crown",
+    "level": 42,
+    "rare": true,
+    "extra": null
+  }
+}</code></pre>
+                        </div>
+
                         <div class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm md:text-base mb-4">
 <pre><code>OP_PUSHBYTES_10 "properties"
 OP_PUSHDATA1    &lt;CBOR bytes&gt;</code></pre>
