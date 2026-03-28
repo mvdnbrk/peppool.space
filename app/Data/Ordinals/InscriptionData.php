@@ -10,7 +10,6 @@ use Spatie\LaravelData\Attributes\MapOutputName;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\CamelCaseMapper;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
-use Spatie\LaravelData\Optional;
 
 #[MapInputName(CamelCaseMapper::class)]
 #[MapOutputName(SnakeCaseMapper::class)]
@@ -40,7 +39,7 @@ final class InscriptionData extends Data
     public function __construct(
         public string $id,
         public int $number,
-        public string $address,
+        public ?string $address,
         public string $content_type,
         public int $content_length,
         public int $fee,
@@ -48,8 +47,8 @@ final class InscriptionData extends Data
         public int $value,
         public string $satpoint,
         public int $timestamp,
-        public string|Optional|null $next,
-        public string|Optional|null $previous,
+        public ?string $next,
+        public ?string $previous,
     ) {}
 
     public function contentTypeForHumans(): string

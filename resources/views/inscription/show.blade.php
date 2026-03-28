@@ -24,9 +24,11 @@
                         </x-description-item>
 
                         <x-description-item label="Owner" :mono="true">
-                            <a href="{{ route('address.show', $inscription->address) }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-                                {{ $inscription->address }}
-                            </a>
+                            @if($inscription->address)
+                                <a href="{{ route('address.show', $inscription->address) }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                                    {{ $inscription->address }}
+                                </a>
+                            @endif
                         </x-description-item>
 
                         <x-description-item label="Content Type">
