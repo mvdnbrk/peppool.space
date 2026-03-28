@@ -415,7 +415,6 @@
                     <code class="text-xs md:text-sm break-all">&lt;binary data&gt;</code>
                 </x-slot:response>
             </x-api-section>
-        </div>
 
             <!-- Inscription Endpoint -->
             <x-api-section method="GET" path="/inscription/:inscription_id" :description="'Returns details about a Pepecoin inscription (Pepeinal). The inscription ID format is <code>&lt;txid&gt;i&lt;index&gt;</code>.'" responseContentType="application/json">
@@ -453,6 +452,7 @@
                     <x-api-field name="previous" type="string|null" description="Previous inscription ID" />
                 </x-slot:fields>
             </x-api-section>
+        </div>
 
         <!-- Error Responses -->
         <div class="mt-8 p-6 bg-red-50 dark:bg-white border border-red-200 dark:border-gray-200 rounded-lg">
@@ -488,5 +488,4 @@
                 </div>
             </div>
         </div>
-
 </x-layout>
