@@ -508,25 +508,3 @@
             </div>
         </div>
 </x-layout>
- server error</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-</x-layout>
-ceeded (15 req/min)</span>
-                    </div>
-                    <div>
-                        <strong class="text-red-700 text-sm block">500 Internal Error</strong>
-                        <span class="text-red-600 text-xs">Unexpected server error</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-</x-layout>
- server error</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-</x-layout>
