@@ -80,8 +80,8 @@ class OrdinalsService
     public function getContent(string $inscriptionId): Response
     {
         return Http::withHeaders([
-                'Accept-Encoding' => 'br, gzip, deflate',
-            ])
+            'Accept-Encoding' => 'br, gzip, deflate',
+        ])
             ->timeout(config('pepecoin.ordinals.timeout', 10))
             ->get("{$this->url}/content/{$inscriptionId}")
             ->throw();
