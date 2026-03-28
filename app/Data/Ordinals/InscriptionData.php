@@ -40,11 +40,18 @@ final class InscriptionData extends Data
         public string $id,
         public int $number,
         public ?string $address,
-        public string $content_type,
-        public int $content_length,
+        public int $child_count,
+        public array $children,
+        public ?string $content_type,
+        public string $effective_content_type,
+        public ?int $content_length,
+        public ?string $delegate,
         public int $fee,
         public int $height,
         public int $value,
+        public int $parent_count,
+        public array $parents,
+        public ?array $properties,
         public string $satpoint,
         public int $timestamp,
         public ?string $next,
@@ -53,7 +60,7 @@ final class InscriptionData extends Data
 
     public function contentTypeForHumans(): string
     {
-        $baseType = Str::before($this->content_type, ';');
+        $baseType = Str::before($this->effective_content_type, ';');
 
         return self::CONTENT_TYPE_LABELS[$baseType] ?? Str::upper(Str::afterLast($baseType, '/'));
     }

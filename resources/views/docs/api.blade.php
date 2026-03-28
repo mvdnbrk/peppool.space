@@ -426,11 +426,23 @@
   "id": "5f48e29e...e2f3i0",
   "number": 17212333,
   "address": "Pvkk9bUW8S4AK4cJeDDebnWJNADNCtxCHG",
+  "child_count": 0,
+  "children": [],
   "content_type": "image/png",
+  "effective_content_type": "image/png",
   "content_length": 793,
+  "delegate": null,
   "fee": 10210000,
   "height": 956437,
   "value": 100000,
+  "parent_count": 0,
+  "parents": [],
+  "properties": {
+    "title": "peppool",
+    "traits": {
+      "eyes": "laser"
+    }
+  },
   "satpoint": "5f48e29e...e2f3:0:0",
   "timestamp": 1773570237,
   "next": "1a560cb5...2bc5i0",
@@ -441,11 +453,18 @@
                     <x-api-field name="id" type="string" description="Unique inscription identifier (<txid>i<index>)" />
                     <x-api-field name="number" type="integer" description="Sequential inscription number" />
                     <x-api-field name="address" type="string|null" description="Current owner address" />
-                    <x-api-field name="content_type" type="string" description="MIME type of the inscription content" />
-                    <x-api-field name="content_length" type="integer" description="Content size in bytes" />
+                    <x-api-field name="child_count" type="integer" description="Number of child inscriptions" />
+                    <x-api-field name="children" type="array" description="Array of child inscription IDs" />
+                    <x-api-field name="content_type" type="string|null" description="MIME type of the inscription content" />
+                    <x-api-field name="effective_content_type" type="string" description="Final resolved MIME type of the inscription (considering delegates)" />
+                    <x-api-field name="content_length" type="integer|null" description="Content size in bytes" />
+                    <x-api-field name="delegate" type="string|null" description="ID of the inscription whose content is used" />
                     <x-api-field name="fee" type="integer" description="Fee paid for the inscription transaction in ribbits" />
                     <x-api-field name="height" type="integer" description="Block height where the inscription was created" />
                     <x-api-field name="value" type="integer" description="Output value in ribbits" />
+                    <x-api-field name="parent_count" type="integer" description="Number of parent inscriptions" />
+                    <x-api-field name="parents" type="array" description="Array of parent inscription IDs" />
+                    <x-api-field name="properties" type="object|null" description="Properties (e.g. title, traits)" />
                     <x-api-field name="satpoint" type="string" description="Satpoint location (txid:vout:offset)" />
                     <x-api-field name="timestamp" type="integer" description="Unix timestamp of the inscription block" />
                     <x-api-field name="next" type="string|null" description="Next inscription ID" />
@@ -484,6 +503,28 @@
                     <div>
                         <strong class="text-red-700 text-sm block">500 Internal Error</strong>
                         <span class="text-red-600 text-xs">Unexpected server error</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+</x-layout>
+ server error</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+</x-layout>
+ceeded (15 req/min)</span>
+                    </div>
+                    <div>
+                        <strong class="text-red-700 text-sm block">500 Internal Error</strong>
+                        <span class="text-red-600 text-xs">Unexpected server error</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+</x-layout>
+ server error</span>
                     </div>
                 </div>
             </div>

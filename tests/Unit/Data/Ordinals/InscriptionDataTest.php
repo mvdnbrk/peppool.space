@@ -9,17 +9,54 @@ use Tests\TestCase;
 class InscriptionDataTest extends TestCase
 {
     #[Test]
+    public function it_can_be_instantiated_with_null_address(): void
+    {
+        $data = [
+            'id' => '5f48e29e693d92b1ba70f306b1fb4fb5a5dd2b272dd6130ab2df46ab4875e2f3i0',
+            'number' => 17212333,
+            'address' => null,
+            'child_count' => 0,
+            'children' => [],
+            'content_type' => 'image/png',
+            'effective_content_type' => 'image/png',
+            'content_length' => 793,
+            'delegate' => null,
+            'fee' => 10210000,
+            'height' => 956437,
+            'value' => 100000,
+            'parent_count' => 0,
+            'parents' => [],
+            'properties' => null,
+            'satpoint' => '5f48e29e693d92b1ba70f306b1fb4fb5a5dd2b272dd6130ab2df46ab4875e2f3:0:0',
+            'timestamp' => 1773570237,
+            'next' => null,
+            'previous' => null,
+        ];
+
+        $inscription = InscriptionData::from($data);
+
+        $this->assertNull($inscription->address);
+    }
+
+    #[Test]
     public function it_can_be_instantiated_with_null_next_or_previous(): void
     {
         $data = [
             'id' => '5f48e29e693d92b1ba70f306b1fb4fb5a5dd2b272dd6130ab2df46ab4875e2f3i0',
             'number' => 17212333,
             'address' => 'Pvkk9bUW8S4AK4cJeDDebnWJNADNCtxCHG',
+            'child_count' => 0,
+            'children' => [],
             'content_type' => 'image/png',
+            'effective_content_type' => 'image/png',
             'content_length' => 793,
+            'delegate' => null,
             'fee' => 10210000,
             'height' => 956437,
             'value' => 100000,
+            'parent_count' => 0,
+            'parents' => [],
+            'properties' => null,
             'satpoint' => '5f48e29e693d92b1ba70f306b1fb4fb5a5dd2b272dd6130ab2df46ab4875e2f3:0:0',
             'timestamp' => 1773570237,
             'next' => null,
@@ -40,11 +77,24 @@ class InscriptionDataTest extends TestCase
             'id' => '7d54dd7fecfe8d80e4f09c96cc047d994acbd84b2a05f9b1cbdc4a9b565de23ai0',
             'number' => 17256908,
             'address' => 'Pvkk9bUW8S4AK4cJeDDebnWJNADNCtxCHG',
+            'childCount' => 0,
+            'children' => [],
             'contentType' => 'text/html;charset=utf-8',
+            'effectiveContentType' => 'text/html;charset=utf-8',
             'contentLength' => 926,
             'fee' => 11690000,
             'height' => 960450,
             'value' => 100000,
+            'parentCount' => 0,
+            'parents' => [],
+            'properties' => [
+                'title' => 'Cat Head Blue',
+                'traits' => [
+                    'tribe' => 'cat',
+                    'type' => 'head',
+                    'color' => 'blue',
+                ],
+            ],
             'satpoint' => '7d54dd7fecfe8d80e4f09c96cc047d994acbd84b2a05f9b1cbdc4a9b565de23a:0:0',
             'timestamp' => 1773823195,
             'next' => 'c24aec607c8df7eee6bf9fc4b724ac6821ccf0fd134fb5a2811bb3a9fedd3afai0',
@@ -58,5 +108,6 @@ class InscriptionDataTest extends TestCase
         $this->assertEquals($data['contentLength'], $inscription->content_length);
         $this->assertEquals($data['next'], $inscription->next);
         $this->assertEquals($data['previous'], $inscription->previous);
+        $this->assertEquals('Cat Head Blue', $inscription->properties['title']);
     }
 }

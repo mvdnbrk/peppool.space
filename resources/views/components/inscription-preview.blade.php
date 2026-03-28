@@ -5,7 +5,7 @@
 
 @php
     $contentUrl = $contentUrl ?? '/content/' . $inscription->id;
-    $type = $inscription->content_type;
+    $type = $inscription->effective_content_type;
 @endphp
 
 <div {{ $attributes->merge(['class' => 'aspect-square flex items-center justify-center bg-gray-50 dark:bg-gray-800']) }}>

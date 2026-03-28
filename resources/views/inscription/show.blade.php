@@ -18,10 +18,18 @@
             <div class="space-y-6 order-2 lg:order-1">
                 <div class="bg-white dark:bg-gray-900 shadow rounded-lg border border-gray-200 dark:border-gray-700">
                     <dl class="divide-y divide-gray-200 dark:divide-gray-700">
-                        <x-description-item label="Inscription ID" :mono="true" class="flex items-center gap-1" title="{{ $inscriptionId }}">
+                        <x-description-item label="Inscription ID" :mono="true" class="flex items-center gap-1 min-w-0" title="{{ $inscriptionId }}">
                             <x-truncate-middle :value="$inscriptionId" />
                             <x-copy-to-clipboard :value="$inscriptionId" />
                         </x-description-item>
+
+                        @if($inscription->delegate)
+                            <x-description-item label="Delegate" :mono="true" class="flex items-center gap-1 min-w-0" title="{{ $inscription->delegate }}">
+                                <a href="{{ route('inscription.show', $inscription->delegate) }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex min-w-0">
+                                    <x-truncate-middle :value="$inscription->delegate" />
+                                </a>
+                            </x-description-item>
+                        @endif
 
                         <x-description-item label="Owner" :mono="true">
                             @if($inscription->address)
@@ -33,12 +41,15 @@
 
                         <x-description-item label="Content Type">
                             {{ $inscription->contentTypeForHumans() }}
-                            <span class="text-gray-400 dark:text-gray-500">({{ $inscription->content_type }})</span>
+                            <span class="text-gray-400 dark:text-gray-500">({{ $inscription->effective_content_type }})</span>
                         </x-description-item>
 
                         <x-description-item label="Content Size" :mono="true">
-                            {{ Number::fileSize($inscription->content_length) }}
-                            <span class="text-gray-400 dark:text-gray-500">({{ Number::format($inscription->content_length) }} bytes)</span>
+                            @php
+                                $contentLength = $inscription->content_length ?? 0;
+                            @endphp
+                            {{ Number::fileSize($contentLength) }}
+                            <span class="text-gray-400 dark:text-gray-500">({{ Number::format($contentLength) }} bytes)</span>
                         </x-description-item>
 
                         <x-description-item label="Creation Date">
