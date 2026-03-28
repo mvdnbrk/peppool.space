@@ -432,7 +432,6 @@
   "fee": 10210000,
   "height": 956437,
   "value": 100000,
-  "sat": null,
   "satpoint": "5f48e29e...e2f3:0:0",
   "timestamp": 1773570237,
   "next": "1a560cb5...2bc5i0",
@@ -442,17 +441,16 @@
                 <x-slot:fields>
                     <x-api-field name="id" type="string" description="Unique inscription identifier (<txid>i<index>)" />
                     <x-api-field name="number" type="integer" description="Sequential inscription number" />
-                    <x-api-field name="address" type="string" description="Current owner address" />
+                    <x-api-field name="address" type="string|null" description="Current owner address" />
                     <x-api-field name="content_type" type="string" description="MIME type of the inscription content" />
                     <x-api-field name="content_length" type="integer" description="Content size in bytes" />
                     <x-api-field name="fee" type="integer" description="Fee paid for the inscription transaction in ribbits" />
                     <x-api-field name="height" type="integer" description="Block height where the inscription was created" />
                     <x-api-field name="value" type="integer" description="Output value in ribbits" />
-                    <x-api-field name="sat" type="integer|null" description="Ordinal sat number the inscription is attached to" />
                     <x-api-field name="satpoint" type="string" description="Satpoint location (txid:vout:offset)" />
                     <x-api-field name="timestamp" type="integer" description="Unix timestamp of the inscription block" />
-                    <x-api-field name="next" type="string" description="Next inscription ID" />
-                    <x-api-field name="previous" type="string" description="Previous inscription ID" />
+                    <x-api-field name="next" type="string|null" description="Next inscription ID" />
+                    <x-api-field name="previous" type="string|null" description="Previous inscription ID" />
                 </x-slot:fields>
             </x-api-section>
 
