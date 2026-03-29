@@ -9,14 +9,9 @@
         <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
             Pepe Wallet address
         </h3>
-        <h1 class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white mb-4 break-all">
+        <h1 class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white break-all">
             {{ $address }}
         </h1>
-        @if($isMine ?? false)
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
-                Your Address
-            </span>
-        @endif
     </div>
 
     <!-- Address Stats -->
