@@ -36,6 +36,16 @@ class InscriptionDataTest extends TestCase
         $inscription = InscriptionData::from($data);
 
         $this->assertNull($inscription->address);
+        $this->assertFalse($inscription->hasTitle());
+        $this->assertFalse($inscription->hasTraits());
+        $this->assertFalse($inscription->isDelegate());
+        $this->assertNull($inscription->getTitle());
+        $this->assertFalse($inscription->hasParents());
+        $this->assertTrue($inscription->getParents()->isEmpty());
+        $this->assertFalse($inscription->hasChildren());
+        $this->assertTrue($inscription->getChildren()->isEmpty());
+        $this->assertInstanceOf(\Illuminate\Support\Collection::class, $inscription->getTraits());
+        $this->assertTrue($inscription->getTraits()->isEmpty());
     }
 
     #[Test]
@@ -50,7 +60,7 @@ class InscriptionDataTest extends TestCase
             'content_type' => 'image/png',
             'effective_content_type' => 'image/png',
             'content_length' => 793,
-            'delegate' => null,
+            'delegate' => '768e65ae997ab356aa512fee781fb276ffe08eb905778dfce54534299853a9a4i0',
             'fee' => 10210000,
             'height' => 956437,
             'value' => 100000,
@@ -66,6 +76,7 @@ class InscriptionDataTest extends TestCase
         $inscription = InscriptionData::from($data);
 
         $this->assertEquals($data['id'], $inscription->id);
+        $this->assertTrue($inscription->isDelegate());
         $this->assertNull($inscription->next);
         $this->assertNull($inscription->previous);
     }
@@ -77,16 +88,16 @@ class InscriptionDataTest extends TestCase
             'id' => '7d54dd7fecfe8d80e4f09c96cc047d994acbd84b2a05f9b1cbdc4a9b565de23ai0',
             'number' => 17256908,
             'address' => 'Pvkk9bUW8S4AK4cJeDDebnWJNADNCtxCHG',
-            'childCount' => 0,
-            'children' => [],
+            'childCount' => 1,
+            'children' => ['child_id_456'],
             'contentType' => 'text/html;charset=utf-8',
             'effectiveContentType' => 'text/html;charset=utf-8',
             'contentLength' => 926,
             'fee' => 11690000,
             'height' => 960450,
             'value' => 100000,
-            'parentCount' => 0,
-            'parents' => [],
+            'parentCount' => 1,
+            'parents' => ['parent_id_123'],
             'properties' => [
                 'title' => 'Cat Head Blue',
                 'traits' => [
@@ -109,5 +120,16 @@ class InscriptionDataTest extends TestCase
         $this->assertEquals($data['next'], $inscription->next);
         $this->assertEquals($data['previous'], $inscription->previous);
         $this->assertEquals('Cat Head Blue', $inscription->properties['title']);
+        $this->assertTrue($inscription->hasTitle());
+        $this->assertTrue($inscription->hasTraits());
+        $this->assertFalse($inscription->isDelegate());
+        $this->assertTrue($inscription->hasParents());
+        $this->assertEquals('parent_id_123', $inscription->getParents()->first());
+        $this->assertTrue($inscription->hasChildren());
+        $this->assertEquals('child_id_456', $inscription->getChildren()->first());
+        $this->assertEquals(1, $inscription->getChildCount());
+        $this->assertEquals('Cat Head Blue', $inscription->getTitle());
+        $this->assertInstanceOf(\Illuminate\Support\Collection::class, $inscription->getTraits());
+        $this->assertEquals('cat', $inscription->getTraits()->get('tribe'));
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Data\Ordinals;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Attributes\MapOutputName;
@@ -63,5 +64,55 @@ final class InscriptionData extends Data
         $baseType = Str::before($this->effective_content_type, ';');
 
         return self::CONTENT_TYPE_LABELS[$baseType] ?? Str::upper(Str::afterLast($baseType, '/'));
+    }
+
+    public function hasTitle(): bool
+    {
+        return ! empty($this->properties['title']);
+    }
+
+    public function hasTraits(): bool
+    {
+        return ! empty($this->properties['traits']) && is_array($this->properties['traits']);
+    }
+
+    public function isDelegate(): bool
+    {
+        return ! empty($this->delegate);
+    }
+
+    public function hasParents(): bool
+    {
+        return $this->parent_count > 0 && ! empty($this->parents);
+    }
+
+    public function hasChildren(): bool
+    {
+        return $this->child_count > 0 && ! empty($this->children);
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->properties['title'] ?? null;
+    }
+
+    public function getTraits(): Collection
+    {
+        return collect($this->properties['traits'] ?? []);
+    }
+
+    public function getParents(): Collection
+    {
+        return collect($this->parents);
+    }
+
+    public function getChildren(): Collection
+    {
+        return collect($this->children);
+    }
+
+    public function getChildCount(): int
+    {
+        return $this->child_count;
     }
 }
