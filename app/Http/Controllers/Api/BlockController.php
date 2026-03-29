@@ -9,8 +9,10 @@ use App\Http\Controllers\Api\Concerns\HasApiResponses;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BlockResource;
 use App\Models\Block;
+use App\Services\OrdinalsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Throwable;
 
 class BlockController extends Controller
 {
@@ -18,6 +20,7 @@ class BlockController extends Controller
 
     public function __construct(
         private readonly BlockchainServiceInterface $blockchain,
+        private readonly OrdinalsService $ordinals,
     ) {}
 
     public function tipHeight(): Response
@@ -30,6 +33,19 @@ class BlockController extends Controller
     {
         return response($this->blockchain->getBlockTipHash(), Response::HTTP_OK)
             ->header('Content-Type', 'text/plain');
+    }
+
+    public function inscriptions(string $hashOrHeight): JsonResponse
+    {
+        try {
+            if (! is_numeric($hashOrHeight)) {
+                return $this->errorResponse('bad_request', 'Block height must be numeric.', Response::HTTP_BAD_REQUEST);
+            }
+
+            return response()->json(collect($this->ordinals->getBlock((int) $hashOrHeight))->only('inscriptions'));
+        } catch (Throwable) {
+            return response()->json(['inscriptions' => []], Response::HTTP_OK);
+        }
     }
 
     public function list(?string $startHeight = null): JsonResponse

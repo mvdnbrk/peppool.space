@@ -9,6 +9,7 @@ use App\Exceptions\RpcResponseException;
 use App\Exceptions\UnsupportedOperationException;
 use App\Http\Controllers\Api\Concerns\HasApiResponses;
 use App\Http\Controllers\Controller;
+use App\Services\OrdinalsService;
 use App\Services\PepecoinExplorerService;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
@@ -23,6 +24,7 @@ class AddressController extends Controller
     public function __construct(
         private readonly PepecoinExplorerService $explorer,
         private readonly BlockchainServiceInterface $blockchain,
+        private readonly OrdinalsService $ordinals,
     ) {}
 
     public function show(string $address): JsonResponse
@@ -38,6 +40,27 @@ class AddressController extends Controller
     public function utxo(string $address): JsonResponse
     {
         return $this->handleRequest($address, fn ($addr) => response()->json($this->blockchain->getAddressUtxos($addr)));
+    }
+
+    public function inscriptions(string $address): JsonResponse
+    {
+        try {
+            $data = $this->ordinals->getAddressInscriptions($address);
+            $inscriptions = $data['inscriptions'] ?? [];
+
+            return response()->json([
+                'inscriptions' => $inscriptions,
+                'total' => count($inscriptions),
+            ]);
+        } catch (RequestException $e) {
+            if ($e->getCode() === Response::HTTP_NOT_FOUND) {
+                return response()->json(['inscriptions' => [], 'total' => 0]);
+            }
+
+            throw $e;
+        } catch (Throwable) {
+            return response()->json(['inscriptions' => [], 'total' => 0]);
+        }
     }
 
     public function validate(string $address): JsonResponse

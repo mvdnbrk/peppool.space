@@ -27,6 +27,9 @@
     <div id="address-stats" data-vue="address-stats" data-props='{ "address": "{{ $address }}" }'>
     </div>
 
+    <!-- Inscriptions -->
+    <div data-vue="inscriptions-fetcher" data-props='@json(["url" => "/api/address/{$address}/inscriptions", "poll" => true])'></div>
+
     <!-- Transactions -->
 
     <script type="application/json" id="address-transactions-data">

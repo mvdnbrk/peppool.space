@@ -67,8 +67,12 @@
                             @php
                                 $contentLength = $inscription->content_length ?? 0;
                             @endphp
-                            {{ Number::fileSize($contentLength) }}
-                            <span class="text-gray-400 dark:text-gray-500">({{ Number::format($contentLength) }} bytes)</span>
+                            @if($contentLength < 1024)
+                                {{ Number::format($contentLength) }} bytes
+                            @else
+                                {{ Number::fileSize($contentLength) }}
+                                <span class="text-gray-400 dark:text-gray-500">({{ Number::format($contentLength) }} bytes)</span>
+                            @endif
                         </x-description-item>
 
                         <x-description-item label="Creation Date">

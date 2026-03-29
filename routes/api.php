@@ -15,6 +15,7 @@ Route::middleware('throttle:15,1')->name('api.')->group(function () {
     Route::get('/blocks/tip/height', [BlockController::class, 'tipHeight'])->name('blocks.tip.height');
     Route::get('/blocks/tip/hash', [BlockController::class, 'tipHash'])->name('blocks.tip.hash');
     Route::get('/blocks/{startHeight?}', [BlockController::class, 'list'])->name('blocks.list');
+    Route::get('/blocks/{hashOrHeight}/inscriptions', [BlockController::class, 'inscriptions'])->name('blocks.inscriptions');
     Route::get('/prices', PricesController::class)->name('prices');
 
     Route::prefix('fees')->name('fees.')->group(function () {
@@ -27,6 +28,9 @@ Route::middleware('throttle:15,1')->name('api.')->group(function () {
 
     Route::get('/address/{address}/utxo', [AddressController::class, 'utxo'])
         ->name('address.utxo');
+
+    Route::get('/address/{address}/inscriptions', [AddressController::class, 'inscriptions'])
+        ->name('address.inscriptions');
 
     Route::get('/address/{address}', [AddressController::class, 'show'])
         ->name('address.show');
