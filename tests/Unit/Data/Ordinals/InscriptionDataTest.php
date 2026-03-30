@@ -3,6 +3,7 @@
 namespace Tests\Unit\Data\Ordinals;
 
 use App\Data\Ordinals\InscriptionData;
+use Illuminate\Support\Collection;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -44,7 +45,7 @@ class InscriptionDataTest extends TestCase
         $this->assertTrue($inscription->getParents()->isEmpty());
         $this->assertFalse($inscription->hasChildren());
         $this->assertTrue($inscription->getChildren()->isEmpty());
-        $this->assertInstanceOf(\Illuminate\Support\Collection::class, $inscription->getTraits());
+        $this->assertInstanceOf(Collection::class, $inscription->getTraits());
         $this->assertTrue($inscription->getTraits()->isEmpty());
     }
 
@@ -129,7 +130,7 @@ class InscriptionDataTest extends TestCase
         $this->assertEquals('child_id_456', $inscription->getChildren()->first());
         $this->assertEquals(1, $inscription->getChildCount());
         $this->assertEquals('Cat Head Blue', $inscription->getTitle());
-        $this->assertInstanceOf(\Illuminate\Support\Collection::class, $inscription->getTraits());
+        $this->assertInstanceOf(Collection::class, $inscription->getTraits());
         $this->assertEquals('cat', $inscription->getTraits()->get('tribe'));
     }
 }

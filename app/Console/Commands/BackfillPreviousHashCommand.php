@@ -38,7 +38,7 @@ class BackfillPreviousHashCommand extends Command
 
         $limit = $this->option('all') ? $remaining : (int) $this->option('limit');
 
-        $this->info("Backfilling previous_hash for {$remaining} blocks" . ($this->option('all') ? '' : " (limit: {$limit})") . '...');
+        $this->info("Backfilling previous_hash for {$remaining} blocks".($this->option('all') ? '' : " (limit: {$limit})").'...');
 
         $progressBar = $this->output->createProgressBar(min($limit, $remaining));
         $progressBar->setFormat('Backfilling: %current%/%max% [%bar%] %percent:3s%%');

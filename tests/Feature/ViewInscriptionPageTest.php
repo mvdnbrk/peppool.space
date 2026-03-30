@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Data\Ordinals\InscriptionData;
 use App\Services\OrdinalsService;
+use GuzzleHttp\Psr7\Response;
+use Illuminate\Http\Client\RequestException;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -225,8 +227,8 @@ class ViewInscriptionPageTest extends TestCase
         $ordinals->shouldReceive('getInscription')
             ->once()
             ->with($inscriptionId)
-            ->andThrow(new \Illuminate\Http\Client\RequestException(
-                new \Illuminate\Http\Client\Response(new \GuzzleHttp\Psr7\Response(404))
+            ->andThrow(new RequestException(
+                new \Illuminate\Http\Client\Response(new Response(404))
             ));
         $this->app->instance(OrdinalsService::class, $ordinals);
 
