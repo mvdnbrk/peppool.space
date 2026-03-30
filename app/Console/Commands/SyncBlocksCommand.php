@@ -43,6 +43,9 @@ class SyncBlocksCommand extends Command
             $startHeight = $this->option('from') !== null
                 ? (int) $this->option('from')
                 : (Block::max('height') ?? -1) + 1;
+
+            $startHeight = $this->handleReorg($startHeight);
+
             $limit = (int) $this->option('limit');
             $endHeight = $this->option('to') !== null
                 ? (int) $this->option('to')
@@ -77,6 +80,31 @@ class SyncBlocksCommand extends Command
         }
     }
 
+    private function handleReorg(int $startHeight): int
+    {
+        $tipHeight = $startHeight - 1;
+
+        while ($tipHeight > 0) {
+            $dbBlock = Block::find($tipHeight);
+
+            if (! $dbBlock) {
+                break;
+            }
+
+            $chainHash = $this->rpcService->getBlockHash($tipHeight);
+
+            if ($dbBlock->hash === $chainHash) {
+                break;
+            }
+
+            $this->warn("Reorg detected at height {$tipHeight}: removing orphaned block.");
+            $dbBlock->delete();
+            $tipHeight--;
+        }
+
+        return $tipHeight + 1;
+    }
+
     private function syncBatch(int $startHeight, int $endHeight, $progressBar): void
     {
         $blocksToInsert = [];
@@ -97,6 +125,7 @@ class SyncBlocksCommand extends Command
                     'height' => $height,
                     'pool_id' => $pool?->id,
                     'hash' => $blockHash,
+                    'previous_hash' => $blockData['previousblockhash'] ?? null,
                     'tx_count' => count($blockData['tx'] ?? []),
                     'size' => $blockData['size'] ?? 0,
                     'difficulty' => $blockData['difficulty'] ?? 0,
@@ -119,7 +148,7 @@ class SyncBlocksCommand extends Command
             DB::table('blocks')->upsert(
                 $blocksToInsert,
                 ['height'],
-                ['pool_id', 'hash', 'tx_count', 'size', 'difficulty', 'nonce', 'version', 'merkleroot', 'chainwork', 'auxpow', 'created_at']
+                ['pool_id', 'hash', 'previous_hash', 'tx_count', 'size', 'difficulty', 'nonce', 'version', 'merkleroot', 'chainwork', 'auxpow', 'created_at']
             );
 
             foreach ($blocksToInsert as $block) {

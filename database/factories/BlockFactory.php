@@ -14,6 +14,7 @@ class BlockFactory extends Factory
         return [
             'height' => $this->faker->unique()->numberBetween(1, 999999),
             'hash' => $this->faker->sha256(),
+            'previous_hash' => $this->faker->sha256(),
             'tx_count' => $this->faker->numberBetween(1, 100),
             'size' => $this->faker->numberBetween(1000, 50000),
             'difficulty' => $this->faker->randomFloat(8, 0.1, 1000000),
