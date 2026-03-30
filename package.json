@@ -7,18 +7,18 @@
         "dev": "vite"
     },
     "devDependencies": {
-        "@tailwindcss/vite": "^4.2.1",
+        "@tailwindcss/vite": "^4.2.2",
         "@tailwindplus/elements": "^1.0.22",
-        "@vitejs/plugin-vue": "^6.0.4",
-        "@vue/compiler-sfc": "^3.5.29",
-        "axios": "^1.13.5",
+        "@vitejs/plugin-vue": "^6.0.5",
+        "@vue/compiler-sfc": "^3.5.31",
+        "axios": "^1.14.0",
         "concurrently": "^9.2.1",
         "date-fns": "^4.1.0",
         "fslightbox": "^3.7.5",
         "laravel-vite-plugin": "^2.1.0",
         "lightweight-charts": "^5.1.0",
-        "tailwindcss": "^4.2.1",
+        "tailwindcss": "^4.2.2",
         "vite": "^7.3.1",
-        "vue": "^3.5.29"
+        "vue": "^3.5.31"
     }
 }
