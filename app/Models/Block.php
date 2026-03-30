@@ -23,6 +23,7 @@ class Block extends Model
         'height',
         'pool_id',
         'hash',
+        'previous_hash',
         'tx_count',
         'inscription_count',
         'size',

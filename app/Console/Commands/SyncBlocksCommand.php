@@ -97,6 +97,7 @@ class SyncBlocksCommand extends Command
                     'height' => $height,
                     'pool_id' => $pool?->id,
                     'hash' => $blockHash,
+                    'previous_hash' => $blockData['previousblockhash'] ?? null,
                     'tx_count' => count($blockData['tx'] ?? []),
                     'size' => $blockData['size'] ?? 0,
                     'difficulty' => $blockData['difficulty'] ?? 0,
@@ -119,7 +120,7 @@ class SyncBlocksCommand extends Command
             DB::table('blocks')->upsert(
                 $blocksToInsert,
                 ['height'],
-                ['pool_id', 'hash', 'tx_count', 'size', 'difficulty', 'nonce', 'version', 'merkleroot', 'chainwork', 'auxpow', 'created_at']
+                ['pool_id', 'hash', 'previous_hash', 'tx_count', 'size', 'difficulty', 'nonce', 'version', 'merkleroot', 'chainwork', 'auxpow', 'created_at']
             );
 
             foreach ($blocksToInsert as $block) {
