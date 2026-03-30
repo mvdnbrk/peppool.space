@@ -6,22 +6,16 @@ namespace App\Services;
 
 use App\Models\Pool;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
 
 class MiningPoolService
 {
     /** @var Collection<int, Pool>|null */
     private ?Collection $pools = null;
 
-    /**
-     * Get pools, preferably from local memory or cache.
-     */
     private function getPools(): Collection
     {
         if ($this->pools === null) {
-            $this->pools = Cache::remember('mining_pools_list', 3600, function () {
-                return Pool::all();
-            });
+            $this->pools = Pool::all();
         }
 
         return $this->pools;
@@ -109,14 +103,7 @@ class MiningPoolService
 
             $pool->update(['addresses' => $addresses]);
 
-            // Refresh local memory and global cache
-            $this->clearCache();
+            $this->pools = null;
         }
-    }
-
-    public function clearCache(): void
-    {
-        Cache::forget('mining_pools_list');
-        $this->pools = null;
     }
 }
