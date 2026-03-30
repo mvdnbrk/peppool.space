@@ -8,6 +8,7 @@ use App\Data\Ordinals\InscriptionData;
 use App\Jobs\FetchBlockInscriptions;
 use App\Models\Inscription;
 use Illuminate\Console\Command;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Pool;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -67,7 +68,7 @@ class BackfillInscriptionsCommand extends Command
             foreach ($numbers as $number) {
                 $response = $responses[(string) $number];
 
-                if (! $response->ok()) {
+                if ($response instanceof ConnectionException || ! $response->ok()) {
                     $batchFailed++;
 
                     continue;
