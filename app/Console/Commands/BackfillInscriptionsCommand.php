@@ -205,7 +205,15 @@ class BackfillInscriptionsCommand extends Command
         foreach ($numbers as $number) {
             $response = $responses[(string) $number];
 
-            if ($response instanceof ConnectionException || ! $response->ok()) {
+            if ($response instanceof ConnectionException) {
+                $this->logFailed($number, 'connection_error');
+                $failed[] = $number;
+
+                continue;
+            }
+
+            if (! $response->ok()) {
+                $this->logFailed($number, "http_{$response->status()}");
                 $failed[] = $number;
 
                 continue;
@@ -214,7 +222,8 @@ class BackfillInscriptionsCommand extends Command
             try {
                 $data = InscriptionData::from($response->json());
                 $successful[] = FetchBlockInscriptions::mapToRow($data);
-            } catch (\Throwable) {
+            } catch (\Throwable $e) {
+                $this->logFailed($number, 'parse_error: '.$e->getMessage());
                 $failed[] = $number;
             }
         }
@@ -260,5 +269,11 @@ class BackfillInscriptionsCommand extends Command
         }
 
         $this->info("Retried: {$retried}/".count($failedNumbers).' recovered.');
+    }
+
+    private function logFailed(int $number, string $reason): void
+    {
+        $line = date('Y-m-d H:i:s')." #{$number} {$reason}\n";
+        file_put_contents(storage_path('logs/backfill-failed.log'), $line, FILE_APPEND);
     }
 }
