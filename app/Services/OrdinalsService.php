@@ -80,6 +80,24 @@ class OrdinalsService
         return count($this->getBlock($height)['inscriptions'] ?? []);
     }
 
+    public function getBlockInscriptionIds(int $height): array
+    {
+        return Http::acceptJson()
+            ->timeout(config('pepecoin.ordinals.timeout', 10))
+            ->get("{$this->url}/inscriptions/block/{$height}")
+            ->throw()
+            ->json('ids', []);
+    }
+
+    public function getInscriptionByNumber(int $number): array
+    {
+        return Http::acceptJson()
+            ->timeout(config('pepecoin.ordinals.timeout', 10))
+            ->get("{$this->url}/inscription/{$number}")
+            ->throw()
+            ->json();
+    }
+
     public function getContent(string $inscriptionId): Response
     {
         return Http::withHeaders([

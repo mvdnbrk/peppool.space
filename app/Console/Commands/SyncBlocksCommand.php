@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Jobs\FetchBlockInscriptionCount;
+use App\Jobs\FetchBlockInscriptions;
 use App\Models\Block;
 use App\Services\MiningPoolService;
 use App\Services\PepecoinRpcService;
@@ -153,6 +154,7 @@ class SyncBlocksCommand extends Command
 
             foreach ($blocksToInsert as $block) {
                 FetchBlockInscriptionCount::dispatch($block['height']);
+                FetchBlockInscriptions::dispatch($block['height']);
             }
         }
     }
