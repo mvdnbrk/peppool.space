@@ -15,10 +15,10 @@
         "concurrently": "^9.2.1",
         "date-fns": "^4.1.0",
         "fslightbox": "^3.7.5",
-        "laravel-vite-plugin": "^2.1.0",
+        "laravel-vite-plugin": "^3.0.0",
         "lightweight-charts": "^5.1.0",
         "tailwindcss": "^4.2.2",
-        "vite": "^7.3.1",
+        "vite": "^8.0.3",
         "vue": "^3.5.31"
     }
 }
