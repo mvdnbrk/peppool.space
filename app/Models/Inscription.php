@@ -27,9 +27,9 @@ class Inscription extends Model
 
     public const FLAG_HAS_TRAITS = 32;
 
-    public const FLAG_BROTLI_ENCODED = 64;
+    public const FLAG_HAS_CHILDREN = 64;
 
-    public const FLAG_HAS_CHILDREN = 128;
+    public const FLAG_HAS_RECURSION = 128;
 
     public const FLAG_CONTENT_STORED = 256;
 

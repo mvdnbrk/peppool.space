@@ -72,15 +72,6 @@ class FetchBlockInscriptions implements ShouldQueue
      */
     public static function mapToRow($data): array
     {
-        $contentType = $data->content_type
-            ? strtolower(trim(explode(';', $data->content_type)[0]))
-            : null;
-
-        $contentEncoding = null;
-        if ($data->content_type && str_contains($data->content_type, 'charset=')) {
-            $contentEncoding = trim(explode('charset=', $data->content_type)[1] ?? '');
-        }
-
         $flags = 0;
 
         if ($data->parent_count > 1) {
@@ -104,8 +95,8 @@ class FetchBlockInscriptions implements ShouldQueue
             'inscription_id' => $data->id,
             'parent_id' => $data->parents[0] ?? null,
             'delegate_id' => $data->delegate,
-            'content_encoding' => $contentEncoding,
-            'content_type' => $contentType,
+            'content_encoding' => null,
+            'content_type' => $data->content_type,
             'content_length' => $data->content_length,
             'content' => null,
             'properties' => ! empty($data->properties) ? json_encode($data->properties) : null,
