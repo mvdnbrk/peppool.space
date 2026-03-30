@@ -26,6 +26,14 @@ class BackfillInscriptionsCommand extends Command
 
     private bool $shouldStop = false;
 
+    private string $url;
+
+    private int $timeout;
+
+    private int $concurrency;
+
+    private int $batchSize;
+
     public function handle(): int
     {
         $this->trap([SIGINT, SIGTERM], function () {
@@ -33,6 +41,11 @@ class BackfillInscriptionsCommand extends Command
             $this->newLine();
             $this->warn('Received shutdown signal. Finishing current batch...');
         });
+
+        $this->url = rtrim(config('pepecoin.ordinals.url'), '/');
+        $this->timeout = config('pepecoin.ordinals.timeout', 10);
+        $this->concurrency = (int) $this->option('concurrency');
+        $this->batchSize = (int) $this->option('batch');
 
         if ($this->option('fill-gaps')) {
             return $this->fillGaps();
@@ -43,10 +56,6 @@ class BackfillInscriptionsCommand extends Command
 
     private function backfill(): int
     {
-        $url = rtrim(config('pepecoin.ordinals.url'), '/');
-        $timeout = config('pepecoin.ordinals.timeout', 10);
-        $concurrency = (int) $this->option('concurrency');
-        $batchSize = (int) $this->option('batch');
         $limit = (int) $this->option('limit');
 
         $current = $this->option('from') !== null
@@ -57,22 +66,22 @@ class BackfillInscriptionsCommand extends Command
         $rows = [];
         $failedNumbers = [];
 
-        $this->info("Starting backfill from inscription #{$current} (concurrency: {$concurrency})");
+        $this->info("Starting backfill from inscription #{$current} (concurrency: {$this->concurrency})");
 
         while (! $this->shouldStop && ($limit === 0 || $imported < $limit)) {
             $chunkSize = $limit > 0
-                ? min($concurrency, $limit - $imported)
-                : $concurrency;
+                ? min($this->concurrency, $limit - $imported)
+                : $this->concurrency;
 
             $numbers = range($current, $current + $chunkSize - 1);
 
-            [$successful, $failed] = $this->fetchBatch($numbers, $url, $timeout, $concurrency);
+            [$successful, $failed] = $this->fetchBatch($numbers);
 
             $rows = array_merge($rows, $successful);
             $failedNumbers = array_merge($failedNumbers, $failed);
             $imported += count($successful);
 
-            if (count($rows) >= $batchSize) {
+            if (count($rows) >= $this->batchSize) {
                 DB::table('inscriptions')->upsert($rows, ['id'], array_keys($rows[0]));
                 $rows = [];
             }
@@ -84,7 +93,7 @@ class BackfillInscriptionsCommand extends Command
                 break;
             }
 
-            if ($imported % 1000 < $concurrency) {
+            if ($imported % 1000 < $this->concurrency) {
                 $this->output->write("\r  Imported: {$imported} | Current: #{$current} | Failed: ".count($failedNumbers));
             }
         }
@@ -95,7 +104,7 @@ class BackfillInscriptionsCommand extends Command
 
         if (! empty($failedNumbers) && ! $this->shouldStop) {
             $this->newLine();
-            $this->retryFailed($failedNumbers, $url, $timeout);
+            $this->retryFailed($failedNumbers);
         }
 
         $this->newLine();
@@ -106,11 +115,6 @@ class BackfillInscriptionsCommand extends Command
 
     private function fillGaps(): int
     {
-        $url = rtrim(config('pepecoin.ordinals.url'), '/');
-        $timeout = config('pepecoin.ordinals.timeout', 10);
-        $concurrency = (int) $this->option('concurrency');
-        $batchSize = (int) $this->option('batch');
-
         $maxId = (int) Inscription::max('id');
 
         if ($maxId === 0) {
@@ -121,44 +125,50 @@ class BackfillInscriptionsCommand extends Command
 
         $this->info("Scanning for gaps in inscriptions 0..{$maxId}");
 
-        $existing = Inscription::orderBy('id')->pluck('id')->flip();
-        $missing = [];
-
-        for ($i = 0; $i <= $maxId; $i++) {
-            if (! $existing->has($i)) {
-                $missing[] = $i;
-            }
-        }
-
-        if (empty($missing)) {
-            $this->info('No gaps found.');
-
-            return self::SUCCESS;
-        }
-
-        $this->info('Found '.count($missing).' missing inscriptions. Fetching...');
-
+        $scanChunkSize = 10000;
         $imported = 0;
+        $totalMissing = 0;
         $rows = [];
         $failedNumbers = [];
 
-        foreach (array_chunk($missing, $concurrency) as $chunk) {
-            if ($this->shouldStop) {
-                break;
+        for ($rangeStart = 0; $rangeStart <= $maxId && ! $this->shouldStop; $rangeStart += $scanChunkSize) {
+            $rangeEnd = min($rangeStart + $scanChunkSize - 1, $maxId);
+
+            $existing = Inscription::whereBetween('id', [$rangeStart, $rangeEnd])
+                ->pluck('id')
+                ->flip();
+
+            $missing = [];
+            for ($i = $rangeStart; $i <= $rangeEnd; $i++) {
+                if (! $existing->has($i)) {
+                    $missing[] = $i;
+                }
             }
 
-            [$successful, $failed] = $this->fetchBatch($chunk, $url, $timeout, $concurrency);
-
-            $rows = array_merge($rows, $successful);
-            $failedNumbers = array_merge($failedNumbers, $failed);
-            $imported += count($successful);
-
-            if (count($rows) >= $batchSize) {
-                DB::table('inscriptions')->upsert($rows, ['id'], array_keys($rows[0]));
-                $rows = [];
+            if (empty($missing)) {
+                continue;
             }
 
-            $this->output->write("\r  Filled: {$imported}/".count($missing).' | Failed: '.count($failedNumbers));
+            $totalMissing += count($missing);
+
+            foreach (array_chunk($missing, $this->concurrency) as $chunk) {
+                if ($this->shouldStop) {
+                    break;
+                }
+
+                [$successful, $failed] = $this->fetchBatch($chunk);
+
+                $rows = array_merge($rows, $successful);
+                $failedNumbers = array_merge($failedNumbers, $failed);
+                $imported += count($successful);
+
+                if (count($rows) >= $this->batchSize) {
+                    DB::table('inscriptions')->upsert($rows, ['id'], array_keys($rows[0]));
+                    $rows = [];
+                }
+
+                $this->output->write("\r  Scanning: {$rangeStart}..{$rangeEnd} | Filled: {$imported} | Failed: ".count($failedNumbers));
+            }
         }
 
         if (! empty($rows)) {
@@ -167,11 +177,11 @@ class BackfillInscriptionsCommand extends Command
 
         if (! empty($failedNumbers) && ! $this->shouldStop) {
             $this->newLine();
-            $this->retryFailed($failedNumbers, $url, $timeout);
+            $this->retryFailed($failedNumbers);
         }
 
         $this->newLine();
-        $this->info("Done. Filled {$imported} gaps.");
+        $this->info("Done. Found {$totalMissing} gaps, filled {$imported}.");
 
         return self::SUCCESS;
     }
@@ -180,14 +190,14 @@ class BackfillInscriptionsCommand extends Command
      * @param  int[]  $numbers
      * @return array{0: array<array<string, mixed>>, 1: int[]}
      */
-    private function fetchBatch(array $numbers, string $url, int $timeout, int $concurrency): array
+    private function fetchBatch(array $numbers): array
     {
         $responses = Http::pool(fn (Pool $pool) => collect($numbers)->map(
             fn (int $n) => $pool->as((string) $n)
                 ->acceptJson()
-                ->timeout($timeout)
-                ->get("{$url}/inscription/{$n}")
-        )->all(), concurrency: $concurrency);
+                ->timeout($this->timeout)
+                ->get("{$this->url}/inscription/{$n}")
+        )->all(), concurrency: $this->concurrency);
 
         $successful = [];
         $failed = [];
@@ -215,7 +225,7 @@ class BackfillInscriptionsCommand extends Command
     /**
      * @param  int[]  $failedNumbers
      */
-    private function retryFailed(array $failedNumbers, string $url, int $timeout): void
+    private function retryFailed(array $failedNumbers): void
     {
         $this->info('Retrying '.count($failedNumbers).' failed inscriptions individually...');
 
@@ -229,9 +239,9 @@ class BackfillInscriptionsCommand extends Command
 
             try {
                 $response = Http::acceptJson()
-                    ->timeout($timeout)
+                    ->timeout($this->timeout)
                     ->retry(3, 1000)
-                    ->get("{$url}/inscription/{$number}");
+                    ->get("{$this->url}/inscription/{$number}");
 
                 if (! $response->ok()) {
                     continue;
