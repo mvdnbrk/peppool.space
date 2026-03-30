@@ -3,11 +3,13 @@
 .env
 .env.backup
 .env.production
+.mcp.json
 .phpactor.json
 .phpunit.result.cache
 
 /.ai
 /.agents
+/.claude
 /.fleet
 /.gemini
 /.idea
@@ -24,6 +26,7 @@
 /storage/pail
 /vendor
 boost.json
+CLAUDE.md
 GEMINI.md
 Homestead.json
 Homestead.yaml
