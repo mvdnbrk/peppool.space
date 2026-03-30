@@ -43,6 +43,9 @@ class SyncBlocksCommand extends Command
             $startHeight = $this->option('from') !== null
                 ? (int) $this->option('from')
                 : (Block::max('height') ?? -1) + 1;
+
+            $startHeight = $this->handleReorg($startHeight);
+
             $limit = (int) $this->option('limit');
             $endHeight = $this->option('to') !== null
                 ? (int) $this->option('to')
@@ -75,6 +78,31 @@ class SyncBlocksCommand extends Command
 
             return self::FAILURE;
         }
+    }
+
+    private function handleReorg(int $startHeight): int
+    {
+        $tipHeight = $startHeight - 1;
+
+        while ($tipHeight > 0) {
+            $dbBlock = Block::find($tipHeight);
+
+            if (! $dbBlock) {
+                break;
+            }
+
+            $chainHash = $this->rpcService->getBlockHash($tipHeight);
+
+            if ($dbBlock->hash === $chainHash) {
+                break;
+            }
+
+            $this->warn("Reorg detected at height {$tipHeight}: removing orphaned block.");
+            $dbBlock->delete();
+            $tipHeight--;
+        }
+
+        return $tipHeight + 1;
     }
 
     private function syncBatch(int $startHeight, int $endHeight, $progressBar): void
