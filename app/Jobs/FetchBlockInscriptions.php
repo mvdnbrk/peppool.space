@@ -6,6 +6,7 @@ namespace App\Jobs;
 
 use App\Data\Ordinals\InscriptionData;
 use App\Models\Inscription;
+use App\Services\InscriptionContentParser;
 use App\Services\OrdinalsService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,6 +19,8 @@ class FetchBlockInscriptions implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable;
 
+    private const MAX_CONTENT_LENGTH = 512;
+
     public int $tries = 3;
 
     public int $backoff = 10;
@@ -26,7 +29,7 @@ class FetchBlockInscriptions implements ShouldQueue
         public readonly int $height,
     ) {}
 
-    public function handle(OrdinalsService $ordinals): void
+    public function handle(OrdinalsService $ordinals, InscriptionContentParser $parser): void
     {
         try {
             $inscriptionIds = $ordinals->getBlockInscriptionIds($this->height);
@@ -55,7 +58,16 @@ class FetchBlockInscriptions implements ShouldQueue
 
             try {
                 $data = $ordinals->getInscription($inscriptionId);
-                $rows[] = self::mapToRow($data);
+                $row = self::mapToRow($data);
+
+                if (self::shouldFetchContent($data)) {
+                    $content = $ordinals->getContent($inscriptionId)->body();
+                    $parsed = $parser->parse($data->content_type, $content);
+                    $row['content'] = $content;
+                    $row['flags'] |= $parsed['flags'];
+                }
+
+                $rows[] = $row;
             } catch (RequestException) {
                 continue;
             }
@@ -64,6 +76,21 @@ class FetchBlockInscriptions implements ShouldQueue
         if (! empty($rows)) {
             DB::table('inscriptions')->upsert($rows, ['id'], array_keys($rows[0]));
         }
+    }
+
+    public static function shouldFetchContent(InscriptionData $data): bool
+    {
+        if ($data->content_length === null || $data->content_length > self::MAX_CONTENT_LENGTH) {
+            return false;
+        }
+
+        if ($data->content_type === null) {
+            return false;
+        }
+
+        $type = strtolower(explode(';', $data->content_type)[0]);
+
+        return str_starts_with($type, 'text/') || $type === 'application/json';
     }
 
     /**
