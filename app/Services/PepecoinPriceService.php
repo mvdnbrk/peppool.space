@@ -18,24 +18,24 @@ class PepecoinPriceService
 
     public function getPrices(): Collection
     {
-        return Cache::remember(
+        $data = Cache::remember(
             $this->getCacheKey(__FUNCTION__),
             Carbon::now()->addSeconds($this->priceCacheTtl),
-            function (): Collection {
+            function (): array {
                 $prices = Price::whereIn('currency', ['EUR', 'USD'])
                     ->latest()
                     ->take(2)
                     ->get();
 
-                $result = $prices->isNotEmpty()
+                return $prices->isNotEmpty()
                     ? $prices->pluck('price', 'currency')
                         ->merge(['timestamp' => $prices->first()->created_at->timestamp])
                         ->toArray()
                     : ['EUR' => 0, 'USD' => 0, 'timestamp' => time()];
-
-                return new Collection($result);
             }
         );
+
+        return new Collection($data);
     }
 
     public function getTotalSupply(): int
