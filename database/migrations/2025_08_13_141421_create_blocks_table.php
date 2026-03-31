@@ -11,7 +11,9 @@ class CreateBlocksTable extends Migration
         Schema::create('blocks', function (Blueprint $table) {
             $table->unsignedInteger('height')->primary();
             $table->string('hash', 64)->unique();
+            $table->string('previous_hash', 64)->nullable();
             $table->integer('tx_count');
+            $table->unsignedInteger('inscription_count')->nullable();
             $table->unsignedInteger('size');
             $table->decimal('difficulty', 20, 8);
             $table->unsignedInteger('nonce');
