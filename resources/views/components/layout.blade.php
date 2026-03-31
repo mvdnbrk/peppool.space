@@ -44,5 +44,7 @@
 
     <!-- Floating Theme Toggle -->
     <x-theme-toggle />
+
+    @stack('scripts')
 </body>
 </html>

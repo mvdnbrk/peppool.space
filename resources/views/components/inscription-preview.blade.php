@@ -29,6 +29,18 @@
             class="w-full h-full border-0"
             loading="lazy"
         ></iframe>
+    @elseif(str_starts_with($type, 'model/gltf'))
+        <model-viewer
+            src="{{ $contentUrl }}"
+            alt="Inscription #{{ number_format($inscription->number) }}"
+            auto-rotate
+            camera-controls
+            class="w-full h-full"
+            style="min-height: 100%;"
+        ></model-viewer>
+        @pushOnce('scripts')
+            <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+        @endPushOnce
     @elseif(str_starts_with($type, 'audio/'))
         <audio controls src="{{ $contentUrl }}" class="w-3/4"></audio>
     @elseif(str_starts_with($type, 'video/'))
