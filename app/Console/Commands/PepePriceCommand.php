@@ -10,13 +10,13 @@ class PepePriceCommand extends Command
 {
     protected $signature = 'pepe:price';
 
-    protected $description = 'Show the current PEPE price';
+    protected $description = 'Fetch and store the current PEPE price';
 
-    public function handle()
+    public function handle(): void
     {
         FetchPepePrice::dispatchSync();
 
-        $this->info('The current PEPE price in USD is '.Cache::get('pepecoin_price_usd', default: 'unknown'));
-        $this->info('The current PEPE price in EUR is '.Cache::get('pepecoin_price_eur', default: 'unknown'));
+        $this->info('USD: '.Cache::get('pepecoin_price_usd', 'unknown'));
+        $this->info('EUR: '.Cache::get('pepecoin_price_eur', 'unknown'));
     }
 }

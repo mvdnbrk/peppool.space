@@ -2,8 +2,10 @@
 
 namespace App\Jobs;
 
+use App\Models\Price;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -32,11 +34,33 @@ class FetchPepePrice implements ShouldQueue
         $response = Http::acceptJson()
             ->get($this->apiUrl);
 
-        if ($response->successful()) {
-            $data = $response->json('pepecoin-network');
-            foreach ($this->currencies as $currency) {
-                Cache::put("pepecoin_price_{$currency}", (float) $data[$currency], 3600);
-            }
+        if (! $response->successful()) {
+            return;
         }
+
+        $data = $response->json('pepecoin-network');
+        $timestamp = $this->getRoundedTimestamp();
+
+        foreach ($this->currencies as $currency) {
+            $price = (float) $data[$currency];
+
+            Cache::put("pepecoin_price_{$currency}", $price, 3600);
+
+            Price::updateOrCreate([
+                'currency' => Str::upper($currency),
+                'created_at' => $timestamp,
+            ], [
+                'price' => $price,
+            ]);
+        }
+    }
+
+    private function getRoundedTimestamp(): Carbon
+    {
+        return Carbon::now()
+            ->startOfHour()
+            ->addMinutes(
+                15 * floor(Carbon::now()->minute / 15)
+            );
     }
 }
