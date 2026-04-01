@@ -9,7 +9,9 @@
 @endphp
 
 <div {{ $attributes->merge(['class' => 'aspect-square flex items-center justify-center bg-gray-50 dark:bg-gray-800']) }}>
-    @if(str_starts_with($type, 'image/'))
+    @if(! $inscription->hasContent())
+        <span class="text-gray-400 dark:text-gray-500 text-sm">No content</span>
+    @elseif(str_starts_with($type, 'image/'))
         <img
             src="{{ $contentUrl }}"
             alt="Inscription #{{ number_format($inscription->number) }}"

@@ -60,6 +60,11 @@ final class InscriptionData extends Data
         public ?string $previous,
     ) {}
 
+    public function hasContent(): bool
+    {
+        return $this->content_length !== null;
+    }
+
     public function contentTypeForHumans(): string
     {
         $baseType = Str::before($this->effective_content_type, ';');
