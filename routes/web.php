@@ -14,7 +14,6 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SponsorController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WalletController;
-use Illuminate\Http\Middleware\FrameGuard;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 
@@ -53,8 +52,7 @@ Route::get('/inscription/{inscriptionId}', [InscriptionController::class, 'show'
 
 Route::get('/content/{inscriptionId}', [InscriptionController::class, 'content'])
     ->name('inscription.content')
-    ->where('inscriptionId', '[0-9a-fA-F]{64}i\d+')
-    ->withoutMiddleware(FrameGuard::class);
+    ->where('inscriptionId', '[0-9a-fA-F]{64}i\d+');
 
 Route::get('/docs/api', [DocumentationController::class, 'api'])
     ->name('docs.api');
