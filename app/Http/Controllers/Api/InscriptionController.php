@@ -24,6 +24,7 @@ class InscriptionController extends Controller
     public function index(): JsonResponse
     {
         $paginator = Inscription::query()
+            ->whereNotNull('content_length')
             ->where(function ($query) {
                 $query->where('content_type', 'like', 'image/%')
                     ->orWhere('content_type', 'like', 'text/html%');
