@@ -102,6 +102,20 @@
                     </div>
                 @endif
 
+                @if(count($references) > 0)
+                    <div class="bg-white dark:bg-gray-900 shadow rounded-lg border border-gray-200 dark:border-gray-700">
+                        <dl class="divide-y divide-gray-200 dark:divide-gray-700">
+                            @foreach($references as $referenceId)
+                                <x-description-item :label="count($references) . ' Recursive ' . Str::plural('Module', count($references))" :mono="true" class="flex items-center gap-1 min-w-0" title="{{ $referenceId }}">
+                                    <a href="{{ route('inscription.show', $referenceId) }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex min-w-0">
+                                        <x-truncate-middle :value="$referenceId" />
+                                    </a>
+                                </x-description-item>
+                            @endforeach
+                        </dl>
+                    </div>
+                @endif
+
                 @if($inscription->hasTraits())
                     <div class="bg-white dark:bg-gray-900 shadow rounded-lg border border-gray-200 dark:border-gray-700">
                         <div class="px-6 py-3 border-b border-gray-200 dark:border-gray-700">
