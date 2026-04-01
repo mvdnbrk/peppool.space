@@ -63,7 +63,11 @@ class FetchBlockInscriptions implements ShouldQueue
                 if (self::shouldFetchContent($data)) {
                     $content = $ordinals->getContent($inscriptionId)->body();
                     $parsed = $parser->parse($data->content_type, $content);
-                    $row['content'] = mb_check_encoding($content, 'UTF-8') ? $content : null;
+                    if (mb_check_encoding($content, 'UTF-8')) {
+                        $row['content'] = $content;
+                    } else {
+                        $row['flags'] |= Inscription::FLAG_GARBAGE;
+                    }
                     $row['flags'] |= $parsed['flags'];
                 }
 
@@ -117,18 +121,34 @@ class FetchBlockInscriptions implements ShouldQueue
             $flags |= Inscription::FLAG_HAS_TRAITS;
         }
 
+        $contentType = self::sanitizeUtf8($data->content_type);
+        $contentEncoding = self::sanitizeUtf8($data->content_encoding ?? null);
+
+        if ($contentType !== $data->content_type || $contentEncoding !== ($data->content_encoding ?? null)) {
+            $flags |= Inscription::FLAG_GARBAGE;
+        }
+
         return [
             'id' => $data->number,
             'inscription_id' => $data->id,
             'parent_id' => $data->parents[0] ?? null,
             'delegate_id' => $data->delegate,
-            'content_encoding' => null,
-            'content_type' => $data->content_type,
+            'content_encoding' => $contentEncoding,
+            'content_type' => $contentType,
             'content_length' => $data->content_length,
             'content' => null,
             'properties' => ! empty($data->properties) ? json_encode($data->properties) : null,
             'flags' => $flags,
             'block' => $data->height,
         ];
+    }
+
+    private static function sanitizeUtf8(?string $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        return mb_check_encoding($value, 'UTF-8') ? $value : null;
     }
 }

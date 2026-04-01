@@ -35,6 +35,8 @@ class Inscription extends Model
 
     public const FLAG_ANALYZED = 512;
 
+    public const FLAG_GARBAGE = 1024;
+
     public $incrementing = false;
 
     public $timestamps = false;

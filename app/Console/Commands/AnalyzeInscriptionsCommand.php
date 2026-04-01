@@ -62,7 +62,7 @@ class AnalyzeInscriptionsCommand extends Command
         }
 
         $processed = 0;
-        $stats = ['pepemap' => 0, 'prc20_valid' => 0, 'prc20_invalid' => 0, 'other' => 0, 'failed' => 0];
+        $stats = ['pepemap' => 0, 'prc20_valid' => 0, 'prc20_invalid' => 0, 'other' => 0, 'garbage' => 0, 'failed' => 0];
 
         $query->chunk($batchSize, function ($inscriptions) use (
             $parser, $url, $timeout, $concurrency,
@@ -105,10 +105,18 @@ class AnalyzeInscriptionsCommand extends Command
                         $stats['other']++;
                     }
 
+                    $isGarbage = ! mb_check_encoding($content, 'UTF-8');
+                    $flags = $inscription->flags | $parsed['flags'];
+
+                    if ($isGarbage) {
+                        $flags |= Inscription::FLAG_GARBAGE;
+                        $stats['garbage']++;
+                    }
+
                     $updates[] = [
                         'id' => $inscription->id,
-                        'content' => mb_check_encoding($content, 'UTF-8') ? $content : null,
-                        'flags' => $inscription->flags | $parsed['flags'],
+                        'content' => $isGarbage ? null : $content,
+                        'flags' => $flags,
                     ];
                 }
 
@@ -121,7 +129,7 @@ class AnalyzeInscriptionsCommand extends Command
                 }
 
                 $processed += $chunk->count();
-                $this->output->write("\r  Progress: {$processed}/{$total} | Pepemap: {$stats['pepemap']} | PRC-20 valid: {$stats['prc20_valid']} | PRC-20 invalid: {$stats['prc20_invalid']} | Other: {$stats['other']} | Failed: {$stats['failed']}");
+                $this->output->write("\r  Progress: {$processed}/{$total} | Pepemap: {$stats['pepemap']} | PRC-20 valid: {$stats['prc20_valid']} | PRC-20 invalid: {$stats['prc20_invalid']} | Other: {$stats['other']} | Garbage: {$stats['garbage']} | Failed: {$stats['failed']}");
             }
         });
 
