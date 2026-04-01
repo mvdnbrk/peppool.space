@@ -23,15 +23,18 @@
             <div class="space-y-6 order-2 lg:order-1">
                 @if($inscription->hasParents())
                     <div class="bg-white dark:bg-gray-900 shadow rounded-lg border border-gray-200 dark:border-gray-700">
-                        <dl class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <div class="px-6 py-3 border-b border-gray-200 dark:border-gray-700">
+                            <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ Str::plural('Parent Inscription', $inscription->getParents()->count()) }}</h2>
+                        </div>
+                        <ul class="divide-y divide-gray-200 dark:divide-gray-700">
                             @foreach($inscription->getParents() as $parentId)
-                                <x-description-item :label="Str::plural('Parent Inscription', $inscription->getParents()->count())" :mono="true" class="flex items-center gap-1 min-w-0" title="{{ $parentId }}">
+                                <li class="px-6 py-3 font-mono text-sm flex items-center gap-1 min-w-0" title="{{ $parentId }}">
                                     <a href="{{ route('inscription.show', $parentId) }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex min-w-0">
                                         <x-truncate-middle :value="$parentId" />
                                     </a>
-                                </x-description-item>
+                                </li>
                             @endforeach
-                        </dl>
+                        </ul>
                     </div>
                 @endif
 
@@ -90,29 +93,35 @@
 
                 @if($inscription->hasChildren())
                     <div class="bg-white dark:bg-gray-900 shadow rounded-lg border border-gray-200 dark:border-gray-700">
-                        <dl class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <div class="px-6 py-3 border-b border-gray-200 dark:border-gray-700">
+                            <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ number_format($inscription->getChildCount()) }} {{ Str::plural('Child Inscription', $inscription->getChildCount()) }}</h2>
+                        </div>
+                        <ul class="divide-y divide-gray-200 dark:divide-gray-700">
                             @foreach($inscription->getChildren() as $childId)
-                                <x-description-item :label="number_format($inscription->getChildCount()) . ' ' . Str::plural('Child Inscription', $inscription->getChildCount())" :mono="true" class="flex items-center gap-1 min-w-0" title="{{ $childId }}">
+                                <li class="px-6 py-3 font-mono text-sm flex items-center gap-1 min-w-0" title="{{ $childId }}">
                                     <a href="{{ route('inscription.show', $childId) }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex min-w-0">
                                         <x-truncate-middle :value="$childId" />
                                     </a>
-                                </x-description-item>
+                                </li>
                             @endforeach
-                        </dl>
+                        </ul>
                     </div>
                 @endif
 
                 @if(count($references) > 0)
                     <div class="bg-white dark:bg-gray-900 shadow rounded-lg border border-gray-200 dark:border-gray-700">
-                        <dl class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <div class="px-6 py-3 border-b border-gray-200 dark:border-gray-700">
+                            <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ count($references) }} Recursive {{ Str::plural('Module', count($references)) }}</h2>
+                        </div>
+                        <ul class="divide-y divide-gray-200 dark:divide-gray-700">
                             @foreach($references as $referenceId)
-                                <x-description-item :label="count($references) . ' Recursive ' . Str::plural('Module', count($references))" :mono="true" class="flex items-center gap-1 min-w-0" title="{{ $referenceId }}">
+                                <li class="px-6 py-3 font-mono text-sm flex items-center gap-1 min-w-0" title="{{ $referenceId }}">
                                     <a href="{{ route('inscription.show', $referenceId) }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex min-w-0">
                                         <x-truncate-middle :value="$referenceId" />
                                     </a>
-                                </x-description-item>
+                                </li>
                             @endforeach
-                        </dl>
+                        </ul>
                     </div>
                 @endif
 
