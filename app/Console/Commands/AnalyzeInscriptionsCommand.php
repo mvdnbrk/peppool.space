@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Models\Inscription;
-use App\Services\InscriptionContentParser;
+use App\Services\Inscriptions\InscriptionClassificationParser;
 use Illuminate\Console\Command;
 use Illuminate\Http\Client\Pool;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +23,7 @@ class AnalyzeInscriptionsCommand extends Command
 
     private bool $shouldStop = false;
 
-    public function handle(InscriptionContentParser $parser): int
+    public function handle(InscriptionClassificationParser $parser): int
     {
         $this->trap([SIGINT, SIGTERM], function () {
             $this->shouldStop = true;

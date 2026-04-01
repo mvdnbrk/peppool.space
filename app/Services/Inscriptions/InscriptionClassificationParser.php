@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Services\Inscriptions;
 
 use App\Models\Inscription;
 
-class InscriptionContentParser
+class InscriptionClassificationParser
 {
     private const UINT64_MAX = '18446744073709551615';
 

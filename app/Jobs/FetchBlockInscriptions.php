@@ -6,7 +6,7 @@ namespace App\Jobs;
 
 use App\Data\Ordinals\InscriptionData;
 use App\Models\Inscription;
-use App\Services\InscriptionContentParser;
+use App\Services\Inscriptions\InscriptionClassificationParser;
 use App\Services\OrdinalsService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -29,7 +29,7 @@ class FetchBlockInscriptions implements ShouldQueue
         public readonly int $height,
     ) {}
 
-    public function handle(OrdinalsService $ordinals, InscriptionContentParser $parser): void
+    public function handle(OrdinalsService $ordinals, InscriptionClassificationParser $parser): void
     {
         try {
             $inscriptionIds = $ordinals->getBlockInscriptionIds($this->height);

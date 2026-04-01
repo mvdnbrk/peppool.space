@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Services;
+namespace Tests\Unit\Services\Inscriptions;
 
 use App\Models\Inscription;
-use App\Services\InscriptionContentParser;
+use App\Services\Inscriptions\InscriptionClassificationParser;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-class InscriptionContentParserTest extends TestCase
+class InscriptionClassificationParserTest extends TestCase
 {
-    private InscriptionContentParser $parser;
+    private InscriptionClassificationParser $parser;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->parser = new InscriptionContentParser;
+        $this->parser = new InscriptionClassificationParser;
     }
 
     // --- Pepemap ---
