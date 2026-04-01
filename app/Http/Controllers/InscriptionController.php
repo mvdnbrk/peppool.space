@@ -19,6 +19,11 @@ class InscriptionController extends Controller
         private readonly InscriptionReferenceParser $referenceParser,
     ) {}
 
+    public function index(): View
+    {
+        return view('inscription.index');
+    }
+
     public function show(string $inscriptionId): View
     {
         try {

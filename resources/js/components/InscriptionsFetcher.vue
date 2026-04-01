@@ -21,6 +21,10 @@
     :total="total"
     :title="`${total.toLocaleString('en-US')} ${total === 1 ? 'Inscription' : 'Inscriptions'}`"
   />
+
+  <div v-else class="bg-white dark:bg-gray-900 shadow rounded-lg border border-gray-200 dark:border-gray-700 p-6 text-center">
+    <p class="text-sm text-gray-500 dark:text-gray-400">No inscriptions found.</p>
+  </div>
 </template>
 
 <script>

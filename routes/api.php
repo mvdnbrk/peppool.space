@@ -53,6 +53,9 @@ Route::middleware('throttle:api')->name('api.')->group(function () {
     Route::post('/tx', [TransactionController::class, 'broadcast'])
         ->name('tx.broadcast');
 
+    Route::get('/inscriptions', [InscriptionController::class, 'index'])
+        ->name('inscriptions.index');
+
     Route::get('/inscription/{inscriptionId}', [InscriptionController::class, 'show'])
         ->name('inscription.show')
         ->where('inscriptionId', '[0-9a-fA-F]{64}i\d+');

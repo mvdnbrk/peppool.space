@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\Concerns\HasApiResponses;
 use App\Http\Controllers\Controller;
+use App\Models\Inscription;
 use App\Services\OrdinalsService;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
@@ -19,6 +20,23 @@ class InscriptionController extends Controller
     public function __construct(
         private readonly OrdinalsService $ordinals,
     ) {}
+
+    public function index(): JsonResponse
+    {
+        $inscriptions = Inscription::query()
+            ->where(function ($query) {
+                $query->where('content_type', 'like', 'image/%')
+                    ->orWhere('content_type', 'like', 'text/html%');
+            })
+            ->orderByDesc('id')
+            ->limit(60)
+            ->pluck('inscription_id');
+
+        return response()->json([
+            'inscriptions' => $inscriptions,
+            'total' => $inscriptions->count(),
+        ]);
+    }
 
     public function show(string $inscriptionId): JsonResponse
     {

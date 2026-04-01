@@ -46,6 +46,9 @@ Route::get('/address/{address}', [AddressController::class, 'show'])
     ->name('address.show')
     ->where('address', '[PA92][1-9A-HJ-NP-Za-km-z]{25,33}');
 
+Route::get('/inscriptions', [InscriptionController::class, 'index'])
+    ->name('inscription.index');
+
 Route::get('/inscription/{inscriptionId}', [InscriptionController::class, 'show'])
     ->name('inscription.show')
     ->where('inscriptionId', '[0-9a-fA-F]{64}i\d+');
