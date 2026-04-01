@@ -104,6 +104,12 @@ export default {
         if (entries[0].isIntersecting) {
           if (this.visibleCount < this.inscriptions.length) {
             this.visibleCount = Math.min(this.visibleCount + BATCH_SIZE, this.inscriptions.length)
+            this.$nextTick(() => {
+              if (this.observer) {
+                this.observer.unobserve(sentinel)
+                this.observer.observe(sentinel)
+              }
+            })
           } else if (!this.reachEndEmitted) {
             this.reachEndEmitted = true
             this.$emit('reach-end')
