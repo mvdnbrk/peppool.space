@@ -54,6 +54,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('inscription.index') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
+                        Inscriptions
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('sponsor') }}" class="text-sm font-medium text-green-100 hover:text-white transition-colors">
                         Sponsor
                     </a>
