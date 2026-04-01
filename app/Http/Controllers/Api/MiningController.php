@@ -79,7 +79,8 @@ class MiningController extends Controller
                     ]),
                     'totalHashrate' => $group->sum('avg_hashrate'),
                 ])
-                ->values();
+                ->values()
+                ->all();
         });
 
         return response()->json($data);

@@ -125,15 +125,15 @@ class PepecoinExplorerService
 
     public function validateAddress(string $address): ValidateAddressData
     {
-        return Cache::remember(
+        $data = Cache::remember(
             $this->getCacheKey(__FUNCTION__.'_'.hash('sha256', $address)),
             Carbon::now()->addHours(24), // Cache for 24 hours since address validity doesn't change
-            function () use ($address): ValidateAddressData {
-                return ValidateAddressData::from(
-                    $this->rpcService->call('validateaddress', [$address])
-                );
+            function () use ($address): array {
+                return $this->rpcService->call('validateaddress', [$address]);
             }
         );
+
+        return ValidateAddressData::from($data);
     }
 
     public function getMempoolEntryTime(string $txid): ?int
