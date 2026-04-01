@@ -15,18 +15,19 @@
     <button @click="fetchInscriptions" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Retry</button>
   </div>
 
-  <InscriptionGrid
-    v-else-if="inscriptions.length > 0"
-    :inscriptions="inscriptions"
-    :total="total"
-    :title="showTitle ? `${total.toLocaleString('en-US')} ${total === 1 ? 'Inscription' : 'Inscriptions'}` : null"
-    :initially-expanded="expanded"
-    @reach-end="loadMore"
-  />
+  <template v-else-if="inscriptions.length > 0">
+    <InscriptionGrid
+      :inscriptions="inscriptions"
+      :total="total"
+      :title="showTitle ? `${total.toLocaleString('en-US')} ${total === 1 ? 'Inscription' : 'Inscriptions'}` : null"
+      :initially-expanded="expanded"
+      @reach-end="loadMore"
+    />
 
-  <div v-if="loadingMore" class="mt-4 p-4 flex justify-center">
-    <div class="h-6 w-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-  </div>
+    <div v-if="loadingMore" class="mt-4 p-4 flex justify-center">
+      <div class="h-6 w-6 border-2 border-green-700 dark:border-white border-t-transparent dark:border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  </template>
 
   <div v-else class="bg-white dark:bg-gray-900 shadow rounded-lg border border-gray-200 dark:border-gray-700 p-6 text-center">
     <p class="text-sm text-gray-500 dark:text-gray-400">No inscriptions found.</p>
@@ -134,7 +135,6 @@ export default {
       if (document.hidden) {
         this.stopPolling()
       } else {
-        this.fetchInscriptions()
         this.startPolling()
       }
     }

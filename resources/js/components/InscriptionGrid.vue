@@ -56,11 +56,18 @@ export default {
       default: false
     }
   },
+  emits: ['reach-end'],
   data() {
     return {
       expanded: this.initiallyExpanded,
       visibleCount: this.initiallyExpanded ? BATCH_SIZE : 0,
-      observer: null
+      observer: null,
+      reachEndEmitted: false
+    }
+  },
+  watch: {
+    inscriptions() {
+      this.reachEndEmitted = false
     }
   },
   mounted() {
@@ -94,7 +101,8 @@ export default {
         if (entries[0].isIntersecting) {
           if (this.visibleCount < this.inscriptions.length) {
             this.visibleCount = Math.min(this.visibleCount + BATCH_SIZE, this.inscriptions.length)
-          } else {
+          } else if (!this.reachEndEmitted) {
+            this.reachEndEmitted = true
             this.$emit('reach-end')
           }
         }
