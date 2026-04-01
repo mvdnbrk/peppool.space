@@ -1,7 +1,7 @@
 <x-layout
     title="Inscription #{{ number_format($inscription->number) }} - peppool.space"
     :og_description="'Pepecoin Inscription #' . number_format($inscription->number) . ' — ' . $inscription->contentTypeForHumans() . ' on peppool.space'"
-   og_image="pepecoin-inscription.png"
+    og_image="pepecoin-inscription.png"
 >
         <div class="mb-6 md:mb-8">
             <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
