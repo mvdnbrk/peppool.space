@@ -70,6 +70,7 @@ export default {
       this.reachEndEmitted = false
       if (this.expanded && newVal.length > oldVal.length) {
         this.visibleCount = Math.min(this.visibleCount + BATCH_SIZE, newVal.length)
+        this.$nextTick(() => this.reobserveSentinel())
       }
     }
   },
@@ -104,12 +105,7 @@ export default {
         if (entries[0].isIntersecting) {
           if (this.visibleCount < this.inscriptions.length) {
             this.visibleCount = Math.min(this.visibleCount + BATCH_SIZE, this.inscriptions.length)
-            this.$nextTick(() => {
-              if (this.observer) {
-                this.observer.unobserve(sentinel)
-                this.observer.observe(sentinel)
-              }
-            })
+            this.$nextTick(() => this.reobserveSentinel())
           } else if (!this.reachEndEmitted) {
             this.reachEndEmitted = true
             this.$emit('reach-end')
@@ -118,6 +114,13 @@ export default {
       }, { rootMargin: '200px' })
 
       this.observer.observe(sentinel)
+    },
+    reobserveSentinel() {
+      const sentinel = this.$refs.sentinel
+      if (this.observer && sentinel) {
+        this.observer.unobserve(sentinel)
+        this.observer.observe(sentinel)
+      }
     },
     destroyObserver() {
       if (this.observer) {
