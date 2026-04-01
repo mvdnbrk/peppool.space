@@ -19,7 +19,8 @@
     v-else-if="inscriptions.length > 0"
     :inscriptions="inscriptions"
     :total="total"
-    :title="`${total.toLocaleString('en-US')} ${total === 1 ? 'Inscription' : 'Inscriptions'}`"
+    :title="showTitle ? `${total.toLocaleString('en-US')} ${total === 1 ? 'Inscription' : 'Inscriptions'}` : null"
+    :initially-expanded="expanded"
   />
 
   <div v-else class="bg-white dark:bg-gray-900 shadow rounded-lg border border-gray-200 dark:border-gray-700 p-6 text-center">
@@ -39,6 +40,14 @@ export default {
       required: true
     },
     poll: {
+      type: Boolean,
+      default: false
+    },
+    showTitle: {
+      type: Boolean,
+      default: true
+    },
+    expanded: {
       type: Boolean,
       default: false
     }

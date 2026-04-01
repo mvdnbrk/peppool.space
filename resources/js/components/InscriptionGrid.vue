@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white dark:bg-gray-900 shadow rounded-lg border border-gray-200 dark:border-gray-700">
-    <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+    <div v-if="title" class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
       <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400">
         {{ title }}
       </h2>
@@ -49,14 +49,23 @@ export default {
     },
     title: {
       type: String,
-      default: 'Inscriptions'
+      default: null
+    },
+    initiallyExpanded: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      expanded: false,
-      visibleCount: 0,
+      expanded: this.initiallyExpanded,
+      visibleCount: this.initiallyExpanded ? BATCH_SIZE : 0,
       observer: null
+    }
+  },
+  mounted() {
+    if (this.expanded) {
+      this.$nextTick(() => this.setupObserver())
     }
   },
   computed: {

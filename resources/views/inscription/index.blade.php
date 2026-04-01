@@ -9,5 +9,5 @@
         </h1>
     </div>
 
-    <div data-vue="inscriptions-fetcher" data-props='@json(["url" => "/api/inscriptions"])'></div>
+    <div data-vue="inscriptions-fetcher" data-props='@json(["url" => "/api/inscriptions", "showTitle" => false, "expanded" => true])'></div>
 </x-layout>
