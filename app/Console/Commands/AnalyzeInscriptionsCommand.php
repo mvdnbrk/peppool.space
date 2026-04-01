@@ -107,7 +107,7 @@ class AnalyzeInscriptionsCommand extends Command
 
                     $updates[] = [
                         'id' => $inscription->id,
-                        'content' => $content,
+                        'content' => mb_check_encoding($content, 'UTF-8') ? $content : null,
                         'flags' => $inscription->flags | $parsed['flags'],
                     ];
                 }

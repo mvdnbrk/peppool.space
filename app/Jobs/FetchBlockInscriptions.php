@@ -63,7 +63,7 @@ class FetchBlockInscriptions implements ShouldQueue
                 if (self::shouldFetchContent($data)) {
                     $content = $ordinals->getContent($inscriptionId)->body();
                     $parsed = $parser->parse($data->content_type, $content);
-                    $row['content'] = $content;
+                    $row['content'] = mb_check_encoding($content, 'UTF-8') ? $content : null;
                     $row['flags'] |= $parsed['flags'];
                 }
 
