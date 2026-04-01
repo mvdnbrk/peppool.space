@@ -219,6 +219,29 @@ class ViewInscriptionPageTest extends TestCase
     }
 
     #[Test]
+    public function content_endpoint_does_not_include_x_frame_options_header(): void
+    {
+        $inscriptionId = '5f48e29e693d92b1ba70f306b1fb4fb5a5dd2b272dd6130ab2df46ab4875e2f3i0';
+
+        $mockResponse = new \Illuminate\Http\Client\Response(
+            new Response(200, ['Content-Type' => 'image/png'], 'fake-image-data')
+        );
+
+        $ordinals = Mockery::mock(OrdinalsService::class);
+        $ordinals->shouldReceive('getContent')
+            ->once()
+            ->with($inscriptionId)
+            ->andReturn($mockResponse);
+        $this->app->instance(OrdinalsService::class, $ordinals);
+
+        $this->get(route('inscription.content', ['inscriptionId' => $inscriptionId]))
+            ->assertOk()
+            ->assertHeaderMissing('X-Frame-Options')
+            ->assertHeader('Content-Type', 'image/png')
+            ->assertHeader('Cache-Control', 'immutable, max-age=31536000, public');
+    }
+
+    #[Test]
     public function inscription_page_returns_404_when_not_found(): void
     {
         $inscriptionId = '0000000000000000000000000000000000000000000000000000000000000000i0';

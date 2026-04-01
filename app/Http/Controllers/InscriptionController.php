@@ -37,6 +37,7 @@ class InscriptionController extends Controller
 
         return response($response->body(), $response->status())
             ->header('Content-Type', $response->header('Content-Type'))
-            ->header('Cache-Control', 'public, max-age=31536000, immutable');
+            ->header('Cache-Control', 'public, max-age=31536000, immutable')
+            ->withoutHeader('X-Frame-Options');
     }
 }
