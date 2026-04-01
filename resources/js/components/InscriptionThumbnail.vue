@@ -12,7 +12,7 @@
       v-else-if="mode === 'iframe'"
       :src="contentUrl"
       class="w-full h-full border-0 pointer-events-none"
-      sandbox=""
+      sandbox="allow-scripts"
       loading="lazy"
       scrolling="no"
     ></iframe>

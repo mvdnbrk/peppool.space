@@ -66,8 +66,11 @@ export default {
     }
   },
   watch: {
-    inscriptions() {
+    inscriptions(newVal, oldVal) {
       this.reachEndEmitted = false
+      if (this.expanded && newVal.length > oldVal.length) {
+        this.visibleCount = Math.min(this.visibleCount + BATCH_SIZE, newVal.length)
+      }
     }
   },
   mounted() {
