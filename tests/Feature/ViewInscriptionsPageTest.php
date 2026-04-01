@@ -31,7 +31,7 @@ class ViewInscriptionsPageTest extends TestCase
 
         $response = $this->getJson(route('api.inscriptions.index'))
             ->assertOk()
-            ->assertJsonStructure(['inscriptions', 'total']);
+            ->assertJsonStructure(['inscriptions', 'total', 'current_page', 'last_page']);
 
         $inscriptionIds = $response->json('inscriptions');
 
@@ -56,14 +56,16 @@ class ViewInscriptionsPageTest extends TestCase
     }
 
     #[Test]
-    public function api_limits_to_60_inscriptions(): void
+    public function api_limits_to_60_inscriptions_per_page(): void
     {
         Inscription::factory()->count(65)->create(['content_type' => 'image/png']);
 
         $response = $this->getJson(route('api.inscriptions.index'))->assertOk();
 
         $this->assertCount(60, $response->json('inscriptions'));
-        $this->assertEquals(60, $response->json('total'));
+        $this->assertEquals(65, $response->json('total'));
+        $this->assertEquals(1, $response->json('current_page'));
+        $this->assertEquals(2, $response->json('last_page'));
     }
 
     #[Test]
