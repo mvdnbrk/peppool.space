@@ -34,8 +34,8 @@ class InscriptionReferenceParser
             return false;
         }
 
-        $type = strtolower(explode(';', $contentType)[0]);
+        $type = trim(strtolower(explode(';', $contentType)[0]));
 
-        return str_starts_with(trim($type), 'text/');
+        return str_starts_with($type, 'text/') && $type !== 'text/plain';
     }
 }

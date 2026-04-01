@@ -111,13 +111,11 @@ class InscriptionReferenceParserTest extends TestCase
     }
 
     #[Test]
-    public function it_handles_text_plain_content_type(): void
+    public function it_returns_empty_for_text_plain_content_type(): void
     {
         $content = '/content/031d60cebab0d0e96f15ac512dbe3953ff1586d8e86f2f35e22bac76519bf0dbi3';
 
-        $result = $this->parser->parse('text/plain', $content);
-
-        $this->assertSame(['031d60cebab0d0e96f15ac512dbe3953ff1586d8e86f2f35e22bac76519bf0dbi3'], $result);
+        $this->assertSame([], $this->parser->parse('text/plain', $content));
     }
 
     #[Test]
