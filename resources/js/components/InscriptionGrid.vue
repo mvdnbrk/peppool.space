@@ -21,7 +21,7 @@
           Show all {{ total.toLocaleString('en-US') }} inscriptions
         </button>
       </div>
-      <div v-if="expanded && visibleCount < inscriptions.length" ref="sentinel" class="h-1"></div>
+      <div v-if="expanded" ref="sentinel" class="h-1"></div>
     </div>
   </div>
 </template>
@@ -91,13 +91,12 @@ export default {
       if (!sentinel) return
 
       this.observer = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && this.visibleCount < this.inscriptions.length) {
-          this.visibleCount = Math.min(this.visibleCount + BATCH_SIZE, this.inscriptions.length)
-          this.$nextTick(() => {
-            if (this.visibleCount >= this.inscriptions.length) {
-              this.destroyObserver()
-            }
-          })
+        if (entries[0].isIntersecting) {
+          if (this.visibleCount < this.inscriptions.length) {
+            this.visibleCount = Math.min(this.visibleCount + BATCH_SIZE, this.inscriptions.length)
+          } else {
+            this.$emit('reach-end')
+          }
         }
       }, { rootMargin: '200px' })
 

@@ -23,18 +23,19 @@ class InscriptionController extends Controller
 
     public function index(): JsonResponse
     {
-        $inscriptions = Inscription::query()
+        $paginator = Inscription::query()
             ->where(function ($query) {
                 $query->where('content_type', 'like', 'image/%')
                     ->orWhere('content_type', 'like', 'text/html%');
             })
             ->orderByDesc('id')
-            ->limit(60)
-            ->pluck('inscription_id');
+            ->paginate(60);
 
         return response()->json([
-            'inscriptions' => $inscriptions,
-            'total' => $inscriptions->count(),
+            'inscriptions' => $paginator->getCollection()->pluck('inscription_id'),
+            'total' => $paginator->total(),
+            'current_page' => $paginator->currentPage(),
+            'last_page' => $paginator->lastPage(),
         ]);
     }
 

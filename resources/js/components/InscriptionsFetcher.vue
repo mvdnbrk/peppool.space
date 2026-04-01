@@ -21,7 +21,12 @@
     :total="total"
     :title="showTitle ? `${total.toLocaleString('en-US')} ${total === 1 ? 'Inscription' : 'Inscriptions'}` : null"
     :initially-expanded="expanded"
+    @reach-end="loadMore"
   />
+
+  <div v-if="loadingMore" class="mt-4 p-4 flex justify-center">
+    <div class="h-6 w-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+  </div>
 
   <div v-else class="bg-white dark:bg-gray-900 shadow rounded-lg border border-gray-200 dark:border-gray-700 p-6 text-center">
     <p class="text-sm text-gray-500 dark:text-gray-400">No inscriptions found.</p>
@@ -56,13 +61,16 @@ export default {
     return {
       inscriptions: [],
       total: 0,
+      page: 1,
+      lastPage: 1,
       loading: true,
+      loadingMore: false,
       error: false,
       pollingInterval: null
     }
   },
   mounted() {
-    this.fetchInscriptions()
+    this.fetchInscriptions(1)
     if (this.poll) {
       this.startPolling()
       document.addEventListener('visibilitychange', this.handleVisibilityChange)
@@ -75,24 +83,45 @@ export default {
     }
   },
   methods: {
-    async fetchInscriptions() {
+    async fetchInscriptions(page = 1) {
+      if (page === 1) this.loading = true
+      else this.loadingMore = true
+
       try {
-        const response = await fetch(this.url)
+        const [path, query] = this.url.split('?')
+        const searchParams = new URLSearchParams(query || '')
+        searchParams.set('page', page.toString())
+        const url = `${path}?${searchParams.toString()}`
+
+        const response = await fetch(url)
         if (!response.ok) throw new Error('Network response was not ok')
         const data = await response.json()
-        this.inscriptions = data.inscriptions || []
+
+        if (page === 1) {
+          this.inscriptions = data.inscriptions || []
+        } else {
+          this.inscriptions = [...this.inscriptions, ...(data.inscriptions || [])]
+        }
+
         this.total = data.total ?? this.inscriptions.length
+        this.page = data.current_page || page
+        this.lastPage = data.last_page || 1
         this.error = false
       } catch {
         this.error = true
       } finally {
         this.loading = false
+        this.loadingMore = false
       }
+    },
+    loadMore() {
+      if (this.loadingMore || this.page >= this.lastPage) return
+      this.fetchInscriptions(this.page + 1)
     },
     startPolling() {
       if (this.pollingInterval) return
       this.pollingInterval = setInterval(() => {
-        this.fetchInscriptions()
+        this.fetchInscriptions(1)
       }, 60000)
     },
     stopPolling() {
