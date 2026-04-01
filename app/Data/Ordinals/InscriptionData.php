@@ -35,6 +35,7 @@ final class InscriptionData extends Data
         'video/mp4' => 'MP4 Video',
         'video/webm' => 'WebM Video',
         'model/gltf-binary' => '3D Model',
+        'model/gltf+json' => '3D Model',
     ];
 
     public function __construct(
