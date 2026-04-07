@@ -9,7 +9,13 @@ use App\Http\Controllers\Api\MempoolController;
 use App\Http\Controllers\Api\MiningController;
 use App\Http\Controllers\Api\PricesController;
 use App\Http\Controllers\Api\TransactionController;
+use App\Http\Controllers\Api\WalletAuthController;
 use Illuminate\Support\Facades\Route;
+
+Route::middleware('throttle:challenge')->name('api.')->prefix('v1/auth')->group(function () {
+    Route::post('/challenge', [WalletAuthController::class, 'challenge'])->name('auth.challenge');
+    Route::post('/token', [WalletAuthController::class, 'token'])->name('auth.token');
+});
 
 Route::middleware('throttle:api')->name('api.')->group(function () {
     Route::get('/blocks/tip/height', [BlockController::class, 'tipHeight'])->name('blocks.tip.height');

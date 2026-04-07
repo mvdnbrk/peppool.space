@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Contracts\BlockchainServiceInterface;
+use App\Models\WalletUser;
 use App\Services\BlockchainService;
 use App\Services\ElectrsPepeService;
 use App\Services\OrdinalsService;
@@ -35,12 +36,22 @@ class AppServiceProvider extends ServiceProvider
     {
         JsonResource::withoutWrapping();
 
+        RateLimiter::for('challenge', function (Request $request) {
+            return Limit::perMinute(5)->by($request->ip());
+        });
+
         RateLimiter::for('api', function (Request $request) {
             if ($request->hasSession() && $request->session()->has('_token')) {
                 return Limit::none();
             }
 
-            return Limit::perMinute(15)->by($request->user()?->id ?: $request->ip());
+            $user = auth('sanctum')->user();
+
+            if ($user instanceof WalletUser) {
+                return Limit::perMinute(60)->by('peppool_wallet:'.$user->id);
+            }
+
+            return Limit::perMinute(15)->by($request->ip());
         });
     }
 }

@@ -97,7 +97,7 @@ class PepecoinRpcService implements RpcClientInterface
             $this->throwRpcError($data['error'], $method, $response);
         }
 
-        return $data['result'] ?? [];
+        return array_key_exists('result', $data) ? $data['result'] : [];
     }
 
     private function validateBatchResponse(Collection $data, array $calls, $response): void
@@ -216,5 +216,10 @@ class PepecoinRpcService implements RpcClientInterface
     public function getTxOutSetInfo(): array
     {
         return $this->call('gettxoutsetinfo', [], 600);
+    }
+
+    public function verifyMessage(string $address, string $signature, string $message): bool
+    {
+        return $this->call('verifymessage', [$address, $signature, $message]);
     }
 }
