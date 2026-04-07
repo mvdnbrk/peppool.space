@@ -59,6 +59,8 @@ class WalletAuthController extends Controller
             'version' => $request->validated('version'),
         ]);
 
+        $walletUser->tokens()->delete();
+
         $token = $walletUser->createToken(
             name: 'wallet',
             abilities: ['wallet'],

@@ -197,6 +197,31 @@ class WalletAuthTest extends TestCase
     }
 
     #[Test]
+    public function new_token_revokes_previous_tokens(): void
+    {
+        $walletUser = WalletUser::factory()->create(['address' => 'PExisting']);
+        $walletUser->createToken('wallet', ['wallet'], now()->addDay());
+        $walletUser->createToken('wallet', ['wallet'], now()->addDay());
+
+        $this->assertCount(2, $walletUser->tokens);
+
+        Cache::put('wallet_auth_challenge:PExisting', 'nonce-revoke', 90);
+
+        $rpc = Mockery::mock(PepecoinRpcService::class);
+        $rpc->shouldReceive('verifyMessage')
+            ->with('PExisting', 'cmV2b2tl', 'nonce-revoke')
+            ->andReturn(true);
+        $this->app->instance(PepecoinRpcService::class, $rpc);
+
+        $this->tokenRequest([
+            'address' => 'PExisting',
+            'signature' => 'cmV2b2tl',
+        ]);
+
+        $this->assertCount(1, $walletUser->fresh()->tokens);
+    }
+
+    #[Test]
     public function challenge_endpoint_is_rate_limited(): void
     {
         RateLimiter::for('challenge', fn () => Limit::perMinute(1));
