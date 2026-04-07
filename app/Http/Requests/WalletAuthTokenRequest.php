@@ -15,7 +15,7 @@ class WalletAuthTokenRequest extends FormRequest
     {
         $this->merge([
             'app_name' => $this->header('X-App-Name'),
-            'version' => $this->header('X-Wallet-Version'),
+            'version' => $this->header('X-App-Version'),
         ]);
     }
 

@@ -22,7 +22,7 @@ class WalletAuthTest extends TestCase
     {
         return $this->withHeaders([
             'X-App-Name' => 'peppool-wallet',
-            'X-Wallet-Version' => $version,
+            'X-App-Version' => $version,
         ])->postJson(route('api.auth.challenge'), $data);
     }
 
@@ -30,7 +30,7 @@ class WalletAuthTest extends TestCase
     {
         return $this->withHeaders([
             'X-App-Name' => 'peppool-wallet',
-            'X-Wallet-Version' => $version,
+            'X-App-Version' => $version,
         ])->postJson(route('api.auth.token'), $data);
     }
 
