@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Models\WalletUser;
 
 return [
 
@@ -42,6 +43,7 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
     ],
 
     /*
@@ -67,10 +69,10 @@ return [
             'model' => env('AUTH_MODEL', User::class),
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'wallet_users' => [
+            'driver' => 'eloquent',
+            'model' => WalletUser::class,
+        ],
     ],
 
     /*
