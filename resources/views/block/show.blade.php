@@ -39,17 +39,20 @@
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Block {{ number_format($blockHeight) }}</h1>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
+                <div class="flex flex-col">
                     <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Block Hash</h3>
-                    <p class="text-sm font-mono bg-gray-100 dark:bg-gray-800 dark:text-gray-100 p-2 rounded break-all">{{ $blockHash }}</p>
+                    <p class="flex items-center gap-1 flex-1 text-sm font-mono bg-gray-100 dark:bg-gray-800 dark:text-gray-100 p-2 rounded break-all">
+                        <x-truncate-middle :value="$blockHash" />
+                        <x-copy-to-clipboard :value="$blockHash" />
+                    </p>
                 </div>
 
-                <div>
+                <div class="flex flex-col">
                     <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Previous Block Hash</h3>
-                    <p class="text-sm font-mono bg-gray-100 dark:bg-gray-800 dark:text-gray-100 p-2 rounded break-all">
+                    <p class="flex items-center flex-1 text-sm font-mono bg-gray-100 dark:bg-gray-800 dark:text-gray-100 p-2 rounded break-all">
                         @if(isset($block['previousblockhash']))
-                            <a href="{{ route('block.show', $block['previousblockhash']) }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-                                {{ $block['previousblockhash'] }}
+                            <a href="{{ route('block.show', $block['previousblockhash']) }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex min-w-0">
+                                <x-truncate-middle :value="$block['previousblockhash']" />
                             </a>
                         @else
                             Genesis Block
@@ -104,23 +107,21 @@
             <div class="divide-y divide-gray-200 dark:divide-gray-700">
                 @forelse($block['tx'] ?? [] as $index => $tx)
                     <div class="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-800">
-                        <div class="flex items-center justify-between">
-                            <div class="flex-1">
-                                <div class="flex items-center space-x-3">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $index === 0 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' }}">
-                                        {{ $index === 0 ? 'Coinbase' : 'Transaction' }}
-                                    </span>
-                                    <a href="{{ route('transaction.show', $tx->txid) }}" class="text-sm font-mono text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 break-all">
-                                        {{ $tx->txid }}
-                                    </a>
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium shrink-0 {{ $index === 0 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' }}">
+                                    {{ $index === 0 ? 'Coinbase' : 'Transaction' }}
+                                </span>
+                                <a href="{{ route('transaction.show', $tx->txid) }}" class="text-sm font-mono text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex min-w-0">
+                                    <x-truncate-middle :value="$tx->txid" />
+                                </a>
+                            </div>
+                            <div class="mt-2 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+                                <div>
+                                    {{ count($tx->vin) }} {{ Str::plural('input', count($tx->vin)) }}, {{ count($tx->vout) }} {{ Str::plural('output', count($tx->vout)) }}
                                 </div>
-                                <div class="mt-2 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-                                    <div>
-                                        {{ count($tx->vin) }} {{ Str::plural('input', count($tx->vin)) }}, {{ count($tx->vout) }} {{ Str::plural('output', count($tx->vout)) }}
-                                    </div>
-                                    <div class="font-medium text-gray-900 dark:text-white">
-                                        <x-pepe-amount :amount="$tx->getTotalOutputValueInPep()" /> PEPE
-                                    </div>
+                                <div class="font-medium text-gray-900 dark:text-white shrink-0 ml-auto">
+                                    <x-pepe-amount :amount="$tx->getTotalOutputValueInPep()" /> PEPE
                                 </div>
                             </div>
                         </div>
