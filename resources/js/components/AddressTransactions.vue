@@ -32,12 +32,17 @@
         :key="tx.txid"
         class="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-800"
       >
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-          <div class="flex-1 min-w-0">
-            <a :href="txRoute.replace('__TXID__', tx.txid)" class="font-mono text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 break-all">
-              {{ tx.txid }}
-            </a>
-            <div class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        <div class="min-w-0">
+          <a :href="txRoute.replace('__TXID__', tx.txid)" class="font-mono text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex min-w-0">
+            <span class="inline-flex max-w-full min-w-0">
+              <span class="flex min-w-0">
+                <span class="overflow-hidden text-ellipsis whitespace-nowrap min-w-0">{{ tx.txid.slice(0, -6) }}</span>
+              </span>
+              <span class="whitespace-nowrap">{{ tx.txid.slice(-6) }}</span>
+            </span>
+          </a>
+          <div class="mt-1 flex items-center justify-between">
+            <div class="text-sm text-gray-500 dark:text-gray-400">
               <span v-if="tx.confirmations === 0" class="text-red-500 font-medium">Unconfirmed</span>
               <Timestamp
                 v-else-if="tx.time || tx.timereceived"
@@ -47,21 +52,21 @@
                 Coinbase
               </span>
             </div>
-          </div>
-          <div class="mt-2 sm:mt-0 text-sm font-medium text-right">
-            <div v-if="tx.is_incoming" class="flex items-baseline justify-end text-green-600">
-              <span>{{ formatPepe(tx.amount).whole }}</span><span class="text-[0.85em] text-gray-500 dark:text-gray-400 font-normal">{{ formatPepe(tx.amount).decimal }}</span>&nbsp;PEPE
-              <svg class="w-4 h-4 ml-1 self-center" fill="none" stroke="currentColor" viewBox="0 0 24 24" role="img" aria-label="Received" focusable="false">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-              </svg>
-              <span class="sr-only">Received</span>
-            </div>
-            <div v-else class="flex items-baseline justify-end text-red-600">
-              <span>{{ formatPepe(tx.amount).whole }}</span><span class="text-[0.85em] text-gray-500 dark:text-gray-400 font-normal">{{ formatPepe(tx.amount).decimal }}</span>&nbsp;PEPE
-              <svg class="w-4 h-4 ml-1 self-center" fill="none" stroke="currentColor" viewBox="0 0 24 24" role="img" aria-label="Sent" focusable="false">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
-              </svg>
-              <span class="sr-only">Sent</span>
+            <div class="text-sm font-medium shrink-0 ml-auto">
+              <div v-if="tx.is_incoming" class="flex items-baseline justify-end text-green-600">
+                <span>{{ formatPepe(tx.amount).whole }}</span><span class="text-[0.85em] text-gray-500 dark:text-gray-400 font-normal">{{ formatPepe(tx.amount).decimal }}</span>&nbsp;PEPE
+                <svg class="w-4 h-4 ml-1 self-center" fill="none" stroke="currentColor" viewBox="0 0 24 24" role="img" aria-label="Received" focusable="false">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+                <span class="sr-only">Received</span>
+              </div>
+              <div v-else class="flex items-baseline justify-end text-red-600">
+                <span>{{ formatPepe(tx.amount).whole }}</span><span class="text-[0.85em] text-gray-500 dark:text-gray-400 font-normal">{{ formatPepe(tx.amount).decimal }}</span>&nbsp;PEPE
+                <svg class="w-4 h-4 ml-1 self-center" fill="none" stroke="currentColor" viewBox="0 0 24 24" role="img" aria-label="Sent" focusable="false">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                </svg>
+                <span class="sr-only">Sent</span>
+              </div>
             </div>
           </div>
         </div>
