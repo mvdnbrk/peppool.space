@@ -98,10 +98,18 @@ export default {
         if (!response.ok) throw new Error('Network response was not ok')
         const data = await response.json()
 
+        const incoming = data.inscriptions || []
+
         if (page === 1) {
-          this.inscriptions = data.inscriptions || []
+          const changed = this.total !== (data.total ?? incoming.length)
+            || this.inscriptions.length !== incoming.length
+            || JSON.stringify(this.inscriptions) !== JSON.stringify(incoming)
+
+          if (changed) {
+            this.inscriptions = incoming
+          }
         } else {
-          this.inscriptions = [...this.inscriptions, ...(data.inscriptions || [])]
+          this.inscriptions = [...this.inscriptions, ...incoming]
         }
 
         this.total = data.total ?? this.inscriptions.length
