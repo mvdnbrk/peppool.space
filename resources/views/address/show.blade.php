@@ -9,9 +9,12 @@
         <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
             Pepe Wallet address
         </h3>
-        <h1 class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white break-all">
-            {{ $address }}
-        </h1>
+        <div class="flex items-center gap-1">
+            <h1 class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white break-all">
+                {{ $address }}
+            </h1>
+            <x-copy-to-clipboard :value="$address" />
+        </div>
     </div>
 
     <!-- Address Stats -->
