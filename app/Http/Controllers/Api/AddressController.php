@@ -47,19 +47,21 @@ class AddressController extends Controller
         try {
             $data = $this->ordinals->getAddressInscriptions($address);
             $inscriptions = $data['inscriptions'] ?? [];
+            $outputs = $data['outputs'] ?? [];
 
             return response()->json([
                 'inscriptions' => $inscriptions,
+                'outputs' => $outputs,
                 'total' => count($inscriptions),
             ]);
         } catch (RequestException $e) {
             if ($e->getCode() === Response::HTTP_NOT_FOUND) {
-                return response()->json(['inscriptions' => [], 'total' => 0]);
+                return response()->json(['inscriptions' => [], 'outputs' => [], 'total' => 0]);
             }
 
             throw $e;
         } catch (Throwable) {
-            return response()->json(['inscriptions' => [], 'total' => 0]);
+            return response()->json(['inscriptions' => [], 'outputs' => [], 'total' => 0]);
         }
     }
 
