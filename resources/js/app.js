@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 'mining-pool-share': () => import('./components/MiningPoolShare.vue'),
                 'mining-hashrate-history': () => import('./components/MiningHashrateHistory.vue'),
                 'pool-hashrate-chart': () => import('./components/PoolHashrateChart.vue'),
+                'wallet-connect': () => import('./components/WalletConnect.vue'),
             };
 
             // Mount standard [data-vue] components
