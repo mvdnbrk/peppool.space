@@ -62,7 +62,7 @@ final class InscriptionData extends Data
 
     public function hasContent(): bool
     {
-        return $this->content_length !== null;
+        return $this->content_length !== null || $this->isDelegate();
     }
 
     public function contentTypeForHumans(): string

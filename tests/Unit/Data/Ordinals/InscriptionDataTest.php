@@ -83,6 +83,37 @@ class InscriptionDataTest extends TestCase
     }
 
     #[Test]
+    public function a_delegate_inscription_has_content(): void
+    {
+        $data = [
+            'id' => 'd85ed8a801833a77ec0c8060f5978fe3b73fc1a8a3fb22b08a5651f1fa4e35aai0',
+            'number' => 17212333,
+            'address' => 'Pvkk9bUW8S4AK4cJeDDebnWJNADNCtxCHG',
+            'child_count' => 0,
+            'children' => [],
+            'content_type' => null,
+            'effective_content_type' => 'image/png',
+            'content_length' => null,
+            'delegate' => '768e65ae997ab356aa512fee781fb276ffe08eb905778dfce54534299853a9a4i0',
+            'fee' => 10210000,
+            'height' => 956437,
+            'value' => 100000,
+            'parent_count' => 0,
+            'parents' => [],
+            'properties' => null,
+            'satpoint' => 'd85ed8a801833a77ec0c8060f5978fe3b73fc1a8a3fb22b08a5651f1fa4e35aa:0:0',
+            'timestamp' => 1773570237,
+            'next' => null,
+            'previous' => null,
+        ];
+
+        $inscription = InscriptionData::from($data);
+
+        $this->assertTrue($inscription->isDelegate());
+        $this->assertTrue($inscription->hasContent());
+    }
+
+    #[Test]
     public function it_can_be_instantiated_with_the_users_provided_json(): void
     {
         $data = [
