@@ -9,16 +9,16 @@
     "devDependencies": {
         "@tailwindcss/vite": "^4.2.2",
         "@tailwindplus/elements": "^1.0.22",
-        "@vitejs/plugin-vue": "^6.0.5",
-        "@vue/compiler-sfc": "^3.5.31",
-        "axios": "^1.14.0",
+        "@vitejs/plugin-vue": "^6.0.6",
+        "@vue/compiler-sfc": "^3.5.32",
+        "axios": "^1.15.0",
         "concurrently": "^9.2.1",
         "date-fns": "^4.1.0",
         "fslightbox": "^3.7.5",
-        "laravel-vite-plugin": "^3.0.0",
+        "laravel-vite-plugin": "^3.0.1",
         "lightweight-charts": "^5.1.0",
         "tailwindcss": "^4.2.2",
-        "vite": "^8.0.3",
-        "vue": "^3.5.31"
+        "vite": "^8.0.8",
+        "vue": "^3.5.32"
     }
 }

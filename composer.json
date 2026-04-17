@@ -13,11 +13,11 @@
     "require": {
         "php": "^8.4",
         "blade-ui-kit/blade-icons": "^1.9",
-        "laravel/framework": "^13.0",
+        "laravel/framework": "^13.5",
         "laravel/horizon": "^5.45",
         "laravel/sanctum": "^4.3",
         "laravel/tinker": "^3.0",
-        "spatie/laravel-data": "^4.20",
+        "spatie/laravel-data": "^4.22",
         "stevebauman/location": "^7.6"
     },
     "require-dev": {
