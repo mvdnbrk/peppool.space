@@ -126,6 +126,20 @@ return [
     |
     */
 
+    /*
+    |--------------------------------------------------------------------------
+    | Wallet Chrome Extension Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for the Peppool browser extension wallet.
+    |
+    */
+
+    'wallet_chrome_extension' => [
+        'enabled' => env('PEPPOOL_WALLET_CHROME_EXTENSION_ENABLED', true),
+        'id' => env('PEPPOOL_WALLET_CHROME_EXTENSION_ID', 'jfdajbjjeejnlelljgobbfmkkbcbggbp'),
+    ],
+
     'socials' => [
         'twitter_handle' => 'PepecoinNetwork',
         'telegram_handle' => 'PepecoinGroup',

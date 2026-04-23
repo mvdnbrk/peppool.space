@@ -27,6 +27,10 @@
 
     <x-favicons />
 
+    @if(config('pepecoin.wallet_chrome_extension.enabled') && config('pepecoin.wallet_chrome_extension.id'))
+    <link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/{{ config('pepecoin.wallet_chrome_extension.id') }}">
+    @endif
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @if(config('services.fathom.site_id'))
