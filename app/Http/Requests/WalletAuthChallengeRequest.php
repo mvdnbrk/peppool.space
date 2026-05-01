@@ -27,7 +27,7 @@ class WalletAuthChallengeRequest extends FormRequest
         return [
             'app_name' => ['required', 'in:peppool-wallet'],
             'address' => ['required', 'string', 'max:64'],
-            'version' => ['required', 'string', 'regex:/^\d{1,3}\.\d{1,3}\.\d{1,3}$/'],
+            'version' => ['required', 'string', 'regex:/^\d{1,3}\.\d{1,3}\.\d{1,3}(-[0-9A-Za-z.-]+)?$/'],
         ];
     }
 }
