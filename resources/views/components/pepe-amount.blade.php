@@ -1,6 +1,6 @@
 @props([
     'amount' => 0,
-    'decimals' => 6,
+    'decimals' => 8,
 ])
 
 @php
