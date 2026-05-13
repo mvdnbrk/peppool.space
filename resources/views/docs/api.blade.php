@@ -419,7 +419,7 @@
         <!-- Inscription Endpoint -->
         <x-api-section method="GET" path="/inscription/:inscription_id" :description="'Returns details about a Pepecoin inscription (Pepeinal). The inscription ID format is <code>&lt;txid&gt;i&lt;index&gt;</code>.'" responseContentType="application/json">
             <x-slot:example>
-                <code class="whitespace-nowrap">curl {{ secure_url('/api/inscription/') }}abc...defi0</code>
+                <code class="whitespace-nowrap">curl {{ route('api.inscription.show', ['inscriptionId' => 'abc...defi0']) }}</code>
             </x-slot:example>
             <x-slot:response>
                 <pre class="text-xs md:text-sm overflow-x-auto"><code>{
