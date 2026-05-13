@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Data\Ordinals\InscriptionData;
+use App\Data\Ordinals\OutputData;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
@@ -48,13 +49,15 @@ class OrdinalsService
             ->json();
     }
 
-    public function getOutput(string $outpoint): array
+    public function getOutput(string $outpoint): OutputData
     {
-        return Http::acceptJson()
+        $response = Http::acceptJson()
             ->timeout(config('pepecoin.ordinals.timeout', 10))
             ->get("{$this->url}/output/{$outpoint}")
             ->throw()
             ->json();
+
+        return OutputData::from($response);
     }
 
     public function getAddressInscriptions(string $address): array

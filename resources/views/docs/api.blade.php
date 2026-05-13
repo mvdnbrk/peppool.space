@@ -471,6 +471,39 @@
                 <x-api-field name="previous" type="string|null" description="Previous inscription ID" />
             </x-slot:fields>
         </x-api-section>
+
+        <!-- Output Endpoint -->
+        <x-api-section method="GET" path="/output/:outpoint" :description="'Returns details about a transaction output, including any inscriptions located on it. The outpoint format is <code>&lt;txid&gt;:&lt;vout&gt;</code>.'" responseContentType="application/json">
+            <x-slot:example>
+                <code class="whitespace-nowrap">curl {{ route('api.output.show', ['outpoint' => 'abc...def:0']) }}</code>
+            </x-slot:example>
+            <x-slot:response>
+                <pre class="text-xs md:text-sm overflow-x-auto"><code>{
+  "address": "PXXXXXX...XXXXXX",
+  "confirmations": 12,
+  "indexed": true,
+  "inscriptions": [
+    "5f48e29e...e2f3i0"
+  ],
+  "outpoint": "904f7e89...6972:0",
+  "script_pubkey": "OP_DUP OP_HASH160 ... OP_EQUALVERIFY OP_CHECKSIG",
+  "spent": false,
+  "transaction": "904f7e89...6972",
+  "value": 100000
+}</code></pre>
+            </x-slot:response>
+            <x-slot:fields>
+                <x-api-field name="address" type="string|null" description="Address that owns the output" />
+                <x-api-field name="confirmations" type="integer" description="Number of confirmations" />
+                <x-api-field name="indexed" type="boolean" description="Whether the output is indexed" />
+                <x-api-field name="inscriptions" type="array" description="Array of inscription IDs located on this output" />
+                <x-api-field name="outpoint" type="string" description="Outpoint (txid:vout)" />
+                <x-api-field name="script_pubkey" type="string" description="Output script (scriptPubKey) in ASM form" />
+                <x-api-field name="spent" type="boolean" description="Whether the output has been spent" />
+                <x-api-field name="transaction" type="string" description="Transaction ID of the output" />
+                <x-api-field name="value" type="integer" description="Output value in ribbits" />
+            </x-slot:fields>
+        </x-api-section>
     </div>
 
     <!-- Error Responses -->
