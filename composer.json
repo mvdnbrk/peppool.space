@@ -13,8 +13,8 @@
     "require": {
         "php": "^8.4",
         "blade-ui-kit/blade-icons": "^1.10",
-        "laravel/framework": "^13.8",
-        "laravel/horizon": "^5.46",
+        "laravel/framework": "^13.14",
+        "laravel/horizon": "^5.47",
         "laravel/sanctum": "^4.3",
         "laravel/tinker": "^3.0",
         "spatie/laravel-data": "^4.23",
