@@ -78,18 +78,6 @@
 
             <div class="mt-5 md:mt-0 flex flex-col md:flex-row items-center gap-6">
                 <div class="flex flex-col items-center md:flex-row md:items-center md:space-x-2 space-y-1 md:space-y-0 text-xs text-green-100 leading-5">
-                    <p>Proudly hosted with</p>
-                    <a
-                        href="https://m.do.co/c/7a24c68b1e6d"
-                        class="hover:text-white transition-colors"
-                        target="_blank"
-                        rel="noopener"
-                    >
-                        <span class="sr-only">Digital Ocean</span>
-                        <x-icon-digitalocean class="h-6" />
-                    </a>
-                </div>
-                <div class="flex flex-col items-center md:flex-row md:items-center md:space-x-2 space-y-1 md:space-y-0 text-xs text-green-100 leading-5">
                     <p>privacy-first insights with</p>
                     <a
                         href="https://usefathom.com/ref/FI15PB"

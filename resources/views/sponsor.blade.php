@@ -54,25 +54,6 @@
             </div>
         </div>
 
-        <!-- DigitalOcean Referral -->
-        <div class="bg-white dark:bg-gray-900 shadow-2xs rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-            <div class="flex flex-col md:flex-row md:items-center gap-6">
-                <div class="flex-1 space-y-4">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Host with DigitalOcean</h2>
-                    <p class="text-green-600 dark:text-green-400 font-bold mb-2">Get $200 in free credit</p>
-                    <div class="space-y-4 text-gray-600 dark:text-gray-400 leading-relaxed">
-                        <p>New users receive $200 in credit to explore DigitalOcean's cloud platform.</p>
-                        <p>By using our link, you support peppool.space at no extra cost.</p>
-                        <p>Once you've spent $25, the project receives $25 in credit to help cover our infrastructure costs.</p>
-                    </div>
-                    <a href="{{ $digitalOceanUrl }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-lg px-6 py-3 bg-green-700 hover:bg-green-800 text-white text-sm font-bold uppercase tracking-wide shadow-2xs transition-colors">
-                        <span>Claim your $200 credit</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-
         <!-- Fathom Analytics -->
         <div class="bg-white dark:bg-gray-900 shadow-2xs rounded-lg p-6 border border-gray-200 dark:border-gray-700">
             <div class="flex flex-col md:flex-row md:items-center gap-6">
